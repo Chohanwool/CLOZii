@@ -32,8 +32,8 @@ class CustomBottomNavigationBar extends StatelessWidget {
             children: [
               _buildNavItem(
                 context: context,
-                icon: CupertinoIcons.house,
-                activeIcon: CupertinoIcons.house,
+                icon: CupertinoIcons.house_fill,
+                activeIcon: CupertinoIcons.house_fill,
                 label: 'Home',
                 index: 0,
               ),
