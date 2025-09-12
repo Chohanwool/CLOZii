@@ -48,6 +48,7 @@ class OnBoardingScreen extends StatelessWidget {
                   ).push(MaterialPageRoute(builder: (context) => AuthScreen()));
                 },
               ),
+              const SizedBox(height: 4.0),
 
               /// 로그인 링크
               /// - 클릭 시 AuthType.login을 전달하여 로그인 화면으로 이동
@@ -115,7 +116,7 @@ class _LoginPromt extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomTextLink(
       prefixText: 'Do you already have an existing account? ', // 안내 문구
-      style: const TextStyle(color: Colors.black87), // 일반 텍스트 스타일
+      style: const TextStyle(color: Colors.black54), // 일반 텍스트 스타일
       linkText: 'Login', // 링크로 표시할 텍스트
       linkTextStyle: TextStyle(
         color: Theme.of(context).colorScheme.primary, // 링크 색상
