@@ -13,6 +13,7 @@ class CustomButton extends StatelessWidget {
     this.icon,
     this.width = double.infinity,
     this.height = 40.0, // 버튼 왼쪽에 표시할 아이콘 (선택)
+    this.isKeyboardVisible = false,
   });
 
   final String text;
@@ -20,6 +21,7 @@ class CustomButton extends StatelessWidget {
   final IconData? icon;
   final double width;
   final double height;
+  final bool isKeyboardVisible;
 
   @override
   Widget build(BuildContext context) {
@@ -29,37 +31,36 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       // 버튼 클릭 시 동작 (null이면 동작하지 않음)
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0), // 버튼 주변 여백
-        child: Container(
-          width: width, // 가로를 최대 너비로 확장
-          height: height, // 버튼 높이
-          decoration: BoxDecoration(
-            // 버튼 색상
-            color: isButtonEnabled
-                ? context.colors.primary
-                : context.colors.shadow,
-            borderRadius: BorderRadius.circular(8.0), // 모서리를 둥글게
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
-            children: [
-              // 아이콘이 있을 경우에만 표시
-              if (icon != null) Icon(icon, color: context.colors.onPrimary),
-              const SizedBox(width: 4.0), // 아이콘과 텍스트 사이 간격
-              Text(
-                text, // 버튼 텍스트
-                style: TextStyle(
-                  // 버튼 텍스트 색상
-                  color: isButtonEnabled
-                      ? context.colors.onPrimary
-                      : context.colors.scrim,
-                  fontWeight: FontWeight.w800, // 굵은 폰트
-                  fontSize: 14.0,
-                ),
+      child: Container(
+        width: width, // 가로를 최대 너비로 확장
+        height: height, // 버튼 높이
+        decoration: BoxDecoration(
+          // 버튼 색상
+          color: isButtonEnabled
+              ? context.colors.primary
+              : context.colors.shadow,
+          borderRadius: !isKeyboardVisible
+              ? BorderRadius.circular(8.0)
+              : null, // 모서리를 둥글게
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
+          children: [
+            // 아이콘이 있을 경우에만 표시
+            if (icon != null) Icon(icon, color: context.colors.onPrimary),
+            const SizedBox(width: 4.0), // 아이콘과 텍스트 사이 간격
+            Text(
+              text, // 버튼 텍스트
+              style: TextStyle(
+                // 버튼 텍스트 색상
+                color: isButtonEnabled
+                    ? context.colors.onPrimary
+                    : context.colors.scrim,
+                fontWeight: FontWeight.w800, // 굵은 폰트
+                fontSize: 14.0,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
