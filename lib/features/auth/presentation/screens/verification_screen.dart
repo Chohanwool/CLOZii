@@ -6,7 +6,6 @@ import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
-import 'package:clozii/features/home/presentation/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -118,14 +117,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
         _errorMessage = '오류가 발생했습니다: ${e.toString()}';
       });
     }
-  }
-
-  // SMS 인증번호 검증 - 아마 Future<bool> 로 변경해야 할것 같다
-  void _isValidCode() {
-    PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: _verificationId,
-      smsCode: _optController.text,
-    );
   }
 
   /// 인증번호 유효시간 카운트다운 시작
