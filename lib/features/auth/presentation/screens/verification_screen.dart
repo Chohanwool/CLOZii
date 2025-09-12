@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/animation.dart';
+import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
+import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification_field.dart';
 import 'package:clozii/features/home/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -21,33 +23,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
   int _minutes = 1;
   int _seconds = 0;
 
+  int _failedAttemps = 0;
+
   final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-
-    _controller.addListener(() async {
-      if (_controller.text.length == 6 && _isValidCode()) {
-        final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
-
-        try {
-          // 이미 계정이 존재하는 지 확인
-          // 없으면 -> 새로 생성
-          // 있으면 -> 로그인
-          await Future.delayed(const Duration(seconds: 2)); // 예시
-
-          if (!mounted) return;
-
-          Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-            fadeInRoute(HomeScreen()),
-            (route) => false, // 스택 전부 제거
-          );
-        } finally {
-          loading.remove();
-        }
-      }
-    });
 
     _startTimer();
   }
@@ -63,10 +45,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   // SMS 인증번호 검증 - 아마 Future<bool> 로 변경해야 할것 같다
   bool _isValidCode() {
-    if (_controller.text == '123123') {
-      return true;
-    }
-    return false;
+    return _controller.text == '123123';
   }
 
   /// 인증번호 유효시간 카운트다운 시작
@@ -171,6 +150,66 @@ class _VerificationScreenState extends State<VerificationScreen> {
     });
   }
 
+  Future<void> _handleCodeSubmit() async {
+    final loading = showLoadingOverlay(context);
+    bool removed = false;
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 300)); // 예시 처리
+      if (!mounted) return;
+
+      if (!_isValidCode()) {
+        if (_failedAttemps == 2) {
+          removed = true;
+          loading.remove();
+          ScaffoldMessenger.of(context).clearSnackBars();
+
+          final result = await showAlertDialog(
+            context,
+            title: 'Verfication Failed',
+            'You have attempted verification too many times. Please try again later.',
+          );
+
+          if (result != null) {
+            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+              fadeInRoute(AuthScreen()),
+              (route) => route.isFirst,
+            );
+          }
+
+          return;
+        }
+        _failedAttemps++;
+
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+            shape: ContinuousRectangleBorder(
+              borderRadius: BorderRadiusGeometry.circular(20.0),
+            ),
+            content: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Verification code does not match.'),
+                const SizedBox(height: 5.0),
+                Text('Please try again.'),
+              ],
+            ),
+          ),
+        );
+        return;
+      }
+      Navigator.of(
+        context,
+        rootNavigator: true,
+      ).pushAndRemoveUntil(fadeInRoute(HomeScreen()), (route) => false);
+    } finally {
+      if (!removed) loading.remove();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,6 +232,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 seconds: _seconds,
                 onVerified: () {},
                 controller: _controller,
+                onChanged: (value) async {
+                  if (value.length == 6) {
+                    await _handleCodeSubmit();
+                  }
+                },
               ),
 
               Align(

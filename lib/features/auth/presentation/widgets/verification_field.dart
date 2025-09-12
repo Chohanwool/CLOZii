@@ -13,12 +13,14 @@ class VerificationField extends StatefulWidget {
     required this.seconds, // 남은 초
     required this.onVerified,
     required this.controller,
+    required this.onChanged
   });
 
   final int minutes;
   final int seconds;
   final VoidCallback onVerified;
   final TextEditingController controller;
+  final ValueChanged<String> onChanged;
 
   @override
   State<VerificationField> createState() => _VerificationFieldState();
@@ -69,6 +71,7 @@ class _VerificationFieldState extends State<VerificationField> {
 
             onTap: _onTap,
             onTapOutside: _onTapOutside,
+            onChanged: widget.onChanged,
 
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -86,6 +89,7 @@ class _VerificationFieldState extends State<VerificationField> {
               return null;
             },
 
+            maxLength: 6,
             buildCounter: _hideCounter,
             keyboardType: TextInputType.number, // 숫자 키패드 사용
             inputFormatters: [
