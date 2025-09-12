@@ -155,7 +155,8 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  void allFieldValidCheck() async {
+  /// Verify & Complete 버튼 클릭 처리
+  void _allFieldValidCheck() async {
     final isFormValid = _formKey.currentState?.validate() ?? false;
 
     if (!isFormValid) return;
@@ -164,7 +165,7 @@ class _AuthScreenState extends State<AuthScreen> {
     final phone = _completePhoneNumber;
     final name = _nameController.text.trim();
 
-    print('✅ VERIFIED: $name | $phone | $_birthDate | $_selectedGender');
+    debugPrint('✅ VERIFIED: $name | $phone | $_birthDate | $_selectedGender');
 
     final isPop = await showModalBottomSheet(
       context: context,
@@ -172,28 +173,31 @@ class _AuthScreenState extends State<AuthScreen> {
       backgroundColor: Colors.white,
       isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
       // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
-      builder: (context) => TermsAndConditions(), // 모달 내용: 약관 위젯
+      builder: (context) => const TermsAndConditions(), // 모달 내용: 약관 위젯
     );
 
     if (isPop != null) {
       await Future.delayed(const Duration(milliseconds: 350)); // 예시
 
-      final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
+      // if(mounted) 확인 후 호출
+      if (mounted) {
+        final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
 
-      try {
-        //TODO: DB에 유저가 입력한 정보 저장
-        await Future.delayed(
-          const Duration(milliseconds: 800),
-        ); // DB에 데이터를 저장하는 시간을 임의로 대체
+        try {
+          //TODO: DB에 유저가 입력한 정보 저장
+          await Future.delayed(
+            const Duration(milliseconds: 800),
+          ); // DB에 데이터를 저장하는 시간을 임의로 대체
 
-        if (!mounted) return;
+          if (!mounted) return;
 
-        Navigator.of(
-          context,
-        ).push(MaterialPageRoute(builder: (context) => VerificationScreen()));
-      } finally {
-        // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)
-        loading.remove();
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => const VerificationScreen()),
+          );
+        } finally {
+          // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)
+          loading.remove();
+        }
       }
     }
   }
@@ -223,7 +227,7 @@ class _AuthScreenState extends State<AuthScreen> {
                             // _currentStep == 4
                             text: 'Verify & Complete',
                             onTap: _birthDate != null
-                                ? allFieldValidCheck
+                                ? _allFieldValidCheck
                                 : null,
                             height: 50,
                             isKeyboardVisible: isKeyboardVisible,
