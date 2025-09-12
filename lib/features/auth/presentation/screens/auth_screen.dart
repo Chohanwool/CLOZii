@@ -1,9 +1,12 @@
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/date_picker_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/gender_dropdown_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/name_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/phone_number_field.dart';
+import 'package:clozii/features/auth/presentation/widgets/terms_and_conditions.dart';
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -143,7 +146,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  void allFieldValidCheck() {
+  void allFieldValidCheck() async {
     final isFormValid = _formKey.currentState?.validate() ?? false;
 
     if (!isFormValid) return;
@@ -153,6 +156,37 @@ class _AuthScreenState extends State<AuthScreen> {
     final name = _nameController.text.trim();
 
     print('✅ VERIFIED: $name | $phone | $_birthDate | $_selectedGender');
+
+    final isPop = await showModalBottomSheet(
+      context: context,
+      barrierColor: Colors.black26,
+      backgroundColor: Colors.white,
+      isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
+      // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
+      builder: (context) => TermsAndConditions(), // 모달 내용: 약관 위젯
+    );
+
+    if (isPop != null) {
+      await Future.delayed(const Duration(milliseconds: 350)); // 예시
+
+      final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
+
+      try {
+        //TODO: DB에 유저가 입력한 정보 저장
+        await Future.delayed(
+          const Duration(milliseconds: 800),
+        ); // DB에 데이터를 저장하는 시간을 임의로 대체
+
+        if (!mounted) return;
+
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => VerificationScreen()));
+      } finally {
+        // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)
+        loading.remove();
+      }
+    }
   }
 
   @override
