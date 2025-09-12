@@ -176,6 +176,7 @@ class _AuthScreenState extends State<AuthScreen> {
       builder: (context) => const TermsAndConditions(), // 모달 내용: 약관 위젯
     );
 
+    // 약관 통과 시 인증번호 전송
     if (isPop != null) {
       await Future.delayed(const Duration(milliseconds: 350)); // 예시
 
