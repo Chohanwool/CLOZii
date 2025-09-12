@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "55665099940",
+    "project_id": "clozii-76c4f",
+    "storage_bucket": "clozii-76c4f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55665099940:android:c4ac91c59b5070b65cd231",
+        "android_client_info": {
+          "package_name": "com.example.clozii"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "55665099940-k8g5jp778esr3jt6rncmd0b7p4sgs3cn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh4maSwdwn2oyqUNQBw6CZkSM14Cmgs-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "55665099940-k8g5jp778esr3jt6rncmd0b7p4sgs3cn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "55665099940-mi21n2i5rmogukoaf51ae7hinochgkt2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.clozii"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55665099940:android:1213c9e1ce16e51b5cd231",
+        "android_client_info": {
+          "package_name": "com.palmtree.clozii"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "55665099940-k8g5jp778esr3jt6rncmd0b7p4sgs3cn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh4maSwdwn2oyqUNQBw6CZkSM14Cmgs-I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "55665099940-k8g5jp778esr3jt6rncmd0b7p4sgs3cn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "55665099940-mi21n2i5rmogukoaf51ae7hinochgkt2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.clozii"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
