@@ -46,7 +46,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
   // ✅ CLOZ 같은 글로벌 서비스도 필리핀 로컬 법률 기준으로:
   // 	•	가입 시 “만 18세 이상만 사용 가능”을 약관에 명시.
   // 	•	사용자 입력 + SMS 인증만으로 처리 → 실제 나이 확인은 안 하지만 법적 책임은 회피 가능.
-  Future<void> _onStart() async {
+  Future<void> _onSubmit() async {
     if (!isMainChecked) {
       showAlertDialog(
         context,
@@ -70,8 +70,6 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
 
     Navigator.of(context).pop(true);
   }
-
-  
 
   /// 전체 동의 토글
   /// - 전체 체크 시 필수/선택 모두 체크
@@ -193,7 +191,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   children: [
                     Align(
                       alignment: AlignmentGeometry.xy(-0.43, 0),
-                      child: Text(
+                      child: const Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
@@ -201,7 +199,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     const SizedBox(height: 18),
                     Align(
                       alignment: AlignmentGeometry.xy(-0.43, 0),
-                      child: Text(
+                      child: const Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
@@ -209,7 +207,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                     const SizedBox(height: 19),
                     Align(
                       alignment: AlignmentGeometry.xy(-0.43, 0),
-                      child: Text(
+                      child: const Text(
                         '(Required) Terms and Conditions',
                         style: TextStyle(decoration: TextDecoration.underline),
                       ),
@@ -232,7 +230,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                           : Theme.of(context).disabledColor,
                     ),
                   ),
-                  Text('(Optional) Terms and Conditions'),
+                  const Text('(Optional) Terms and Conditions'),
                 ],
               ),
 
@@ -249,7 +247,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                         top: 13.0,
                         bottom: 5.0,
                       ),
-                      child: Text('Verify Your Age'),
+                      child: const Text('Verify Your Age'),
                     ),
                   ),
 
@@ -267,7 +265,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                           });
                         },
                       ),
-                      Text('I am 18 years old or above'),
+                      const Text('I am 18 years old or above'),
                     ],
                   ),
 
@@ -285,12 +283,12 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                           });
                         },
                       ),
-                      Text('I am under 18 years old'),
+                      const Text('I am under 18 years old'),
                     ],
                   ),
 
-                  // TODO: 시작 버튼 (앱 메인 페이지로 이동)
-                  CustomButton(text: 'Continue', onTap: _onStart),
+                  // 제출 버튼
+                  CustomButton(text: 'Continue', onTap: _onSubmit),
                 ],
               ),
             ],
