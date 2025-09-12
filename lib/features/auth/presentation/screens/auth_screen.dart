@@ -193,7 +193,9 @@ class _AuthScreenState extends State<AuthScreen> {
           if (!mounted) return;
 
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const VerificationScreen()),
+            MaterialPageRoute(
+              builder: (context) => VerificationScreen(phoneNumber: phone),
+            ),
           );
         } finally {
           // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)

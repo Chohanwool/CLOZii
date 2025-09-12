@@ -7,17 +7,26 @@ import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
 import 'package:clozii/features/home/presentation/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({super.key});
+  const VerificationScreen({super.key, required this.phoneNumber});
+
+  final String phoneNumber;
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
 }
 
 class _VerificationScreenState extends State<VerificationScreen> {
+  // FirebaseAuth 관련 상태 값
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String _verificationId = '';
+  bool _isLoading = false;
+  String? _errorMessage;
+
   /// 인증번호 유효 시간 - 타이머
   Timer? _timer;
   int _minutes = 1;
@@ -25,11 +34,16 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   int _failedAttemps = 0;
 
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _optController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+
+    // 화면 들어오면 인증번호 요청
+    debugPrint('phoneNumber: ${widget.phoneNumber}');
+
+    _phoneLogin(widget.phoneNumber);
 
     _startTimer();
   }
@@ -39,13 +53,79 @@ class _VerificationScreenState extends State<VerificationScreen> {
     // 타이머 해제
     if (_timer != null) _timer!.cancel();
 
-    _controller.dispose();
+    _optController.dispose();
     super.dispose();
   }
 
+  // Firebase 인증 핵심 로직
+  Future<void> _phoneLogin(String phoneNumber) async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+
+        // Android 기기의 SMS 코드 자동 처리
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // ANDROID ONLY!
+
+          // Sign the user in (or link) with the auto-generated credential
+          await _auth.signInWithCredential(credential);
+        },
+
+        // 잘못된 전화번호나 SMS 할당량 초과 여부 등의 실패 이벤트 처리
+        verificationFailed: (FirebaseAuthException e) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = '인증번호 발송 실패: ${e.message}';
+          });
+
+          // 상세한 오류 정보 출력
+          debugPrint('=== Firebase Auth Error ===');
+          debugPrint('Error Code: ${e.code}');
+          debugPrint('Error Message: ${e.message}');
+          debugPrint('Error Details: ${e.toString()}');
+          debugPrint('=======================');
+        },
+
+        // Firebase에서 기기로 코드가 전송된 경우를 처리하며 사용자에게 코드을 입력하라는 메시지를 표시
+        codeSent: (String verificationId, int? resendToken) async {
+          // Update the UI - wait for the user to enter the SMS code
+          debugPrint('=== codeSent ===');
+          debugPrint('verificationId: $verificationId');
+
+          setState(() {
+            _verificationId = verificationId;
+            _isLoading = false;
+          });
+        },
+
+        // 자동 SMS 코드 처리에 실패한 경우 시간 초과를 설정
+        timeout: const Duration(seconds: 60),
+        codeAutoRetrievalTimeout: (String verificationId) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = '인증번호 발송 실패: 인증번호 처리 시간 초과';
+          });
+        },
+      );
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = '오류가 발생했습니다: ${e.toString()}';
+      });
+    }
+  }
+
   // SMS 인증번호 검증 - 아마 Future<bool> 로 변경해야 할것 같다
-  bool _isValidCode() {
-    return _controller.text == '123123';
+  void _isValidCode() {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+      verificationId: _verificationId,
+      smsCode: _optController.text,
+    );
   }
 
   /// 인증번호 유효시간 카운트다운 시작
@@ -158,53 +238,69 @@ class _VerificationScreenState extends State<VerificationScreen> {
       await Future.delayed(const Duration(milliseconds: 300)); // 예시 처리
       if (!mounted) return;
 
-      if (!_isValidCode()) {
+      try {
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId,
+          smsCode: _optController.text,
+        );
+
+        UserCredential userCredential = await FirebaseAuth.instance
+            .signInWithCredential(credential);
+
+        User? user = userCredential.user;
+
+        if (user != null) {
+          debugPrint('로그인 성공: ${user.phoneNumber}');
+        }
+      } catch (e) {
+        debugPrint('로그인 실패: ${e}');
+
         if (_failedAttemps == 2) {
-          removed = true;
-          loading.remove();
-          ScaffoldMessenger.of(context).clearSnackBars();
+          if (mounted) {
+            removed = true;
+            loading.remove();
+            ScaffoldMessenger.of(context).clearSnackBars();
 
-          final result = await showAlertDialog(
-            context,
-            title: 'Verfication Failed',
-            'You have attempted verification too many times. Please try again later.',
-          );
-
-          if (result != null) {
-            Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-              fadeInRoute(AuthScreen()),
-              (route) => route.isFirst,
+            final result = await showAlertDialog(
+              context,
+              title: 'Verfication Failed',
+              'You have attempted verification too many times. Please try again later.',
             );
-          }
 
-          return;
+            if (result != null) {
+              if (mounted) {
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                  fadeInRoute(AuthScreen()),
+                  (route) => route.isFirst,
+                );
+              }
+            }
+          }
         }
         _failedAttemps++;
 
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
-            shape: ContinuousRectangleBorder(
-              borderRadius: BorderRadiusGeometry.circular(20.0),
-            ),
-            content: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Verification code does not match.'),
-                const SizedBox(height: 5.0),
-                Text('Please try again.'),
-              ],
-            ),
-          ),
-        );
-        return;
+        if (mounted) {
+          ScaffoldMessenger.of(context)
+            ..clearSnackBars()
+            ..showSnackBar(
+              SnackBar(
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 2),
+                shape: ContinuousRectangleBorder(
+                  borderRadius: BorderRadiusGeometry.circular(20.0),
+                ),
+                content: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Verification code does not match.'),
+                    SizedBox(height: 5.0),
+                    Text('Please try again.'),
+                  ],
+                ),
+              ),
+            );
+        }
       }
-      Navigator.of(
-        context,
-        rootNavigator: true,
-      ).pushAndRemoveUntil(fadeInRoute(HomeScreen()), (route) => false);
     } finally {
       if (!removed) loading.remove();
     }
@@ -231,8 +327,9 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 minutes: _minutes,
                 seconds: _seconds,
                 onVerified: () {},
-                controller: _controller,
+                controller: _optController,
                 onChanged: (value) async {
+                  // optCode 6자리 입력시 자동 호출
                   if (value.length == 6) {
                     await _handleCodeSubmit();
                   }
