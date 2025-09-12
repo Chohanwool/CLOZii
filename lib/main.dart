@@ -1,4 +1,6 @@
+import 'package:clozii/features/home/presentation/screens/home_screen.dart';
 import 'package:clozii/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:clozii/core/theme/theme.dart';
@@ -22,7 +24,16 @@ class CLOZii extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: buildLightTheme(),
       darkTheme: buildDarkTheme(),
-      home: OnBoardingScreen(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return HomeScreen();
+          } else {
+            return OnBoardingScreen();
+          }
+        },
+      ),
     );
   }
 }

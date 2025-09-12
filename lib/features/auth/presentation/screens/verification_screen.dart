@@ -239,11 +239,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
       if (!mounted) return;
 
       try {
+        // 인증코드 입력 실제 값과 비교
         PhoneAuthCredential credential = PhoneAuthProvider.credential(
           verificationId: _verificationId,
           smsCode: _optController.text,
         );
 
+        // 로그인 시도(최초시에는 회원가입)
         UserCredential userCredential = await FirebaseAuth.instance
             .signInWithCredential(credential);
 
