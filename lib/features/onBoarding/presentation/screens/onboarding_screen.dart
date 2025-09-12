@@ -1,3 +1,4 @@
+import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
 import 'package:flutter/material.dart';
 
 // core
@@ -42,9 +43,9 @@ class OnBoardingScreen extends StatelessWidget {
               _SignUpButton(
                 // onTap: () => navigateToAuth(context, AuthType.signup),
                 onTap: () {
-                  // Navigator.of(
-                  //   context,
-                  // ).push(MaterialPageRoute(builder: (context) => AuthScreen()));
+                  Navigator.of(
+                    context,
+                  ).push(MaterialPageRoute(builder: (context) => AuthScreen()));
                 },
               ),
 
