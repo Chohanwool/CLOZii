@@ -68,6 +68,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
       return;
     }
 
+    // 약관 동의 후 모달 닫기
+    // return true
     Navigator.of(context).pop(true);
   }
 
