@@ -12,12 +12,10 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // �
 class PhoneNumberField extends StatefulWidget {
   const PhoneNumberField({
     super.key,
-    // required this.onChanged,
     required this.controller,
     required this.focusNode,
   });
 
-  /// 입력값 변경 시 호출되는 콜백
   final TextEditingController controller;
   final FocusNode focusNode;
 
@@ -47,10 +45,50 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       autofocus: true,
       focusNode: widget.focusNode,
       controller: widget.controller,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return 'Oops! Don\'t forget your phone number.';
+        }
+
+        // 하이픈 제거 후 순수 숫자
+        final digits = value.replaceAll('-', '').replaceAll(' ', '');
+
+        // 숫자만 확인
+        if (int.tryParse(digits) == null) {
+          return 'Only numbers allowed — no letters or symbols!';
+        }
+
+        // 길이 체크
+        if (digits.length != 11) {
+          return 'Phone number should have exactly 11 digits.';
+        }
+
+        // 시작 번호 체크
+        if (!digits.startsWith('09')) {
+          return 'Philippine phone numbers should start with "09".';
+        }
+
+        // +63 입력 방지
+        if (value.startsWith('+63')) {
+          return 'Please enter your number starting with "09", not "+63".';
+        }
+
+        // 공백 포함 방지
+        if (value.contains(' ')) {
+          return 'Please remove any spaces from your number.';
+        }
+
+        // TODO: 중복 체크
+        // if (await isPhoneNumberRegistered(value)) {
+        //   return 'This number is already registered.';
+        // }
+
+        return null;
+      },
       maxLength: 13, // "09##-###-####" 형식 최대 길이
       buildCounter: _hideCounter, // 글자수 카운터 숨김
       keyboardType: TextInputType.number,

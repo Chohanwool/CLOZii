@@ -14,6 +14,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  String _headerText = 'Sign up with phone number.';
   int _currentStep = 1;
 
   bool _isNameValid = false;
@@ -35,11 +36,13 @@ class _AuthScreenState extends State<AuthScreen> {
 
   final FocusNode _genderFocusNode = FocusNode();
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
 
-    _phoneNumberController.addListener(_checkPhoneNumberComplete);
+    _phoneNumberController.addListener(_checkPhoneNumberValid);
 
     _nameController.addListener(_checkNameValid);
 
@@ -52,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   void dispose() {
-    _phoneNumberController.removeListener(_checkPhoneNumberComplete);
+    _phoneNumberController.removeListener(_checkPhoneNumberValid);
     _nameController.removeListener(_checkNameValid);
     _dateController.removeListener(_checkBirthdayValid);
 
@@ -61,11 +64,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
     _phoneNumberFocusNode.dispose();
     _nameFocusNode.dispose();
-
-    _dateController.dispose();
-    _dateFocusNode.dispose();
-
-    _genderFocusNode.dispose();
     super.dispose();
   }
 
@@ -73,6 +71,7 @@ class _AuthScreenState extends State<AuthScreen> {
     if (_birthDate != null) {
       setState(() {
         _currentStep = 4;
+        _changeHeaderText();
       });
 
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -93,7 +92,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  void _checkPhoneNumberComplete() {
+  void _checkPhoneNumberValid() {
     final cleanNumber = _phoneNumberController.text.replaceAll('-', '');
 
     if (cleanNumber.length == _phoneNumberMaxLength && _currentStep == 1) {
@@ -101,42 +100,60 @@ class _AuthScreenState extends State<AuthScreen> {
 
       setState(() {
         _currentStep = 2;
+        _changeHeaderText();
       });
 
-      // 약간의 지연 후 다음 필드로 포커스 이동
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (mounted) {
-          _nameFocusNode.requestFocus();
-        }
-      });
+      _nameFocusNode.requestFocus();
+      return;
+    }
+
+    setState(() {});
+  }
+
+  void _changeHeaderText() {
+    if (_currentStep == 2) {
+      _headerText = 'What should we call you?';
+    }
+    if (_currentStep == 3) {
+      _headerText = 'We need your birthdate to verify your age.';
+    }
+    if (_currentStep == 4) {
+      _headerText = 'This helps us personalize your experience.';
     }
   }
 
   // 전화번호 완성
   String get _completePhoneNumber {
-    final cleanNumber = _phoneNumberController.text.replaceAll('-', '');
+    final cleanNumber = _phoneNumberController.text
+        .replaceAll('-', '')
+        .replaceFirst('09', '');
 
-    if (cleanNumber[0] != '0' && cleanNumber[1] != '9') {
-      throw Exception();
-    }
-
-    final numberWithoutPrefix = cleanNumber.replaceFirst('09', '');
-    return '$_phoneNumberPrefix$numberWithoutPrefix';
+    return '$_phoneNumberPrefix$cleanNumber';
   }
 
   void _nameTypedCheck() {
-    final phoneNumber = _completePhoneNumber;
     final name = _nameController.text.trim();
 
-    if (phoneNumber.length == 13 && name.isNotEmpty) {
+    if (name.isNotEmpty) {
       setState(() {
         _currentStep = 3;
+        _changeHeaderText();
       });
       _dateFocusNode.requestFocus();
     }
   }
 
-  void allFieldValidCheck() {}
+  void allFieldValidCheck() {
+    final isFormValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isFormValid) return;
+
+    // ✅ 모든 검증 통과
+    final phone = _completePhoneNumber;
+    final name = _nameController.text.trim();
+
+    print('✅ VERIFIED: $name | $phone | $_birthDate | $_selectedGender');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,18 +186,16 @@ class _AuthScreenState extends State<AuthScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Signup with phone number',
-                style: context.textTheme.titleLarge,
-              ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(_headerText, style: context.textTheme.titleLarge),
 
-              const SizedBox(height: 24.0),
+                const SizedBox(height: 24.0),
 
-              // 성별 선택 필드 (조건부 렌더링)
-              if (_currentStep >= 4) ...[
+                if (_currentStep >= 4) ...[
                   GenderDropdownField(
                     focusNode: _genderFocusNode,
                     selectedGender: _selectedGender,
@@ -189,39 +204,38 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 24.0),
                 ],
 
-              // 생년월일 선택 필드 (조건부 렌더링)
-              if (_currentStep >= 3) ...[
-                DatePickerField(
-                  controller: _dateController,
-                  focusNode: _dateFocusNode,
-                  label: 'Date of Birth',
-                  hintText: 'MM/DD/YYYY',
-                  onChanged: (date) {
-                    setState(() {
-                      _birthDate = date;
-                    });
-                  },
+                if (_currentStep >= 3) ...[
+                  DatePickerField(
+                    controller: _dateController,
+                    focusNode: _dateFocusNode,
+                    label: 'Date of Birth',
+                    hintText: 'MM/DD/YYYY',
+                    onChanged: (date) {
+                      setState(() {
+                        _birthDate = date;
+                      });
+                    },
+                  ),
+
+                  const SizedBox(height: 36.0),
+                ],
+
+                // 이름 필드 (조건부 렌더링)
+                if (_currentStep >= 2) ...[
+                  NameField(
+                    controller: _nameController,
+                    focusNode: _nameFocusNode,
+                  ),
+
+                  const SizedBox(height: 36.0),
+                ],
+
+                PhoneNumberField(
+                  controller: _phoneNumberController,
+                  focusNode: _phoneNumberFocusNode,
                 ),
-
-                const SizedBox(height: 36.0),
               ],
-
-              // 이름 필드 (조건부 렌더링)
-              if (_currentStep >= 2) ...[
-                NameField(
-                  controller: _nameController,
-                  focusNode: _nameFocusNode,
-                ),
-
-                const SizedBox(height: 36.0),
-              ],
-
-              PhoneNumberField(
-                // onChanged: _onPhoneNumberTyped,
-                controller: _phoneNumberController,
-                focusNode: _phoneNumberFocusNode,
-              ),
-            ],
+            ),
           ),
         ),
       ),

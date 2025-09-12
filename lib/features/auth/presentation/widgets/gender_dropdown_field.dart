@@ -23,7 +23,8 @@ class GenderDropdownField extends StatelessWidget {
         style: context.textTheme.bodyLarge!.copyWith(color: Colors.grey),
       ),
       validator: (value) {
-        if (value != null &&
+        // 값이 비어있거나 제공된 옵션 목록에 없는 경우 에러
+        if (value == null &&
             !['Male', 'Female', 'Prefer not to say'].contains(value)) {
           return 'Please select gender from provided options!';
         }

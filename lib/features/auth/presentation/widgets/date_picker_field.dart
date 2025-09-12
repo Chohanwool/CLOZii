@@ -75,11 +75,52 @@ class _DatePickerFieldState extends State<DatePickerField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
+    return TextFormField(
       controller: widget.controller,
       focusNode: widget.focusNode,
       readOnly: true, // 직접 입력 방지
       onTap: _selectDate,
+      validator: (value) {
+        // 1. 빈 값 체크
+        if (value == null || value.trim().isEmpty) {
+          return 'Please enter your birthdate.';
+        }
+
+        // 2. 형식 유효성 체크 (MM/DD/YYYY)
+        try {
+          DateFormat('MM/dd/yyyy').parseStrict(value);
+        } catch (e) {
+          return 'Hmm... That doesn’t look like a valid date (MM/DD/YYYY).';
+        }
+
+        final parsedDate = DateFormat('MM/dd/yyyy').parseStrict(value);
+        final today = DateTime.now();
+
+        // 3. 나이 계산
+        final age =
+            today.year -
+            parsedDate.year -
+            ((today.month < parsedDate.month ||
+                    (today.month == parsedDate.month &&
+                        today.day < parsedDate.day))
+                ? 1
+                : 0);
+
+        // 4. 미래 날짜 입력 방지
+        if (parsedDate.isAfter(today)) {
+          return 'Birthdate can\'t be in the future.';
+        }
+
+        // 5. 나이 제한
+        if (age < 18) {
+          return 'You must be at least 18 to join.';
+        }
+        if (age > 120) {
+          return 'That doesn’t seem right. Please check your birth year.';
+        }
+
+        return null;
+      },
       decoration: InputDecoration(
         isDense: true,
 
