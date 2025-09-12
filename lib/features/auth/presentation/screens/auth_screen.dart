@@ -235,7 +235,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     selectedGender: _selectedGender,
                     onChanged: (val) => setState(() => _selectedGender = val),
                   ),
-                  const SizedBox(height: 24.0),
+                  const SizedBox(height: 36.0),
                 ],
 
                 if (_currentStep >= 3) ...[
