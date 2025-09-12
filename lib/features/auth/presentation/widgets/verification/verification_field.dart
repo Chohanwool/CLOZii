@@ -1,4 +1,4 @@
-import 'package:clozii/features/auth/presentation/widgets/verification_timer.dart';
+import 'package:clozii/features/auth/presentation/widgets/verification/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

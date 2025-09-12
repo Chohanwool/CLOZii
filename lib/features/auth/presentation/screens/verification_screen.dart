@@ -5,7 +5,7 @@ import 'package:clozii/core/utils/animation.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
-import 'package:clozii/features/auth/presentation/widgets/verification_field.dart';
+import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
 import 'package:clozii/features/home/presentation/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
