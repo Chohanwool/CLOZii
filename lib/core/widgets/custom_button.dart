@@ -1,3 +1,4 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -36,9 +37,7 @@ class CustomButton extends StatelessWidget {
         height: height, // 버튼 높이
         decoration: BoxDecoration(
           // 버튼 색상
-          color: isButtonEnabled
-              ? context.colors.primary
-              : context.colors.shadow,
+          color: isButtonEnabled ? context.colors.primary : AppColors.disabled,
           borderRadius: !isKeyboardVisible
               ? BorderRadius.circular(8.0)
               : null, // 모서리를 둥글게
@@ -55,7 +54,7 @@ class CustomButton extends StatelessWidget {
                 // 버튼 텍스트 색상
                 color: isButtonEnabled
                     ? context.colors.onPrimary
-                    : context.colors.scrim,
+                    : AppColors.disabledText,
                 fontWeight: FontWeight.w800, // 굵은 폰트
                 fontSize: 14.0,
               ),

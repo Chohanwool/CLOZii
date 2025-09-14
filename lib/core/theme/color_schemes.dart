@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
-
-const brandPrimary = Color(0xFFFF8585); // CLOZii 메인
-const brandSecondary = Color(0xFFFFC9C2); // 보조(살몬 톤)
-const brandNeutralSurfaceDark = Color(0xFF1E1E1E);
+import 'package:clozii/core/constants/app_constants.dart';
 
 ColorScheme buildCloziiLightScheme() {
   final base = ColorScheme.fromSeed(
-    seedColor: brandPrimary,
+    seedColor: AppColors.primary,
     brightness: Brightness.light,
   );
 
   return base.copyWith(
-    primary: brandPrimary,
+    primary: AppColors.primary,
     onPrimary: Colors.white,
     primaryContainer: const Color(0xFFFFD6D0), // 살짝 연한 컨테이너
     onPrimaryContainer: const Color(0xFF5B1A1A),
 
-    secondary: brandSecondary,
+    secondary: AppColors.secondary,
     onSecondary: Colors.black,
     secondaryContainer: const Color(0xFFFFE9E5),
     onSecondaryContainer: const Color(0xFF4A2020),
@@ -48,17 +45,17 @@ ColorScheme buildCloziiLightScheme() {
 
 ColorScheme buildCloziiDarkScheme() {
   final base = ColorScheme.fromSeed(
-    seedColor: brandPrimary,
+    seedColor: AppColors.primary,
     brightness: Brightness.dark,
   );
 
   return base.copyWith(
-    primary: brandPrimary,
+    primary: AppColors.primary,
     onPrimary: Colors.white,
     primaryContainer: const Color(0xFF7A2C2C),
     onPrimaryContainer: const Color(0xFFFFE9E7),
 
-    secondary: brandSecondary,
+    secondary: AppColors.secondary,
     onSecondary: Colors.black,
     secondaryContainer: const Color(0xFF5A4040),
     onSecondaryContainer: const Color(0xFFFFEAE5),
@@ -68,7 +65,7 @@ ColorScheme buildCloziiDarkScheme() {
     tertiaryContainer: const Color(0xFF2C3E64),
     onTertiaryContainer: const Color(0xFFDDE7FF),
 
-    surface: brandNeutralSurfaceDark,
+    surface: AppColors.brandNeutralSurfaceDark,
     onSurface: Colors.white70,
     surfaceContainerHighest: const Color(0xFF2A2A2A),
     onSurfaceVariant: Colors.white60,

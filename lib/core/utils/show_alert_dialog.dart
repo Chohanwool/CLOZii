@@ -16,7 +16,7 @@ Future<bool?> showAlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadiusGeometry.all(radius),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: context.colors.surface,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
