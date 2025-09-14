@@ -19,11 +19,6 @@ class OnBoardingScreen extends StatelessWidget {
   /// - [authType] 파라미터로 이동할 화면의 타입을 지정
   ///   (AuthType.login → 로그인 화면)
   ///   (AuthType.signup → 회원가입 화면)
-  void navigateToAuth(BuildContext context, AuthType authType) {
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(builder: (context) => AuthScreen(authType: authType)),
-    // );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,33 +26,30 @@ class OnBoardingScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end, // 화면 중앙 배치
-              children: [
-                /// 로고 이미지와 앱 슬로건
-                Expanded(child: const _ImageLogoAndSlogan()),
-
-                /// 회원가입 버튼
-                /// - 클릭 시 AuthType.signup을 전달하여 회원가입 화면으로 이동
-                _SignUpButton(
-                  // onTap: () => navigateToAuth(context, AuthType.signup),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AuthScreen()),
-                    );
-                  },
+          child: Stack(
+            children: [
+              Center(child: const _ImageLogoAndSlogan()),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Column(
+                  children: [
+                    _SignUpButton(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const AuthScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    _LoginPromt(onTap: () {}),
+                  ],
                 ),
-
-                const SizedBox(height: 8.0),
-
-                /// 로그인 링크
-                /// - 클릭 시 AuthType.login을 전달하여 로그인 화면으로 이동
-                _LoginPromt(
-                  onTap: () => navigateToAuth(context, AuthType.login),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -76,7 +68,6 @@ class _ImageLogoAndSlogan extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Spacer(flex: 4),
         Image.asset(
           'assets/images/app_logo.png', // 로고 이미지 경로
           width: MediaQuery.of(context).size.width * 3 / 4,
@@ -86,7 +77,6 @@ class _ImageLogoAndSlogan extends StatelessWidget {
           'Closer People, Closer Deals', // 앱 슬로건
           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w700),
         ),
-        Spacer(flex: 3),
       ],
     );
   }
