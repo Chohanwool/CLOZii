@@ -45,6 +45,7 @@ class OnBoardingScreen extends StatelessWidget {
                         );
                       },
                     ),
+                    const SizedBox(height: 8.0),
                     _LoginPromt(onTap: () {}),
                   ],
                 ),
