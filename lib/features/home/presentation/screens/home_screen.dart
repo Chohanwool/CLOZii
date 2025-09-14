@@ -1,6 +1,8 @@
+import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:clozii/features/home/presentation/widgets/bottom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -230,6 +232,21 @@ class SettingsTabScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(child: Text('My Tab', style: TextStyle(fontSize: 24)));
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text('My Tab', style: TextStyle(fontSize: 24)),
+          const SizedBox(height: 24),
+          CustomButton(
+            text: 'Logout',
+            width: 140.0,
+            onTap: () {
+              FirebaseAuth.instance.signOut();
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
