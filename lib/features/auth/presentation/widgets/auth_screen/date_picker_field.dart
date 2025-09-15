@@ -90,7 +90,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
         try {
           DateFormat('MM/dd/yyyy').parseStrict(value);
         } catch (e) {
-          return 'Hmm... That doesn’t look like a valid date (MM/DD/YYYY).';
+          return 'Hmm... That doesn\'t look like a valid date (MM/DD/YYYY).';
         }
 
         final parsedDate = DateFormat('MM/dd/yyyy').parseStrict(value);
@@ -116,7 +116,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
           return 'You must be at least 18 to join.';
         }
         if (age > 120) {
-          return 'That doesn’t seem right. Please check your birth year.';
+          return 'That doesn\'t seem right. Please check your birth year.';
         }
 
         return null;

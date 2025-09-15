@@ -67,7 +67,7 @@ class _NameFieldState extends State<NameField> {
 
         // 6. 이모지 입력 방지
         if (RegExp(r'[\u{1F600}-\u{1F64F}]', unicode: true).hasMatch(value)) {
-          return 'Emojis are fun, but let’s keep them out of your name.';
+          return 'Emojis are fun, but let\'s keep them out of your name.';
         }
 
         // 7. 연속 언더스코어 제한
@@ -77,7 +77,7 @@ class _NameFieldState extends State<NameField> {
 
         // 8. 최대 길이 제한
         if (value.trim().length > 20) {
-          return 'That’s a bit long — keep it under 20 characters.';
+          return 'That\'s a bit long — keep it under 20 characters.';
         }
 
         // TODO: 닉네임 중복 검증

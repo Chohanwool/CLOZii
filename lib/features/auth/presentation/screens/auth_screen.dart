@@ -43,7 +43,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final FocusNode _dateFocusNode = FocusNode();
   final FocusNode _genderFocusNode = FocusNode();
 
-  // 전역 키 
+  // 전역 키
   final _formKey = GlobalKey<FormState>();
 
   @override
