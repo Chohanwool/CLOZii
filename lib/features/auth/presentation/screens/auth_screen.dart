@@ -2,7 +2,9 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/auth/data/auth_step.dart';
 import 'package:clozii/features/auth/data/auth_type.dart';
+import 'package:clozii/features/auth/data/constants.dart';
 import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/date_picker_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/gender_dropdown_field.dart';
@@ -22,17 +24,15 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  late String _headerText;
-  int _currentStep = 1;
+  // _currentStep을 [ 1, 2, 3, 4 ]로 비교하는 대신
+  // enum으로 관리해서 가독성 향상시킴
+  late AuthStep _currentStep;
 
   bool _isNameValid = false;
   DateTime? _birthDate;
   String? _selectedGender;
 
-  // 상수로 분리
-  static const int _phoneNumberMaxLength = 11;
-  static const String _phoneNumberPrefix = '+639';
-
+  // 컨트롤러 / 포커스 노드
   final TextEditingController _phoneNumberController = TextEditingController();
   final FocusNode _phoneNumberFocusNode = FocusNode();
 
@@ -50,11 +50,9 @@ class _AuthScreenState extends State<AuthScreen> {
   void initState() {
     super.initState();
 
-    final headerPrefix = widget.authType == AuthType.signup
-        ? 'Sign Up'
-        : 'Login';
-
-    _headerText = '$headerPrefix with phone number.';
+    _currentStep = widget.authType == AuthType.signup
+        ? AuthStep.phoneSignup
+        : AuthStep.phoneLogin;
 
     _phoneNumberController.addListener(_checkPhoneNumberValid);
 
@@ -84,8 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void _checkBirthdayValid() {
     if (_birthDate != null) {
       setState(() {
-        _currentStep = 4;
-        _changeHeaderText();
+        _currentStep = AuthStep.gender;
       });
 
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -106,20 +103,23 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  bool get _isPhoneStep =>
+      _currentStep == AuthStep.phoneSignup ||
+      _currentStep == AuthStep.phoneLogin;
+
   void _checkPhoneNumberValid() async {
     final cleanNumber = _phoneNumberController.text.replaceAll('-', '');
 
-    if (cleanNumber.length == _phoneNumberMaxLength && _currentStep == 1) {
+    if (cleanNumber.length == phoneNumberMaxLength && _isPhoneStep) {
       debugPrint(_completePhoneNumber);
 
-      // 로그인 화면에서는 전화번호 입력 필드만 필요하므로, _currentStep 을 증가 시킬 필요가 없음 
+      // 로그인 화면에서는 전화번호 입력 필드만 필요하므로, _currentStep 을 증가 시킬 필요가 없음
       if (widget.authType == AuthType.login) {
         return;
       }
 
       setState(() {
-        _currentStep = 2;
-        _changeHeaderText();
+        _currentStep = AuthStep.name;
       });
 
       // 약간의 지연 후 다음 필드로 포커스 이동
@@ -135,27 +135,13 @@ class _AuthScreenState extends State<AuthScreen> {
     setState(() {});
   }
 
-  void _changeHeaderText() {
-    if (_currentStep == 2) {
-      // _headerText = 'How do you want your neighbors to call you?';
-      // _headerText = 'Got a nickname in mind?';
-      _headerText = 'What should we call you?';
-    }
-    if (_currentStep == 3) {
-      _headerText = 'We need your birthdate to verify your age.';
-    }
-    if (_currentStep == 4) {
-      _headerText = 'This helps us personalize your experience.';
-    }
-  }
-
   // 전화번호 완성
   String get _completePhoneNumber {
     final cleanNumber = _phoneNumberController.text
         .replaceAll('-', '')
         .replaceFirst('09', '');
 
-    return '$_phoneNumberPrefix$cleanNumber';
+    return '$phoneNumberPrefix$cleanNumber';
   }
 
   void _nameTypedCheck() {
@@ -163,8 +149,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (name.isNotEmpty) {
       setState(() {
-        _currentStep = 3;
-        _changeHeaderText();
+        _currentStep = AuthStep.birthdate;
       });
       _dateFocusNode.requestFocus();
     }
@@ -266,8 +251,8 @@ class _AuthScreenState extends State<AuthScreen> {
       appBar: AppBar(),
 
       bottomSheet:
-          (_currentStep == 2 ||
-              _currentStep == 4 ||
+          (_currentStep == AuthStep.name ||
+              _currentStep == AuthStep.gender ||
               widget.authType == AuthType.login)
           ? KeyboardVisibilityBuilder(
               builder: (context, isKeyboardVisible) {
@@ -276,7 +261,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
                 Widget? button;
 
-                if (_currentStep == 2) {
+                if (_currentStep == AuthStep.name) {
                   button = CustomButton(
                     text: buttonText,
                     onTap: _isNameValid ? _nameTypedCheck : null,
@@ -285,7 +270,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   );
                 }
 
-                if (_currentStep == 4) {
+                if (_currentStep == AuthStep.gender) {
                   button = CustomButton(
                     // _currentStep == 4
                     text: buttonText,
@@ -342,11 +327,14 @@ class _AuthScreenState extends State<AuthScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_headerText, style: context.textTheme.titleLarge),
+                Text(
+                  headerTexts[_currentStep]!,
+                  style: context.textTheme.titleLarge,
+                ),
 
                 const SizedBox(height: 24.0),
 
-                if (_currentStep >= 4) ...[
+                if (_currentStep.index >= AuthStep.gender.index) ...[
                   GenderDropdownField(
                     focusNode: _genderFocusNode,
                     selectedGender: _selectedGender,
@@ -355,7 +343,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 36.0),
                 ],
 
-                if (_currentStep >= 3) ...[
+                if (_currentStep.index >= AuthStep.birthdate.index) ...[
                   DatePickerField(
                     controller: _dateController,
                     focusNode: _dateFocusNode,
@@ -372,7 +360,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 ],
 
                 // 이름 필드 (조건부 렌더링)
-                if (_currentStep >= 2) ...[
+                if (_currentStep.index >= AuthStep.name.index) ...[
                   NameField(
                     controller: _nameController,
                     focusNode: _nameFocusNode,
