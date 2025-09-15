@@ -51,6 +51,7 @@ class _AuthScreenState extends State<AuthScreen> {
   // PhoneLogin 관련 상태 변수
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _verificationId = '';
+  bool _isFirstVerification = true;
 
   @override
   void initState() {
@@ -166,6 +167,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  /// 핵심) 연락처 인증번호 전송 로직
   Future<void> _sendVerificationCode(String phoneNumber) async {
     final loading = showLoadingOverlay(context);
 
@@ -211,21 +213,25 @@ class _AuthScreenState extends State<AuthScreen> {
             loading.remove();
           }
 
-          // TODO: 재전송시에는 네비게이션 불필요하므로 작업 필요
-          if (mounted) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => VerificationScreen(
-                  phoneNumber: phoneNumber,
-                  authType: widget.authType,
-                  verificationId: verificationId,
-                  resendToken: resendToken,
-                  onResendCode: (String phoneNumber) {
-                    _sendVerificationCode(phoneNumber);
-                  },
+          if (_isFirstVerification && mounted) {
+            _isFirstVerification = false;
+
+            debugPrint('isFirstVerification: $_isFirstVerification');
+            if (mounted) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => VerificationScreen(
+                    phoneNumber: phoneNumber,
+                    authType: widget.authType,
+                    verificationId: verificationId,
+                    resendToken: resendToken,
+                    onResendCode: (String phoneNumber) {
+                      _sendVerificationCode(phoneNumber);
+                    },
+                  ),
                 ),
-              ),
-            );
+              );
+            }
           }
         },
 
