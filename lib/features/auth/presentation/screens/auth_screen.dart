@@ -32,18 +32,18 @@ class _AuthScreenState extends State<AuthScreen> {
   DateTime? _birthDate;
   String? _selectedGender;
 
-  // 컨트롤러 / 포커스 노드
+  // 컨트롤러
   final TextEditingController _phoneNumberController = TextEditingController();
-  final FocusNode _phoneNumberFocusNode = FocusNode();
-
   final TextEditingController _nameController = TextEditingController();
-  final FocusNode _nameFocusNode = FocusNode();
-
   final TextEditingController _dateController = TextEditingController();
-  final FocusNode _dateFocusNode = FocusNode();
 
+  // 포커스 노드
+  final FocusNode _phoneNumberFocusNode = FocusNode();
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _dateFocusNode = FocusNode();
   final FocusNode _genderFocusNode = FocusNode();
 
+  // 전역 키 
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -55,10 +55,8 @@ class _AuthScreenState extends State<AuthScreen> {
         : AuthStep.phoneLogin;
 
     _phoneNumberController.addListener(_checkPhoneNumberValid);
-
-    _nameController.addListener(_checkNameValid);
-
-    _dateController.addListener(_checkBirthdayValid);
+    _nameController.addListener(_updateNameValidationState);
+    _dateController.addListener(_proceedIfBirthdaySelected);
 
     _phoneNumberFocusNode.addListener(() {
       setState(() {});
@@ -68,8 +66,8 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void dispose() {
     _phoneNumberController.removeListener(_checkPhoneNumberValid);
-    _nameController.removeListener(_checkNameValid);
-    _dateController.removeListener(_checkBirthdayValid);
+    _nameController.removeListener(_updateNameValidationState);
+    _dateController.removeListener(_proceedIfBirthdaySelected);
 
     _phoneNumberController.dispose();
     _nameController.dispose();
@@ -79,63 +77,7 @@ class _AuthScreenState extends State<AuthScreen> {
     super.dispose();
   }
 
-  void _checkBirthdayValid() {
-    if (_birthDate != null) {
-      setState(() {
-        _currentStep = AuthStep.gender;
-      });
-
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (mounted) {
-          _genderFocusNode.requestFocus();
-        }
-      });
-    }
-  }
-
-  void _checkNameValid() {
-    final isValid = _nameController.text.trim().isNotEmpty;
-
-    if (_isNameValid != isValid) {
-      setState(() {
-        _isNameValid = isValid;
-      });
-    }
-  }
-
-  bool get _isPhoneStep =>
-      _currentStep == AuthStep.phoneSignup ||
-      _currentStep == AuthStep.phoneLogin;
-
-  void _checkPhoneNumberValid() async {
-    final cleanNumber = _phoneNumberController.text.replaceAll('-', '');
-
-    if (cleanNumber.length == phoneNumberMaxLength && _isPhoneStep) {
-      debugPrint(_completePhoneNumber);
-
-      // 로그인 화면에서는 전화번호 입력 필드만 필요하므로, _currentStep 을 증가 시킬 필요가 없음
-      if (widget.authType == AuthType.login) {
-        return;
-      }
-
-      setState(() {
-        _currentStep = AuthStep.name;
-      });
-
-      // 약간의 지연 후 다음 필드로 포커스 이동
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (mounted) {
-          _nameFocusNode.requestFocus();
-        }
-      });
-
-      return;
-    }
-
-    setState(() {});
-  }
-
-  // 전화번호 완성
+  // 전화번호 완성 메서드: '09...' -> '+639...'
   String get _completePhoneNumber {
     final cleanNumber = _phoneNumberController.text
         .replaceAll('-', '')
@@ -144,25 +86,75 @@ class _AuthScreenState extends State<AuthScreen> {
     return '$phoneNumberPrefix$cleanNumber';
   }
 
-  void _nameTypedCheck() {
-    final name = _nameController.text.trim();
+  // 전화번호 입력 단계인지 확인하는 메서드
+  bool get _isPhoneStep =>
+      _currentStep == AuthStep.phoneSignup ||
+      _currentStep == AuthStep.phoneLogin;
 
-    if (name.isNotEmpty) {
+  // 이름 필드가 비어 있는지 확인하는 메서드
+  bool _isNameNotEmpty() => _nameController.text.trim().isNotEmpty;
+
+  void _checkPhoneNumberValid() async {
+    final cleanNumber = _phoneNumberController.text.replaceAll('-', '');
+
+    // 입력된 전화번호 길이가 11 이면서
+    // _currentStep == (AuthStep.phoneSignup 또는 AuthStep.phoneLogin) 인 경우
+    if (cleanNumber.length == phoneNumberMaxLength && _isPhoneStep) {
+      debugPrint(_completePhoneNumber);
+
+      // 로그인 화면에서는 전화번호 입력 필드만 필요하므로, _currentStep을 변경 시킬 필요가 없음
+      if (widget.authType == AuthType.login) {
+        return;
+      }
+
       setState(() {
-        _currentStep = AuthStep.birthdate;
+        _currentStep = AuthStep.name;
       });
+
+      // 이름 필드로 포커스 이동
+      _nameFocusNode.requestFocus();
+    }
+
+    // 번호가 입력 될때마다 UI 리로드 (suffixIcon 표시에 필요!)
+    setState(() {});
+  }
+
+  // 이름 필드 입력값 변화 감지 - 버튼 활성화/비활성화 에 사용됨
+  void _updateNameValidationState() {
+    final isValid = _isNameNotEmpty();
+
+    if (_isNameValid != isValid) {
+      setState(() => _isNameValid = isValid);
+    }
+  }
+
+  // 이름이 비어있지 않으면 다음 단계로 이동
+  void _proceedIfNameFilled() {
+    if (_isNameNotEmpty()) {
+      setState(() => _currentStep = AuthStep.birthdate);
       _dateFocusNode.requestFocus();
     }
   }
 
-  /// Verify & Complete 버튼 클릭 처리
+  // 생년월일 선택시 다음 단계로 이동
+  void _proceedIfBirthdaySelected() {
+    if (_birthDate != null) {
+      setState(() {
+        _currentStep = AuthStep.gender;
+      });
+
+      _genderFocusNode.requestFocus();
+    }
+  }
+
+  /// 성별 선택 후, 모든 필드 검증 -> 약관 표시 -> 인증 화면으로 이동
   void _allFieldValidCheck() async {
     final isFormValid = _formKey.currentState?.validate() ?? false;
 
     if (!isFormValid) return;
 
     // 이미 가입된 전화번호인지 확인
-    if (_validatePhoneNumber()) {
+    if (_isPhoneNumberRegistered()) {
       if (widget.authType == AuthType.login) {
         _navigateToVerification(_completePhoneNumber);
       }
@@ -228,7 +220,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  bool _validatePhoneNumber() {
+  bool _isPhoneNumberRegistered() {
     // TODO: 입력된 전화번호로 가입된 계정이 있는지 확인하는 로직 구현
     // 로직 구현 후 함수 반환 타입을 Future<bool> 로 변경 예정
 
@@ -264,7 +256,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 if (_currentStep == AuthStep.name) {
                   button = CustomButton(
                     text: buttonText,
-                    onTap: _isNameValid ? _nameTypedCheck : null,
+                    onTap: _isNameValid ? _proceedIfNameFilled : null,
                     height: buttonHeight,
                     isKeyboardVisible: isKeyboardVisible,
                   );
@@ -284,7 +276,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   button = CustomButton(
                     text: buttonText,
                     onTap: () {
-                      if (_validatePhoneNumber()) {
+                      if (_isPhoneNumberRegistered()) {
                         _navigateToVerification(_completePhoneNumber);
                       } else {
                         final isFormValid =
