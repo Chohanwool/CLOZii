@@ -202,28 +202,25 @@ class _VerificationScreenState extends State<VerificationScreen> {
         content = Text('Try again later');
       }
 
-      // 기존 스낵바 제거 - 기존 스낵바가 제거되기 전에 다시 스낵바가 호출될 경우를 대비
-      ScaffoldMessenger.of(context).clearSnackBars();
-
-      // 새 스낵바 표시
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          duration: Duration(seconds: 2),
-          shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(20.0),
-          ),
-
-          // 스낵바 내용
-          content: content,
-        ),
-      );
+      // 스낵바 표시
+      _showSnackBar(customContent: content);
     });
   }
 
   Future<void> _handleCodeSubmit() async {
     final loading = showLoadingOverlay(context);
     bool removed = false;
+
+    // 인증 제한 시간 체크 후 00:00 이면 인증 X
+    if (_timer != null && !_timer!.isActive) {
+      _showSnackBar(
+        message: 'Your verification time has expired.',
+        extraMessage: 'Please request code again.',
+      );
+
+      loading.remove();
+      return;
+    }
 
     try {
       await Future.delayed(const Duration(milliseconds: 300)); // 예시 처리
@@ -251,6 +248,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
         if (_failedAttemps == 2) {
           if (mounted) {
             removed = true;
+            _timer!.cancel();
             loading.remove();
             ScaffoldMessenger.of(context).clearSnackBars();
 
@@ -268,35 +266,52 @@ class _VerificationScreenState extends State<VerificationScreen> {
                 );
               }
             }
+            
+            return;
           }
         }
         _failedAttemps++;
 
         if (mounted) {
-          ScaffoldMessenger.of(context)
-            ..clearSnackBars()
-            ..showSnackBar(
-              SnackBar(
-                behavior: SnackBarBehavior.floating,
-                duration: const Duration(seconds: 2),
-                shape: ContinuousRectangleBorder(
-                  borderRadius: BorderRadiusGeometry.circular(20.0),
-                ),
-                content: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Verification code does not match.'),
-                    SizedBox(height: 5.0),
-                    Text('Please try again.'),
-                  ],
-                ),
-              ),
-            );
+          _showSnackBar(
+            message: 'Verification code does not match.',
+            extraMessage: 'Please try again.',
+          );
         }
       }
     } finally {
       if (!removed) loading.remove();
     }
+  }
+
+  void _showSnackBar({
+    String? message,
+    String? extraMessage,
+    Widget? customContent,
+  }) {
+    final defaultContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (message != null) Text(message),
+        if (extraMessage != null) ...[
+          const SizedBox(height: 5.0),
+          Text(extraMessage),
+        ],
+      ],
+    );
+
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          content: customContent ?? defaultContent,
+        ),
+      );
   }
 
   @override
