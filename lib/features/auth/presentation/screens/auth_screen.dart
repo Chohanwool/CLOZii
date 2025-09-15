@@ -95,8 +95,11 @@ class _AuthScreenState extends State<AuthScreen> {
       _currentStep == AuthStep.phoneSignup ||
       _currentStep == AuthStep.phoneLogin;
 
-  // 이름 필드가 비어 있는지 확인하는 메서드
+  // NameField 입력 값 비어 있는지 확인
   bool _isNameNotEmpty() => _nameController.text.trim().isNotEmpty;
+
+  // PhoneNumberField 입력 값 비어 있는지 확인
+  bool _isPhoneNumberValid() => _phoneNumberController.text.trim().isNotEmpty;
 
   //////////////////////////////////////////////////////////////
 
@@ -137,9 +140,12 @@ class _AuthScreenState extends State<AuthScreen> {
 
   // 이름이 비어있지 않으면 다음 단계로 이동
   void _proceedIfNameFilled() {
-    if (_isNameNotEmpty()) {
+    if (_isNameNotEmpty() && _isPhoneNumberValid()) {
       setState(() => _currentStep = AuthStep.birthdate);
       _dateFocusNode.requestFocus();
+    } else {
+      // 이름 필드에서 다음 단계로 이동 시 전화번호 필드가 비어있으면 전화번호 필드로 포커스 이동
+      _phoneNumberFocusNode.requestFocus();
     }
   }
 
