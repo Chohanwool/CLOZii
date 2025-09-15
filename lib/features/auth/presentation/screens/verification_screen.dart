@@ -18,12 +18,14 @@ class VerificationScreen extends StatefulWidget {
     required this.authType,
     required this.verificationId,
     required this.resendToken,
+    required this.onResendCode,
   });
 
   final String phoneNumber;
   final AuthType authType;
   final String verificationId;
   final int? resendToken;
+  final ValueChanged<String> onResendCode;
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
@@ -45,10 +47,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
   @override
   void initState() {
     super.initState();
-
-    // 화면 들어오면 인증번호 요청
-    debugPrint('phoneNumber: ${widget.phoneNumber}');
-
     _startTimer();
   }
 
@@ -122,6 +120,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
   void _onSendCodeButtonPressed() async {
     int count = await _requestCodeCount(); // 요청 제한 횟수 카운트
     if (count > 0) {
+      // 인증번호 전송 로직 호출
+      widget.onResendCode(widget.phoneNumber);
       _startTimer(); // 타이머 시작
     }
 
@@ -167,6 +167,10 @@ class _VerificationScreenState extends State<VerificationScreen> {
     try {
       await Future.delayed(const Duration(milliseconds: 300)); // 예시 처리
       if (!mounted) return;
+
+      debugPrint('verificationId: ${widget.verificationId}');
+      debugPrint('resendToken: ${widget.resendToken}');
+      debugPrint('optController: ${_optController.text}');
 
       try {
         // 인증코드 입력 실제 값과 비교

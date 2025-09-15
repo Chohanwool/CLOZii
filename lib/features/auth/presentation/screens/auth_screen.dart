@@ -166,6 +166,87 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  Future<void> _sendVerificationCode(String phoneNumber) async {
+    final loading = showLoadingOverlay(context);
+
+    try {
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+
+        // Android 기기의 SMS 코드 자동 처리
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // ANDROID ONLY!
+
+          // Sign the user in (or link) with the auto-generated credential
+          await _auth.signInWithCredential(credential);
+        },
+
+        // 잘못된 전화번호나 SMS 할당량 초과 여부 등의 실패 이벤트 처리
+        verificationFailed: (FirebaseAuthException e) {
+          setState(() {
+            loading.remove();
+            // _errorMessage = '인증번호 발송 실패: ${e.message}';
+          });
+
+          // 상세한 오류 정보 출력
+          debugPrint('=== Firebase Auth Error ===');
+          debugPrint('Error Code: ${e.code}');
+          debugPrint('Error Message: ${e.message}');
+          debugPrint('Error Details: ${e.toString()}');
+          debugPrint('=======================');
+        },
+
+        // Firebase에서 기기로 코드가 전송된 경우를 처리하며 사용자에게 코드을 입력하라는 메시지를 표시
+        codeSent: (String verificationId, int? resendToken) async {
+          // 인증번호 발송 성공시 네비게이션 진행
+
+          debugPrint('=== codeSent ===');
+          debugPrint('verificationId: $verificationId');
+
+          setState(() {
+            _verificationId = verificationId;
+          });
+
+          if (loading != null && loading.mounted) {
+            loading.remove();
+          }
+
+          // TODO: 재전송시에는 네비게이션 불필요하므로 작업 필요
+          if (mounted) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => VerificationScreen(
+                  phoneNumber: phoneNumber,
+                  authType: widget.authType,
+                  verificationId: verificationId,
+                  resendToken: resendToken,
+                  onResendCode: (String phoneNumber) {
+                    _sendVerificationCode(phoneNumber);
+                  },
+                ),
+              ),
+            );
+          }
+        },
+
+        // 자동 SMS 코드 처리에 실패한 경우 시간 초과를 설정
+        timeout: const Duration(seconds: 60),
+        codeAutoRetrievalTimeout: (String verificationId) {
+          setState(() {
+            loading.remove();
+            // _errorMessage = '인증번호 발송 실패: 인증번호 처리 시간 초과';
+          });
+        },
+      );
+    } catch (e) {
+      debugPrint('Error sending verification code: $e');
+    } finally {
+      if (loading != null && loading.mounted) {
+        loading.remove();
+      }
+    }
+  }
+
   /// 4) 성별 선택 후, 모든 필드 검증 -> 약관 표시 -> 인증 화면으로 이동
   void _allFieldValidCheck() async {
     final isFormValid = _formKey.currentState?.validate() ?? false;
@@ -214,87 +295,11 @@ class _AuthScreenState extends State<AuthScreen> {
     if (isPop) {
       // await Future.delayed(const Duration(milliseconds: 350)); // 예시
 
-      // if(mounted) 확인 후 호출
-      if (mounted) {
-        final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
-
-        try {
-          // //TODO: DB에 유저가 입력한 정보 저장
-          // await Future.delayed(
-          //   const Duration(milliseconds: 800),
-          // ); // DB에 데이터를 저장하는 시간을 임의로 대체
-
-          await _auth.verifyPhoneNumber(
-            phoneNumber: phone,
-
-            // Android 기기의 SMS 코드 자동 처리
-            verificationCompleted: (PhoneAuthCredential credential) async {
-              // ANDROID ONLY!
-
-              // Sign the user in (or link) with the auto-generated credential
-              await _auth.signInWithCredential(credential);
-            },
-
-            // 잘못된 전화번호나 SMS 할당량 초과 여부 등의 실패 이벤트 처리
-            verificationFailed: (FirebaseAuthException e) {
-              setState(() {
-                loading.remove();
-                // _errorMessage = '인증번호 발송 실패: ${e.message}';
-              });
-
-              // 상세한 오류 정보 출력
-              debugPrint('=== Firebase Auth Error ===');
-              debugPrint('Error Code: ${e.code}');
-              debugPrint('Error Message: ${e.message}');
-              debugPrint('Error Details: ${e.toString()}');
-              debugPrint('=======================');
-            },
-
-            // Firebase에서 기기로 코드가 전송된 경우를 처리하며 사용자에게 코드을 입력하라는 메시지를 표시
-            codeSent: (String verificationId, int? resendToken) async {
-              // 인증번호 발송 성공시 네비게이션 진행
-
-              debugPrint('=== codeSent ===');
-              debugPrint('verificationId: $verificationId');
-
-              setState(() {
-                _verificationId = verificationId;
-              });
-
-              if (loading != null && loading.mounted) {
-                loading.remove();
-              }
-
-              if (mounted) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => VerificationScreen(
-                      phoneNumber: phone,
-                      authType: widget.authType,
-                      verificationId: verificationId,
-                      resendToken: resendToken,
-                    ),
-                  ),
-                );
-              }
-            },
-
-            // 자동 SMS 코드 처리에 실패한 경우 시간 초과를 설정
-            timeout: const Duration(seconds: 60),
-            codeAutoRetrievalTimeout: (String verificationId) {
-              setState(() {
-                loading.remove();
-                // _errorMessage = '인증번호 발송 실패: 인증번호 처리 시간 초과';
-              });
-            },
-          );
-        } finally {
-          // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)
-          if (loading != null && loading.mounted) {
-            loading.remove();
-          }
-        }
-      }
+      // //TODO: DB에 유저가 입력한 정보 저장
+      // await Future.delayed(
+      //   const Duration(milliseconds: 800),
+      // ); // DB에 데이터를 저장하는 시간을 임의로 대체
+      await _sendVerificationCode(phone);
     }
   }
 
