@@ -1,3 +1,4 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -102,9 +103,9 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
         label: Text('Phone number', style: context.textTheme.labelLarge),
         floatingLabelBehavior: FloatingLabelBehavior.always,
 
-        prefixStyle: TextStyle(
+        prefixStyle: const TextStyle(
           /// 필드 활성화 시 - 숫자색 검정 / 필드 비활성화 시 - 숫자색 회색
-          color: Colors.black,
+          color: AppColors.black,
           fontSize: 16,
         ),
 
@@ -121,13 +122,13 @@ class _PhoneNumberFieldState extends State<PhoneNumberField> {
             : null,
 
         hintText: '0900-000-0000',
-        hintStyle: TextStyle(color: Colors.grey),
+        hintStyle: const TextStyle(color: AppColors.gray300, fontSize: 16),
 
         border: OutlineInputBorder(),
 
         // 포커스 상태 필드 테두리 색 지정
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black54),
+          borderSide: BorderSide(color: AppColors.black54),
         ),
       ),
     );

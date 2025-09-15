@@ -54,13 +54,17 @@ class _AuthScreenState extends State<AuthScreen> {
         ? AuthStep.phoneSignup
         : AuthStep.phoneLogin;
 
+    // 각 필드별 이벤트 리스너 등록하여 입력 값 변경 시 이벤트 발생
     _phoneNumberController.addListener(_checkPhoneNumberValid);
     _nameController.addListener(_updateNameValidationState);
     _dateController.addListener(_proceedIfBirthdaySelected);
 
+    // 포커스 상태 변경 시 이벤트 발생
     _phoneNumberFocusNode.addListener(() {
       setState(() {});
     });
+
+    debugPrint('AuthScreen initState: $_currentStep');
   }
 
   @override
@@ -94,6 +98,9 @@ class _AuthScreenState extends State<AuthScreen> {
   // 이름 필드가 비어 있는지 확인하는 메서드
   bool _isNameNotEmpty() => _nameController.text.trim().isNotEmpty;
 
+  //////////////////////////////////////////////////////////////
+
+  /// 1) PhoneNumberField 입력 값 유효성 검사
   void _checkPhoneNumberValid() async {
     final cleanNumber = _phoneNumberController.text.replaceAll('-', '');
 
@@ -107,19 +114,19 @@ class _AuthScreenState extends State<AuthScreen> {
         return;
       }
 
+      // 전화번호 입력 완료 시 이름 필드로 이동(다음 단계로 이동)
       setState(() {
         _currentStep = AuthStep.name;
       });
-
-      // 이름 필드로 포커스 이동
-      _nameFocusNode.requestFocus();
+      _nameFocusNode.requestFocus(); // 이름 필드로 포커스 이동
     }
 
     // 번호가 입력 될때마다 UI 리로드 (suffixIcon 표시에 필요!)
     setState(() {});
   }
 
-  // 이름 필드 입력값 변화 감지 - 버튼 활성화/비활성화 에 사용됨
+  /// 2) NameField 입력 값 유효성 검사
+  // 이름 필드 입력값 변화 감지 - 버튼 활성화/비활성화에 사용됨
   void _updateNameValidationState() {
     final isValid = _isNameNotEmpty();
 

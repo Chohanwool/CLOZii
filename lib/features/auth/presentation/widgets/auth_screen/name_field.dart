@@ -1,3 +1,4 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -112,11 +113,11 @@ class _NameFieldState extends State<NameField> {
             : null,
 
         hintText: 'Your name or nickname (ex: abc_123)',
-        hintStyle: TextStyle(color: Colors.grey),
+        hintStyle: const TextStyle(color: AppColors.gray300, fontSize: 16),
 
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black54),
+          borderSide: BorderSide(color: AppColors.black54),
         ),
       ),
     );
