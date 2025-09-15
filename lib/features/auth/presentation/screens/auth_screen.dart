@@ -149,7 +149,7 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  // 생년월일 선택시 다음 단계로 이동
+  // 3) DatePickerField 입력 값 유효성 검사 및 다음 단계로 이동
   void _proceedIfBirthdaySelected() {
     if (_birthDate != null) {
       setState(() {
@@ -160,13 +160,14 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  /// 성별 선택 후, 모든 필드 검증 -> 약관 표시 -> 인증 화면으로 이동
+  /// 4) 성별 선택 후, 모든 필드 검증 -> 약관 표시 -> 인증 화면으로 이동
   void _allFieldValidCheck() async {
     final isFormValid = _formKey.currentState?.validate() ?? false;
 
     if (!isFormValid) return;
 
-    // 이미 가입된 전화번호인지 확인
+    // 가입된 전화번호인지 확인, 확인 후 가입된 전화번호라면 인증 화면으로 이동
+    // TODO: 가입된 전화번호 확인 로직 구현
     if (_isPhoneNumberRegistered()) {
       if (widget.authType == AuthType.login) {
         _navigateToVerification(_completePhoneNumber);
@@ -189,8 +190,10 @@ class _AuthScreenState extends State<AuthScreen> {
     // ✅ 모든 검증 통과
     final phone = _completePhoneNumber;
     final name = _nameController.text.trim();
+    final birthDate = _birthDate;
+    final gender = _selectedGender;
 
-    debugPrint('✅ VERIFIED: $name | $phone | $_birthDate | $_selectedGender');
+    debugPrint('✅ VERIFIED: $name | $phone | $birthDate | $gender');
 
     final isPop = await showModalBottomSheet(
       context: context,
