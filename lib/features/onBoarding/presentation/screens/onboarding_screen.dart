@@ -20,6 +20,13 @@ class OnBoardingScreen extends StatelessWidget {
   /// - [authType] 파라미터로 이동할 화면의 타입을 지정
   ///   (AuthType.login → 로그인 화면)
   ///   (AuthType.signup → 회원가입 화면)
+  void navigateToAuth(BuildContext context, AuthType authType) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => AuthScreen(authType: authType),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,17 +45,12 @@ class OnBoardingScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     _SignUpButton(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const AuthScreen(),
-                          ),
-                        );
-                      },
+                      onTap: () => navigateToAuth(context, AuthType.signup),
                     ),
                     const SizedBox(height: 8.0),
-                    _LoginPromt(onTap: () {}),
+                    _LoginPromt(
+                      onTap: () => navigateToAuth(context, AuthType.login),
+                    ),
                   ],
                 ),
               ),

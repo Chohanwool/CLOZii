@@ -4,6 +4,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/animation.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
+import 'package:clozii/features/auth/data/auth_type.dart';
 import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,9 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class VerificationScreen extends StatefulWidget {
-  const VerificationScreen({super.key, required this.phoneNumber});
+  const VerificationScreen({
+    super.key,
+    required this.phoneNumber,
+    required this.authType,
+  });
 
   final String phoneNumber;
+  final AuthType authType;
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
@@ -261,12 +267,12 @@ class _VerificationScreenState extends State<VerificationScreen> {
             if (result != null) {
               if (mounted) {
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  fadeInRoute(AuthScreen()),
+                  fadeInRoute(AuthScreen(authType: widget.authType)),
                   (route) => route.isFirst,
                 );
               }
             }
-            
+
             return;
           }
         }

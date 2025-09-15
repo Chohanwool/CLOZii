@@ -52,6 +52,7 @@ Future<bool?> showAlertDialog(
                   backgroundColor: context.colors.primary,
                 ),
                 onPressed: () {
+                  // 팝업 메시지를 '확인' 버튼으로 없앤 경우, true 반환
                   Navigator.of(context).pop(true);
                 },
                 child: Text(

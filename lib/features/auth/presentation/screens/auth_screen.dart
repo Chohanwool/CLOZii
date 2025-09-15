@@ -1,6 +1,8 @@
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/auth/data/auth_type.dart';
 import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/date_picker_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/gender_dropdown_field.dart';
@@ -11,14 +13,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+  const AuthScreen({super.key, required this.authType});
+
+  final AuthType authType;
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  String _headerText = 'Sign up with phone number.';
+  late String _headerText;
   int _currentStep = 1;
 
   bool _isNameValid = false;
@@ -45,6 +49,12 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void initState() {
     super.initState();
+
+    final headerPrefix = widget.authType == AuthType.signup
+        ? 'Sign Up'
+        : 'Login';
+
+    _headerText = '$headerPrefix with phone number.';
 
     _phoneNumberController.addListener(_checkPhoneNumberValid);
 
@@ -96,11 +106,16 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
-  void _checkPhoneNumberValid() {
+  void _checkPhoneNumberValid() async {
     final cleanNumber = _phoneNumberController.text.replaceAll('-', '');
 
     if (cleanNumber.length == _phoneNumberMaxLength && _currentStep == 1) {
       debugPrint(_completePhoneNumber);
+
+      // 로그인 화면에서는 전화번호 입력 필드만 필요하므로, _currentStep 을 증가 시킬 필요가 없음 
+      if (widget.authType == AuthType.login) {
+        return;
+      }
 
       setState(() {
         _currentStep = 2;
@@ -161,6 +176,26 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (!isFormValid) return;
 
+    // 이미 가입된 전화번호인지 확인
+    if (_validatePhoneNumber()) {
+      if (widget.authType == AuthType.login) {
+        _navigateToVerification(_completePhoneNumber);
+      }
+
+      if (widget.authType == AuthType.signup) {
+        final result = await showAlertDialog(
+          context,
+          'This phone number is already registered. Try signing in.',
+        );
+
+        if (result != null && mounted) {
+          Navigator.of(context).pop();
+        }
+      }
+
+      return;
+    }
+
     // ✅ 모든 검증 통과
     final phone = _completePhoneNumber;
     final name = _nameController.text.trim();
@@ -194,7 +229,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => VerificationScreen(phoneNumber: phone),
+              builder: (context) => VerificationScreen(
+                phoneNumber: phone,
+                authType: widget.authType,
+              ),
             ),
           );
         } finally {
@@ -205,36 +243,89 @@ class _AuthScreenState extends State<AuthScreen> {
     }
   }
 
+  bool _validatePhoneNumber() {
+    // TODO: 입력된 전화번호로 가입된 계정이 있는지 확인하는 로직 구현
+    // 로직 구현 후 함수 반환 타입을 Future<bool> 로 변경 예정
+
+    // 임시로 '+639123456789' 가 가입된 번호라고 가정
+    return _completePhoneNumber == '+639123456789';
+  }
+
+  void _navigateToVerification(String phone) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) =>
+            VerificationScreen(phoneNumber: phone, authType: widget.authType),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
 
-      bottomSheet: (_currentStep == 2 || _currentStep == 4)
+      bottomSheet:
+          (_currentStep == 2 ||
+              _currentStep == 4 ||
+              widget.authType == AuthType.login)
           ? KeyboardVisibilityBuilder(
               builder: (context, isKeyboardVisible) {
+                final buttonText = 'Continue';
+                final buttonHeight = 50.0;
+
+                Widget? button;
+
+                if (_currentStep == 2) {
+                  button = CustomButton(
+                    text: buttonText,
+                    onTap: _isNameValid ? _nameTypedCheck : null,
+                    height: buttonHeight,
+                    isKeyboardVisible: isKeyboardVisible,
+                  );
+                }
+
+                if (_currentStep == 4) {
+                  button = CustomButton(
+                    // _currentStep == 4
+                    text: buttonText,
+                    onTap: _birthDate != null ? _allFieldValidCheck : null,
+                    height: buttonHeight,
+                    isKeyboardVisible: isKeyboardVisible,
+                  );
+                }
+
+                if (widget.authType == AuthType.login) {
+                  button = CustomButton(
+                    text: buttonText,
+                    onTap: () {
+                      if (_validatePhoneNumber()) {
+                        _navigateToVerification(_completePhoneNumber);
+                      } else {
+                        final isFormValid =
+                            _formKey.currentState?.validate() ?? false;
+
+                        if (!isFormValid) return;
+
+                        showAlertDialog(
+                          context,
+                          'This phone number is not registered. Please sign up first.',
+                        );
+                      }
+                    },
+
+                    height: buttonHeight,
+                    isKeyboardVisible: isKeyboardVisible,
+                  );
+                }
+
                 return Material(
                   child: Container(
                     padding: !isKeyboardVisible
                         ? EdgeInsets.symmetric(horizontal: 16.0)
                         : null,
                     color: Colors.transparent,
-                    child: _currentStep == 2
-                        ? CustomButton(
-                            text: 'Continue',
-                            onTap: _isNameValid ? _nameTypedCheck : null,
-                            height: 50,
-                            isKeyboardVisible: isKeyboardVisible,
-                          )
-                        : CustomButton(
-                            // _currentStep == 4
-                            text: 'Verify & Complete',
-                            onTap: _birthDate != null
-                                ? _allFieldValidCheck
-                                : null,
-                            height: 50,
-                            isKeyboardVisible: isKeyboardVisible,
-                          ),
+                    child: button,
                   ),
                 );
               },
