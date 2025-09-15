@@ -271,6 +271,8 @@ class _AuthScreenState extends State<AuthScreen> {
                     builder: (context) => VerificationScreen(
                       phoneNumber: phone,
                       authType: widget.authType,
+                      verificationId: verificationId,
+                      resendToken: resendToken,
                     ),
                   ),
                 );
@@ -305,12 +307,12 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   void _navigateToVerification(String phone) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) =>
-            VerificationScreen(phoneNumber: phone, authType: widget.authType),
-      ),
-    );
+    // Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (context) =>
+    //         VerificationScreen(phoneNumber: phone, authType: widget.authType),
+    //   ),
+    // );
   }
 
   @override

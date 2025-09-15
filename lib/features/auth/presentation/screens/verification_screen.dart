@@ -16,10 +16,14 @@ class VerificationScreen extends StatefulWidget {
     super.key,
     required this.phoneNumber,
     required this.authType,
+    required this.verificationId,
+    required this.resendToken,
   });
 
   final String phoneNumber;
   final AuthType authType;
+  final String verificationId;
+  final int? resendToken;
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
@@ -28,7 +32,6 @@ class VerificationScreen extends StatefulWidget {
 class _VerificationScreenState extends State<VerificationScreen> {
   // FirebaseAuth 관련 상태 값
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String _verificationId = '';
 
   /// 인증번호 유효 시간 - 타이머
   Timer? _timer;
@@ -168,13 +171,14 @@ class _VerificationScreenState extends State<VerificationScreen> {
       try {
         // 인증코드 입력 실제 값과 비교
         PhoneAuthCredential credential = PhoneAuthProvider.credential(
-          verificationId: _verificationId,
+          verificationId: widget.verificationId,
           smsCode: _optController.text,
         );
 
         // 로그인 시도(최초시에는 회원가입)
-        UserCredential userCredential = await FirebaseAuth.instance
-            .signInWithCredential(credential);
+        UserCredential userCredential = await _auth.signInWithCredential(
+          credential,
+        );
 
         User? user = userCredential.user;
 
