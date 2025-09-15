@@ -1,3 +1,4 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
@@ -11,6 +12,7 @@ import 'package:clozii/features/auth/presentation/widgets/auth_screen/gender_dro
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/name_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/phone_number_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/terms_and_conditions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -45,6 +47,10 @@ class _AuthScreenState extends State<AuthScreen> {
 
   // 전역 키
   final _formKey = GlobalKey<FormState>();
+
+  // PhoneLogin 관련 상태 변수
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String _verificationId = '';
 
   @override
   void initState() {
@@ -195,42 +201,96 @@ class _AuthScreenState extends State<AuthScreen> {
 
     debugPrint('✅ VERIFIED: $name | $phone | $birthDate | $gender');
 
-    final isPop = await showModalBottomSheet(
+    final bool isPop = await showModalBottomSheet(
       context: context,
-      barrierColor: Colors.black26,
-      backgroundColor: Colors.white,
+      barrierColor: AppColors.black26,
+      backgroundColor: AppColors.white,
       isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
       // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
       builder: (context) => const TermsAndConditions(), // 모달 내용: 약관 위젯
     );
 
     // 약관 통과 시 인증번호 전송
-    if (isPop != null) {
-      await Future.delayed(const Duration(milliseconds: 350)); // 예시
+    if (isPop) {
+      // await Future.delayed(const Duration(milliseconds: 350)); // 예시
 
       // if(mounted) 확인 후 호출
       if (mounted) {
         final loading = showLoadingOverlay(context); // ⬅️ 현재 화면 위에 로딩만 띄움
 
         try {
-          //TODO: DB에 유저가 입력한 정보 저장
-          await Future.delayed(
-            const Duration(milliseconds: 800),
-          ); // DB에 데이터를 저장하는 시간을 임의로 대체
+          // //TODO: DB에 유저가 입력한 정보 저장
+          // await Future.delayed(
+          //   const Duration(milliseconds: 800),
+          // ); // DB에 데이터를 저장하는 시간을 임의로 대체
 
-          if (!mounted) return;
+          await _auth.verifyPhoneNumber(
+            phoneNumber: phone,
 
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => VerificationScreen(
-                phoneNumber: phone,
-                authType: widget.authType,
-              ),
-            ),
+            // Android 기기의 SMS 코드 자동 처리
+            verificationCompleted: (PhoneAuthCredential credential) async {
+              // ANDROID ONLY!
+
+              // Sign the user in (or link) with the auto-generated credential
+              await _auth.signInWithCredential(credential);
+            },
+
+            // 잘못된 전화번호나 SMS 할당량 초과 여부 등의 실패 이벤트 처리
+            verificationFailed: (FirebaseAuthException e) {
+              setState(() {
+                loading.remove();
+                // _errorMessage = '인증번호 발송 실패: ${e.message}';
+              });
+
+              // 상세한 오류 정보 출력
+              debugPrint('=== Firebase Auth Error ===');
+              debugPrint('Error Code: ${e.code}');
+              debugPrint('Error Message: ${e.message}');
+              debugPrint('Error Details: ${e.toString()}');
+              debugPrint('=======================');
+            },
+
+            // Firebase에서 기기로 코드가 전송된 경우를 처리하며 사용자에게 코드을 입력하라는 메시지를 표시
+            codeSent: (String verificationId, int? resendToken) async {
+              // 인증번호 발송 성공시 네비게이션 진행
+
+              debugPrint('=== codeSent ===');
+              debugPrint('verificationId: $verificationId');
+
+              setState(() {
+                _verificationId = verificationId;
+              });
+
+              if (loading != null && loading.mounted) {
+                loading.remove();
+              }
+
+              if (mounted) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => VerificationScreen(
+                      phoneNumber: phone,
+                      authType: widget.authType,
+                    ),
+                  ),
+                );
+              }
+            },
+
+            // 자동 SMS 코드 처리에 실패한 경우 시간 초과를 설정
+            timeout: const Duration(seconds: 60),
+            codeAutoRetrievalTimeout: (String verificationId) {
+              setState(() {
+                loading.remove();
+                // _errorMessage = '인증번호 발송 실패: 인증번호 처리 시간 초과';
+              });
+            },
           );
         } finally {
           // 전환 직전에 오버레이 제거 (mounted 체크는 OverlayEntry 제거엔 불필요)
-          loading.remove();
+          if (loading != null && loading.mounted) {
+            loading.remove();
+          }
         }
       }
     }

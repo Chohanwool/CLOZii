@@ -12,8 +12,8 @@ class AppColors {
   static const Color black87 = Colors.black87;
   static const Color black54 = Colors.black54;
   static const Color black38 = Colors.black38;
-  static const Color black30 = Colors.black26;
-  static const Color black24 = Colors.black12;
+  static const Color black26 = Colors.black26;
+  static const Color black12 = Colors.black12;
 
   // 그레이스케일
   static const Color gray900 = Color(0xFF1A1A1A);

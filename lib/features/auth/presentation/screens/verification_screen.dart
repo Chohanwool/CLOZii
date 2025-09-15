@@ -29,8 +29,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
   // FirebaseAuth 관련 상태 값
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _verificationId = '';
-  bool _isLoading = false;
-  String? _errorMessage;
 
   /// 인증번호 유효 시간 - 타이머
   Timer? _timer;
@@ -48,8 +46,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
     // 화면 들어오면 인증번호 요청
     debugPrint('phoneNumber: ${widget.phoneNumber}');
 
-    _phoneLogin(widget.phoneNumber);
-
     _startTimer();
   }
 
@@ -60,69 +56,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
     _optController.dispose();
     super.dispose();
-  }
-
-  // Firebase 인증 핵심 로직
-  Future<void> _phoneLogin(String phoneNumber) async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      await _auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber,
-
-        // Android 기기의 SMS 코드 자동 처리
-        verificationCompleted: (PhoneAuthCredential credential) async {
-          // ANDROID ONLY!
-
-          // Sign the user in (or link) with the auto-generated credential
-          await _auth.signInWithCredential(credential);
-        },
-
-        // 잘못된 전화번호나 SMS 할당량 초과 여부 등의 실패 이벤트 처리
-        verificationFailed: (FirebaseAuthException e) {
-          setState(() {
-            _isLoading = false;
-            _errorMessage = '인증번호 발송 실패: ${e.message}';
-          });
-
-          // 상세한 오류 정보 출력
-          debugPrint('=== Firebase Auth Error ===');
-          debugPrint('Error Code: ${e.code}');
-          debugPrint('Error Message: ${e.message}');
-          debugPrint('Error Details: ${e.toString()}');
-          debugPrint('=======================');
-        },
-
-        // Firebase에서 기기로 코드가 전송된 경우를 처리하며 사용자에게 코드을 입력하라는 메시지를 표시
-        codeSent: (String verificationId, int? resendToken) async {
-          // Update the UI - wait for the user to enter the SMS code
-          debugPrint('=== codeSent ===');
-          debugPrint('verificationId: $verificationId');
-
-          setState(() {
-            _verificationId = verificationId;
-            _isLoading = false;
-          });
-        },
-
-        // 자동 SMS 코드 처리에 실패한 경우 시간 초과를 설정
-        timeout: const Duration(seconds: 60),
-        codeAutoRetrievalTimeout: (String verificationId) {
-          setState(() {
-            _isLoading = false;
-            _errorMessage = '인증번호 발송 실패: 인증번호 처리 시간 초과';
-          });
-        },
-      );
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = '오류가 발생했습니다: ${e.toString()}';
-      });
-    }
   }
 
   /// 인증번호 유효시간 카운트다운 시작
