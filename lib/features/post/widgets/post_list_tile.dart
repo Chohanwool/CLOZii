@@ -1,9 +1,13 @@
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/show_uploaded_time.dart';
+import 'package:clozii/features/post/data/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class PostListTile extends StatelessWidget {
-  const PostListTile({super.key});
+  const PostListTile({super.key, required this.post});
+
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -12,6 +16,7 @@ class PostListTile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: ListTile(
+            onTap: () {},
             title: Row(
               children: [
                 Container(
@@ -21,7 +26,7 @@ class PostListTile extends StatelessWidget {
                     color: Colors.black26,
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  child: Center(child: Text('Image')),
+                  child: Image.network(post.imageUrls[0], fit: BoxFit.cover),
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
@@ -30,9 +35,9 @@ class PostListTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Post Title', style: context.textTheme.titleSmall),
+                        Text(post.title, style: context.textTheme.titleSmall),
                         Text(
-                          'address · 10mins ago',
+                          'address · ${showUploadedTime(post.createdAt)} ago',
                           style: context.textTheme.bodyLarge!.copyWith(
                             color: Colors.black45,
                           ),

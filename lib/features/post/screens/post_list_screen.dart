@@ -1,11 +1,14 @@
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/widgets/post_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 /// 앱 메인 화면 - 로그인 이후 화면 (게시글 목록 화면이 될 가능성이 큼)
 class PostListScreen extends StatelessWidget {
-  const PostListScreen({super.key});
+  PostListScreen({super.key});
+
+  final posts = dummyPosts;
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +50,8 @@ class PostListScreen extends StatelessWidget {
       body: Stack(
         children: [
           ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) => PostListTile(),
+            itemCount: posts.length,
+            itemBuilder: (context, index) => PostListTile(post: posts[index]),
           ),
           Positioned(
             bottom: 0,
