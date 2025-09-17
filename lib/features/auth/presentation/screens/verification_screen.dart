@@ -7,6 +7,8 @@ import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/data/auth_type.dart';
 import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
+import 'package:clozii/features/home/presentation/screens/home_screen.dart';
+import 'package:clozii/features/post/presentation/screens/post_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -188,6 +190,16 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
         if (user != null) {
           debugPrint('로그인 성공: ${user.phoneNumber}');
+
+          Navigator.of(context).pushAndRemoveUntil(
+            // 한울이형이 작업한 메인 화면
+            // MaterialPageRoute(builder: (context) => HomeScreen()),
+
+            //  은찬이가 게시글 상세 화면 작업 하면서 임시로 만든 메인 화면
+            // 추후에 HomeScreen으로 병합 예정
+            MaterialPageRoute(builder: (context) => PostListScreen()),
+            (Route<dynamic> route) => false, // 기존 스택의 모든 route를 제거
+          );
         }
       } catch (e) {
         debugPrint('로그인 실패: ${e}');
