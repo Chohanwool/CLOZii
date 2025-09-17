@@ -1,6 +1,7 @@
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
+import 'package:clozii/core/widgets/custom_text_link.dart';
 import 'package:clozii/features/post/data/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -64,8 +65,10 @@ class PostDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('UserData', style: context.textTheme.titleLarge),
+                      Text('사용자 정보', style: context.textTheme.titleLarge),
+                      Text('매너 온도', style: context.textTheme.titleLarge),
                     ],
                   ),
                   const SizedBox(height: 10),
@@ -98,13 +101,27 @@ class PostDetailScreen extends StatelessWidget {
                           ],
                         ),
                   const SizedBox(height: 10),
-                  Text(
-                    showUploadedTime(post.createdAt),
-                    style: context.textTheme.bodyLarge!.copyWith(
-                      color: context.colors.scrim,
-                    ),
+                  Row(
+                    children: [
+                      CustomTextLink(
+                        linkText: 'Category',
+                        linkTextStyle: context.textTheme.bodyLarge!.copyWith(
+                          color: context.colors.scrim,
+                          decoration: TextDecoration.underline,
+                          decorationColor: context.colors.scrim,
+                        ),
+                        onTap: () {},
+                      ),
+                      Text(' · '),
+                      Text(
+                        '${showUploadedTime(post.createdAt)} ago',
+                        style: context.textTheme.bodyLarge!.copyWith(
+                          color: context.colors.scrim,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 30),
                   if (post.content != null)
                     Text(post.content!, style: context.textTheme.bodyLarge),
                 ],
