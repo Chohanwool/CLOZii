@@ -9,10 +9,28 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class PostDetailScreen extends StatelessWidget {
+class PostDetailScreen extends StatefulWidget {
   const PostDetailScreen({super.key, required this.post});
 
   final Post post;
+
+  @override
+  State<PostDetailScreen> createState() => _PostDetailScreenState();
+}
+
+class _PostDetailScreenState extends State<PostDetailScreen> {
+  bool _isExpanded = true;
+  final ScrollController _controller = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.addListener(() {
+      setState(() {
+        _isExpanded = _controller.offset < (300 - kToolbarHeight);
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,25 +42,16 @@ class PostDetailScreen extends StatelessWidget {
           color: Colors.white,
           border: Border(top: BorderSide(color: context.colors.shadow)),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              // ... 아이콘, TextField, Send 버튼
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.favorite_border_outlined, size: 30.0),
-              ),
-              Expanded(child: ChatField()),
-              const SizedBox(width: 10.0),
-              CustomButton(
-                text: 'Send',
-                onTap: () {},
-                width: 80.0,
-                height: 45.0,
-              ),
-            ],
-          ),
+        child: Row(
+          children: [
+            // ... 아이콘, TextField, Send 버튼
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.favorite_border_outlined, size: 30.0),
+            ),
+            Expanded(child: ChatField()),
+            CustomButton(text: 'Send', onTap: () {}, width: 80.0, height: 45.0),
+          ],
         ),
       ),
 
@@ -50,39 +59,69 @@ class PostDetailScreen extends StatelessWidget {
       bottomNavigationBar: Container(height: kToolbarHeight),
 
       body: CustomScrollView(
+        controller: _controller,
         slivers: [
           SliverAppBar(
-            systemOverlayStyle: SystemUiOverlayStyle.light,
-            foregroundColor: context.colors.onPrimary,
-            expandedHeight: 300,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Stack(
-                children: [
-                  PageView(
-                    children: [
-                      ...post.imageUrls.map(
-                        (url) => Image.network(url, fit: BoxFit.cover),
-                      ),
-                    ],
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Builder(
-                      builder: (context) => Container(
-                        height:
-                            MediaQuery.of(context).padding.top + kToolbarHeight,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.black38, Colors.transparent],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
+            backgroundColor: Colors.black,
+            surfaceTintColor: Colors.transparent,
+            stretch: true,
+            pinned: true,
+            systemOverlayStyle: _isExpanded
+                ? SystemUiOverlayStyle.light
+                : SystemUiOverlayStyle.dark,
+            foregroundColor: _isExpanded
+                ? context.colors.onPrimary
+                : Colors.black,
+            expandedHeight: MediaQuery.of(context).size.height * 0.45,
+
+            flexibleSpace: LayoutBuilder(
+              builder: (context, constraints) {
+                final double expandedHeight =
+                    MediaQuery.of(context).size.height * 0.45;
+                final double toolbarHeight =
+                    kToolbarHeight + MediaQuery.of(context).padding.top;
+                final double collapseExtent =
+                    expandedHeight - constraints.maxHeight;
+
+                return Stack(
+                  children: [
+                    // 배경 이미지 - Fade 효과 완전 제거
+                    Positioned(
+                      top: -collapseExtent - MediaQuery.of(context).padding.top,
+                      left: 0,
+                      right: 0,
+                      height:
+                          expandedHeight + MediaQuery.of(context).padding.top,
+                      child: PageView(
+                        children: [
+                          ...widget.post.imageUrls.map(
+                            (url) => Image.network(url, fit: BoxFit.cover),
                           ),
+                        ],
+                      ),
+                    ),
+                    // 상단 오버레이 (앱바)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: toolbarHeight,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: _isExpanded
+                              ? LinearGradient(
+                                  colors: [Colors.black38, Colors.transparent],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                )
+                              : null,
+                          color: !_isExpanded ? Colors.white : null,
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              },
             ),
             actions: [
               IconButton(
@@ -94,7 +133,12 @@ class PostDetailScreen extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(
+                top: 20.0,
+                left: 16.0,
+                right: 16.0,
+                bottom: 65.0 + kToolbarHeight,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -108,11 +152,11 @@ class PostDetailScreen extends StatelessWidget {
                   const SizedBox(height: 10),
                   Divider(indent: 20, endIndent: 20),
                   const SizedBox(height: 10),
-                  Text(post.title, style: context.textTheme.titleLarge),
+                  Text(widget.post.title, style: context.textTheme.titleLarge),
                   const SizedBox(height: 10),
-                  post.price != null
+                  widget.post.price != null
                       ? Text(
-                          '\u20B1 ${formatPrice(post.price!)}', //₱
+                          '\u20B1 ${formatPrice(widget.post.price!)}', //₱
                           style: context.textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -134,7 +178,7 @@ class PostDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 10.0),
                   Row(
                     children: [
                       CustomTextLink(
@@ -148,16 +192,89 @@ class PostDetailScreen extends StatelessWidget {
                       ),
                       Text(' · '),
                       Text(
-                        '${showUploadedTime(post.createdAt)} ago',
+                        '${showUploadedTime(widget.post.createdAt)} ago',
                         style: context.textTheme.bodyLarge!.copyWith(
                           color: context.colors.scrim,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 30),
-                  if (post.content != null)
-                    Text(post.content!, style: context.textTheme.bodyLarge),
+                  const SizedBox(height: 24.0),
+                  if (widget.post.content != null)
+                    Text(
+                      widget.post.content!,
+                      style: context.textTheme.bodyLarge,
+                    ),
+
+                  const SizedBox(height: 24.0),
+
+                  // 거래 희망 장소
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Meeting Point :',
+                        style: context.textTheme.titleSmall,
+                      ),
+                      // 사용자가 입력한 장소명 (예: 광교 고등학교 앞)
+                      Row(
+                        children: [
+                          CustomTextLink(
+                            linkText: 'Infront of McDonald\'s Laguna Bel-Air',
+                            onTap: () {},
+                          ),
+
+                          const SizedBox(width: 10.0),
+
+                          Icon(CupertinoIcons.right_chevron, size: 16.0),
+                        ],
+                      ),
+
+                      const SizedBox(height: 20.0),
+
+                      Material(
+                        clipBehavior: Clip.hardEdge,
+                        borderRadius: BorderRadiusGeometry.circular(16.0),
+                        child: Container(
+                          width: double.infinity,
+                          height: 150.0,
+                          color: Colors.grey,
+
+                          // 지도 화면
+                          child: Image.asset(
+                            'assets/images/inmark.jpeg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20.0),
+
+                  // 관심수, 조회수 표시
+                  Row(
+                    children: [
+                      Text(
+                        'Favorites ${widget.post.favorites} · Views ${widget.post.views}',
+                        style: context.textTheme.bodyMedium!.copyWith(
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20.0),
+
+                  CustomTextLink(
+                    linkText: 'Report this post',
+                    linkTextStyle: context.textTheme.bodyMedium!.copyWith(
+                      color: Colors.grey,
+                      decoration: TextDecoration.underline,
+                      decorationColor: Colors.grey,
+                    ),
+                    onTap: () {},
+                  ),
                 ],
               ),
             ),
