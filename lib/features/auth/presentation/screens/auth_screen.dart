@@ -43,7 +43,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final FocusNode _dateFocusNode = FocusNode();
   final FocusNode _genderFocusNode = FocusNode();
 
-  // 전역 키 
+  // 전역 키
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -224,8 +224,8 @@ class _AuthScreenState extends State<AuthScreen> {
     // TODO: 입력된 전화번호로 가입된 계정이 있는지 확인하는 로직 구현
     // 로직 구현 후 함수 반환 타입을 Future<bool> 로 변경 예정
 
-    // 임시로 '+639123456789' 가 가입된 번호라고 가정
-    return _completePhoneNumber == '+639123456789';
+    // Firebase DB에 저장된 '+639171234567' 번호만 가입된 유저로 인식 (임시)
+    return _completePhoneNumber == '+639171234567';
   }
 
   void _navigateToVerification(String phone) {
