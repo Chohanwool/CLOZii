@@ -9,7 +9,7 @@ class PostListTile extends StatelessWidget {
   const PostListTile({super.key, required this.post, required this.onTap});
 
   final Post post;
-  final VoidCallback onTap;
+  final ValueChanged<Post> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class PostListTile extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: ListTile(
-            onTap: onTap,
+            onTap: () => onTap(post),
             title: Row(
               children: [
                 Container(

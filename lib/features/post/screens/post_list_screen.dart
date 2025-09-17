@@ -25,10 +25,10 @@ class _PostListScreenState extends State<PostListScreen> {
     });
   }
 
-  void _navigateToPostDetail() {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => PostDetailScreen()));
+  void _navigateToPostDetail(Post post) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
+    );
   }
 
   @override
