@@ -8,7 +8,7 @@ import 'package:clozii/features/auth/data/auth_type.dart';
 import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
 import 'package:clozii/features/home/presentation/screens/home_screen.dart';
-import 'package:clozii/features/post/screens/post_list_screen.dart';
+import 'package:clozii/features/post/presentation/screens/post_list_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

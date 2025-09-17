@@ -4,7 +4,7 @@ import 'package:clozii/core/utils/show_uploaded_time.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
 import 'package:clozii/features/post/data/post.dart';
-import 'package:clozii/features/post/widgets/chat_field.dart';
+import 'package:clozii/features/post/presentation/widgets/chat_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
