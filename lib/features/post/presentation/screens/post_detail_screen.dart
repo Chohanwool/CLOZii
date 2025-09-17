@@ -21,6 +21,7 @@ class PostDetailScreen extends StatefulWidget {
 class _PostDetailScreenState extends State<PostDetailScreen> {
   bool _isExpanded = true;
   final ScrollController _controller = ScrollController();
+  double _stretchOffset = 0.0;
 
   @override
   void initState() {
@@ -28,6 +29,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     _controller.addListener(() {
       setState(() {
         _isExpanded = _controller.offset < (300 - kToolbarHeight);
+        // 위로 스크롤할 때만 stretch offset 계산 (음수 값)
+        _stretchOffset = _controller.offset < 0 ? _controller.offset : 0.0;
       });
     });
   }
@@ -85,13 +88,18 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
                 return Stack(
                   children: [
-                    // 배경 이미지 - Fade 효과 완전 제거
+                    // 배경 이미지 - 위로 당길 때만 확대
                     Positioned(
-                      top: -collapseExtent - MediaQuery.of(context).padding.top,
+                      top:
+                          -collapseExtent -
+                          MediaQuery.of(context).padding.top +
+                          _stretchOffset,
                       left: 0,
                       right: 0,
                       height:
-                          expandedHeight + MediaQuery.of(context).padding.top,
+                          expandedHeight +
+                          MediaQuery.of(context).padding.top -
+                          _stretchOffset,
                       child: PageView(
                         children: [
                           ...widget.post.imageUrls.map(
@@ -216,6 +224,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         'Meeting Point :',
                         style: context.textTheme.titleSmall,
                       ),
+
                       // 사용자가 입력한 장소명 (예: 광교 고등학교 앞)
                       Row(
                         children: [
