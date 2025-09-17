@@ -55,28 +55,36 @@ class PostListScreen extends StatelessWidget {
             right: 0,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: GestureDetector(
-                onTap: () {},
-                child: Container(
-                  width: 120,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(100),
-                    color: context.colors.primary,
-                  ),
-                  child: Row(
-                    children: [
-                      Spacer(flex: 2),
-                      Icon(Icons.add, color: context.colors.onPrimary),
-                      Text(
-                        'Create',
-                        style: context.textTheme.bodyMedium!.copyWith(
-                          color: context.colors.onPrimary,
-                          fontWeight: FontWeight.w700,
+              child: Material(
+                color: context.colors.primary,
+                borderRadius: BorderRadius.circular(100),
+                clipBehavior: Clip.hardEdge,
+                child: InkWell(
+                  onTap: () {},
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.pressed)) {
+                      return Colors.white24;
+                    }
+                    return null; // 기본
+                  }),
+                  child: SizedBox(
+                    width: 110,
+                    height: 55,
+                    child: Row(
+                      children: [
+                        Spacer(flex: 2),
+                        Icon(Icons.add, color: context.colors.onPrimary),
+                        Text(
+                          'Create',
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: context.colors.onPrimary,
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
-                      ),
-                      Spacer(flex: 3),
-                    ],
+                        Spacer(flex: 3),
+                      ],
+                    ),
                   ),
                 ),
               ),
