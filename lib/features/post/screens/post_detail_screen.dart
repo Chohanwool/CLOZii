@@ -1,8 +1,10 @@
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
 import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/widgets/chat_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +17,38 @@ class PostDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 챗 박스
+      bottomSheet: Container(
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: context.colors.shadow)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              // ... 아이콘, TextField, Send 버튼
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.favorite_border_outlined, size: 30.0),
+              ),
+              Expanded(child: ChatField()),
+              const SizedBox(width: 10.0),
+              CustomButton(
+                text: 'Send',
+                onTap: () {},
+                width: 80.0,
+                height: 45.0,
+              ),
+            ],
+          ),
+        ),
+      ),
+
+      // 챗 박스 하단 여백
+      bottomNavigationBar: Container(height: kToolbarHeight),
+
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
