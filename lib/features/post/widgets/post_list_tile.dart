@@ -35,7 +35,11 @@ class PostListTile extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(post.title, style: context.textTheme.titleSmall),
+                        Text(
+                          post.title,
+                          overflow: TextOverflow.ellipsis,
+                          style: context.textTheme.titleSmall,
+                        ),
                         Text(
                           'address · ${showUploadedTime(post.createdAt)} ago',
                           style: context.textTheme.bodyLarge!.copyWith(

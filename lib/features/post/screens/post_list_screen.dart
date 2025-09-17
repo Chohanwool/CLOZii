@@ -28,6 +28,7 @@ class _PostListScreenState extends State<PostListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
         centerTitle: false,
         title: Row(
           mainAxisSize: MainAxisSize.min,
