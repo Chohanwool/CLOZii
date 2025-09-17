@@ -1,4 +1,5 @@
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
 import 'package:clozii/features/post/data/post.dart';
 import 'package:flutter/cupertino.dart';
@@ -46,12 +47,31 @@ class PostListTile extends StatelessWidget {
                             color: Colors.black45,
                           ),
                         ),
-                        Text(
-                          '\u20B1 500.0', //₱
-                          style: context.textTheme.bodyLarge!.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        post.price != null
+                            ? Text(
+                                '\u20B1 ${formatPrice(post.price!)}', //₱
+                                style: context.textTheme.bodyLarge!.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              )
+                            : Row(
+                                children: [
+                                  Text(
+                                    'SHARES',
+                                    style: context.textTheme.bodyLarge!
+                                        .copyWith(
+                                          color: context.colors.primary,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                  ),
+                                  const SizedBox(width: 4.0),
+                                  Icon(
+                                    Icons.favorite,
+                                    size: 16,
+                                    color: context.colors.primary,
+                                  ),
+                                ],
+                              ),
                         Spacer(),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
