@@ -1,6 +1,7 @@
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/widgets/post_list_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,14 +15,20 @@ class PostListScreen extends StatefulWidget {
 }
 
 class _PostListScreenState extends State<PostListScreen> {
-  List<Post> posts = dummyPosts;
+  List<Post> _posts = dummyPosts;
 
   Future<void> _onRefresh() async {
     // TODO: 실제 API 호출
     await Future.delayed(const Duration(seconds: 1));
     setState(() {
-      posts = List<Post>.from(posts)..shuffle(); // 예시로 셔플
+      _posts = List<Post>.from(_posts)..shuffle(); // 예시로 셔플
     });
+  }
+
+  void _navigateToPostDetail() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => PostDetailScreen()));
   }
 
   @override
@@ -68,8 +75,11 @@ class _PostListScreenState extends State<PostListScreen> {
             onRefresh: _onRefresh,
             child: ListView.builder(
               physics: const AlwaysScrollableScrollPhysics(),
-              itemCount: posts.length,
-              itemBuilder: (context, index) => PostListTile(post: posts[index]),
+              itemCount: _posts.length,
+              itemBuilder: (context, index) => PostListTile(
+                post: _posts[index],
+                onTap: _navigateToPostDetail,
+              ),
             ),
           ),
           Positioned(
