@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Scaffold(
           appBar: AppBar(
+            surfaceTintColor: Colors.transparent,
             titleSpacing: 24.0,
             title: GestureDetector(
               onTap: () {
