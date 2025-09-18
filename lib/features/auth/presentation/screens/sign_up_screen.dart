@@ -193,7 +193,6 @@ class _SignUpScreenState extends AuthBaseScreenState<SignUpScreen> {
 
     // 약관 통과 시 인증번호 전송
     if (isPop) {
-      //TODO: DB에 유저가 입력한 정보 저장
       await sendVerificationCode();
     }
   }

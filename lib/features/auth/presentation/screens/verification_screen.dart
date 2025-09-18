@@ -193,7 +193,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
           debugPrint('로그인 성공: ${user.phoneNumber}');
 
           // //TODO: 사용자 정보 저장
-          // AuthService.saveUser(uid: user.uid, name: user., phoneNumber: phoneNumber, birthDate: birthDate, gender: gender, consent: consent)
+          // AuthService.saveUser();
+          // AuthService().saveUser();
+
+          // 이렇게 하면 인스턴스 생성해야함
+          // AuthService().saveUser();
+
+          AuthService.saveUser();
         }
       } catch (e) {
         debugPrint('로그인 실패: ${e}');

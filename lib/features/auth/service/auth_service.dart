@@ -136,30 +136,39 @@ class AuthService {
     );
   }
 
-  // 사용자 정보 저장
-  static Future<void> saveUser({
-    required String uid,
-    required String name,
-    required String phoneNumber,
-    required String birthDate,
-    required String gender,
-    required user.ConsentInfo consent,
-  }) async {
-    try {
-      final now = DateTime.now();
+  // // 사용자 정보 저장
+  // static Future<void> saveUser({
+  //   required String uid,
+  //   required String name,
+  //   required String phoneNumber,
+  //   required String birthDate,
+  //   required String gender,
+  //   required user.ConsentInfo consent,
+  // }) async {
+  //   try {
+  //     final now = DateTime.now();
 
-      final savedUser = user.User(
-        uid: uid,
-        name: name,
-        phoneNumber: phoneNumber,
-        birthDate: birthDate,
-        gender: gender,
-        consent: consent,
-        createdAt: now.toIso8601String(),
-        updatedAt: now.toIso8601String(),
-      );
+  //     final savedUser = user.User(
+  //       uid: uid,
+  //       name: name,
+  //       phoneNumber: phoneNumber,
+  //       birthDate: birthDate,
+  //       gender: gender,
+  //       consent: consent,
+  //       createdAt: now.toIso8601String(),
+  //       updatedAt: now.toIso8601String(),
+  //     );
 
-      debugPrint(savedUser.toString());
-    } catch (e) {}
+  //     debugPrint(savedUser.toString());
+  //   } catch (e) {}
+  // }
+
+  // 이렇게 호출은 안됨.. 인스턴스 생성 필수 => 클래스 의도와 맞지 않음
+  // void saveUser() {
+  //   debugPrint('saveUser');
+  // }
+
+  static void saveUser() {
+    debugPrint('saveUser');
   }
 }
