@@ -4,7 +4,6 @@ import 'package:clozii/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 // core
-import 'package:clozii/features/auth/data/auth_type.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
 

@@ -1,6 +1,5 @@
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/data/auth_type.dart';
-import 'package:clozii/features/auth/data/constants.dart';
 import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
