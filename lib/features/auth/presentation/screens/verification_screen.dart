@@ -5,7 +5,8 @@ import 'package:clozii/core/utils/animation.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/data/auth_type.dart';
-import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/login_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
 import 'package:clozii/features/home/presentation/screens/home_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_list_screen.dart';
@@ -220,7 +221,11 @@ class _VerificationScreenState extends State<VerificationScreen> {
             if (result != null) {
               if (mounted) {
                 Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                  fadeInRoute(AuthScreen(authType: widget.authType)),
+                  fadeInRoute(
+                    widget.authType == AuthType.signup
+                        ? SignUpScreen()
+                        : LoginScreen(),
+                  ),
                   (route) => route.isFirst,
                 );
               }
