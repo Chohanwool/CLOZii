@@ -19,7 +19,8 @@ abstract class AuthBaseScreenState<T extends AuthBaseScreen> extends State<T> {
   String get completePhoneNumber =>
       '$phoneNumberPrefix${phoneNumberController.text.replaceAll('-', '').replaceFirst('09', '')}';
 
-  // AuthService를 통한 인증번호 전송
+  /// AuthService를 통한 인증번호 전송
+  /// - 전송 성공시(codeSend 호출) verificationScreen으로 이동
   Future<void> sendVerificationCode() async {
     await _authService.sendVerificationCode(
       completePhoneNumber,

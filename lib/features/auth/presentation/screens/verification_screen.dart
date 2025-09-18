@@ -1,17 +1,22 @@
-import 'dart:async';
+import 'package:clozii/features/auth/service/auth_service.dart';
+import 'package:flutter/material.dart';
 
+// core
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/animation.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
+
+// features
 import 'package:clozii/features/auth/data/auth_type.dart';
 import 'package:clozii/features/auth/presentation/screens/login_screen.dart';
 import 'package:clozii/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
-import 'package:clozii/features/home/presentation/screens/home_screen.dart';
+
+// packages
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class VerificationScreen extends StatefulWidget {
   const VerificationScreen({
@@ -127,10 +132,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
       _startTimer(); // 타이머 시작
     }
 
-    // TODO: 실제 인증번호 전송 로직 구현
-    // TODO: count < 0 이면 전송 차단
-    // TODO: 전송된 인증번호를 상태에 저장해 검증 시 사용
-
     setState(() {
       // 스낵바 내용 :
       // - 최초 요청 시 "인증번호 전송됨" 메시지 표시 - "Verfication code sent."
@@ -191,11 +192,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
         if (user != null) {
           debugPrint('로그인 성공: ${user.phoneNumber}');
 
-          Navigator.of(context).pushAndRemoveUntil(
-            // 메인 화면으로 이동
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-            (Route<dynamic> route) => false, // 기존 스택의 모든 route를 제거
-          );
+          // //TODO: 사용자 정보 저장
+          // AuthService.saveUser(uid: user.uid, name: user., phoneNumber: phoneNumber, birthDate: birthDate, gender: gender, consent: consent)
         }
       } catch (e) {
         debugPrint('로그인 실패: ${e}');

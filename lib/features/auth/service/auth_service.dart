@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 // core
 import 'package:clozii/core/utils/show_loading_overlay.dart';
+import 'package:clozii/core/models/user.dart' as user;
 
 // features
 import 'package:clozii/features/auth/data/auth_type.dart';
@@ -136,5 +137,29 @@ class AuthService {
   }
 
   // 사용자 정보 저장
-  Future<void> saveUser(User user) async {}
+  static Future<void> saveUser({
+    required String uid,
+    required String name,
+    required String phoneNumber,
+    required String birthDate,
+    required String gender,
+    required user.ConsentInfo consent,
+  }) async {
+    try {
+      final now = DateTime.now();
+
+      final savedUser = user.User(
+        uid: uid,
+        name: name,
+        phoneNumber: phoneNumber,
+        birthDate: birthDate,
+        gender: gender,
+        consent: consent,
+        createdAt: now.toIso8601String(),
+        updatedAt: now.toIso8601String(),
+      );
+
+      debugPrint(savedUser.toString());
+    } catch (e) {}
+  }
 }

@@ -2,9 +2,9 @@ class User {
   const User({
     required this.uid,
     required this.name,
-    required this.email,
+    this.email = '',
     required this.phoneNumber,
-    required this.profileImageUrl,
+    this.profileImageUrl = '',
     required this.birthDate,
     required this.gender,
     required this.consent,
