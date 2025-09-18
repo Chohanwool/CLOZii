@@ -5,13 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthService {
-  // Private 생성자 - 기본적으로 외부에서의 생성자 호출을 막음 
+  // Private 생성자 - 기본적으로 외부에서의 생성자 호출을 막음
   AuthService._internal();
 
-  // 싱글톤 인스턴스 
+  // 싱글톤 인스턴스
   static final AuthService _instance = AuthService._internal();
   // factory 생성자 - 외부에서 AuthService()를 호출할 수 있게 해줌
-  // 이때 반환되는 객체는 미리 생성된 싱글톤 인스턴스 
+  // 이때 반환되는 객체는 미리 생성된 싱글톤 인스턴스
   // 즉, 외부에서 AuthService()를 호출할 때마다 동일한 인스턴스가 반환됨
   factory AuthService() => _instance;
 
@@ -98,7 +98,8 @@ class AuthService {
     // 로직 구현 후 함수 반환 타입을 Future<bool> 로 변경 예정
 
     // Firebase DB에 저장된 '+639171234567' 번호만 가입된 유저로 인식 (임시)
-    return phoneNumber == '+639171234567';
+    // return phoneNumber == '+639171234567';
+    return false;
   }
 
   void navigateToVerification(
@@ -122,6 +123,4 @@ class AuthService {
       ),
     );
   }
-
- 
 }
