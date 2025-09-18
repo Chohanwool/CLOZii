@@ -1,17 +1,27 @@
+import 'package:flutter/material.dart';
+
+// core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+
+// features
+import 'package:clozii/features/auth/data/constants.dart';
 import 'package:clozii/features/auth/data/auth_step.dart';
 import 'package:clozii/features/auth/data/auth_type.dart';
-import 'package:clozii/features/auth/data/constants.dart';
+
+// screens
 import 'package:clozii/features/auth/presentation/screens/auth_base_screen.dart';
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/date_picker_field.dart';
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/gender_dropdown_field.dart';
+
+// widgets
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/name_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/phone_number_field.dart';
+import 'package:clozii/features/auth/presentation/widgets/auth_screen/date_picker_field.dart';
+import 'package:clozii/features/auth/presentation/widgets/auth_screen/gender_dropdown_field.dart';
 import 'package:clozii/features/auth/presentation/widgets/auth_screen/terms_and_conditions.dart';
-import 'package:flutter/material.dart';
+
+// packages
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class SignUpScreen extends AuthBaseScreen {
