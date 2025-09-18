@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+class AppConstants {
+  static const String appName = 'CLOZii';
+  static const String appSlogan = 'Closer People, Closer Deals';
+  static const String appLogo = 'assets/images/app_logo.png';
+  static const String appVersion = '1.0.0';
+}
+
 class AppColors {
   // 브랜드 색상
   static const Color primary = Color(0xFFFF8585);
