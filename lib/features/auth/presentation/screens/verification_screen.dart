@@ -124,6 +124,8 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   /// "인증번호 전송" 버튼 클릭 처리
   void _onSendCodeButtonPressed() async {
+    // TODO: 인증번호 필드 초기화 추가 필요
+
     int count = await _requestCodeCount(); // 요청 제한 횟수 카운트
     if (count > 0) {
       // 인증번호 전송 로직 호출
