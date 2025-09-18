@@ -1,8 +1,15 @@
+import 'package:flutter/material.dart';
+
+// core
 import 'package:clozii/core/utils/show_loading_overlay.dart';
+
+// features
 import 'package:clozii/features/auth/data/auth_type.dart';
 import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
+
+// packages
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AuthService {
   // Private 생성자 - 기본적으로 외부에서의 생성자 호출을 막음
@@ -15,8 +22,10 @@ class AuthService {
   // 즉, 외부에서 AuthService()를 호출할 때마다 동일한 인스턴스가 반환됨
   factory AuthService() => _instance;
 
-  // FirebaseAuth 인스턴스
+  // Firebase 인스턴스
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   // 첫 번째 인증 여부 플래그
   bool _isFirstVerification = true;
 
