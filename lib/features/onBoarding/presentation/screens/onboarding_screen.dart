@@ -1,10 +1,14 @@
-import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/features/auth/presentation/screens/sign_up_screen.dart';
-import 'package:clozii/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 // core
+import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/constants/app_constants.dart';
+
+// features
+import 'package:clozii/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/login_screen.dart';
+
+// widgets
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
 
