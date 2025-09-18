@@ -168,7 +168,31 @@ class AuthService {
   //   debugPrint('saveUser');
   // }
 
-  static void saveUser() {
-    debugPrint('saveUser');
+  static Future<void> saveUser({
+    required String uid,
+    required String name,
+    required String phoneNumber,
+    required String birthDate,
+    required String gender,
+    required user.ConsentInfo consent,
+  }) async {
+    try {
+      final now = DateTime.now();
+
+      final savedUser = user.User(
+        uid: uid,
+        name: name,
+        phoneNumber: phoneNumber,
+        birthDate: birthDate,
+        gender: gender,
+        consent: consent,
+        createdAt: now.toIso8601String(),
+        updatedAt: now.toIso8601String(),
+      );
+
+      debugPrint('사용자 정보 저장 완료: ${savedUser.toString()}');
+    } catch (e) {
+      debugPrint('사용자 정보 저장 실패: $e');
+    }
   }
 }

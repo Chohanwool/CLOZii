@@ -27,9 +27,15 @@ class CLOZii extends StatelessWidget {
       home: StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
+          debugPrint('StreamBuilder 상태: ${snapshot.connectionState}');
+          debugPrint('StreamBuilder 데이터: ${snapshot.hasData}');
+          debugPrint('StreamBuilder 에러: ${snapshot.hasError}');
+
           if (snapshot.hasData) {
+            debugPrint('로그인 상태 - HomeScreen으로 이동');
             return HomeScreen();
           } else {
+            debugPrint('비로그인 상태 - OnBoardingScreen으로 이동');
             return OnBoardingScreen();
           }
         },

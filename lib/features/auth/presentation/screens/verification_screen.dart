@@ -191,15 +191,19 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
         if (user != null) {
           debugPrint('로그인 성공: ${user.phoneNumber}');
+          debugPrint(
+            'FirebaseAuth 현재 사용자: ${FirebaseAuth.instance.currentUser?.uid}',
+          );
+          debugPrint('사용자 UID: ${user.uid}');
+          debugPrint('사용자 전화번호: ${user.phoneNumber}');
 
-          // //TODO: 사용자 정보 저장
-          // AuthService.saveUser();
-          // AuthService().saveUser();
-
-          // 이렇게 하면 인스턴스 생성해야함
-          // AuthService().saveUser();
-
-          AuthService.saveUser();
+          // 로그인 성공 후 현재 화면을 닫아서 main.dart의 StreamBuilder가 HomeScreen을 표시하도록 함
+          if (mounted) {
+            Navigator.of(
+              context,
+              rootNavigator: true,
+            ).popUntil((route) => route.isFirst);
+          }
         }
       } catch (e) {
         debugPrint('로그인 실패: ${e}');
