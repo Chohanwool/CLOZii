@@ -93,6 +93,7 @@ class AuthService {
     }
   }
 
+  // 사용자(전화번호) 가입 여부 확인
   bool isPhoneNumberRegistered(String phoneNumber) {
     // TODO: 입력된 전화번호로 가입된 계정이 있는지 확인하는 로직 구현
     // 로직 구현 후 함수 반환 타입을 Future<bool> 로 변경 예정
@@ -102,6 +103,7 @@ class AuthService {
     return false;
   }
 
+  // 인증 화면으로 이동
   void navigateToVerification(
     BuildContext context,
     String phoneNumber,
@@ -123,4 +125,7 @@ class AuthService {
       ),
     );
   }
+
+  // 사용자 정보 저장
+  Future<void> saveUser(User user) async {}
 }
