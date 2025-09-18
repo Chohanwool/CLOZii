@@ -32,10 +32,10 @@ class SignUpScreen extends AuthBaseScreen {
 }
 
 class _SignUpScreenState extends AuthBaseScreenState<SignUpScreen> {
-  // _currentStep을 [ 1, 2, 3, 4 ]로 비교하는 대신
-  // enum으로 관리해서 가독성 향상시킴
+  // 회원가입 단계별 스텝 관리
   late AuthStep _currentStep;
 
+  // 상태 관리 변수
   bool _isNameValid = false;
   DateTime? _birthDate;
   String? _selectedGender;
@@ -56,6 +56,7 @@ class _SignUpScreenState extends AuthBaseScreenState<SignUpScreen> {
   void initState() {
     super.initState();
 
+    // 초기 단계 설정(전화번호 입력 단계)
     _currentStep = AuthStep.phoneSignup;
 
     // 각 필드별 이벤트 리스너 등록하여 입력 값 변경 시 이벤트 발생
@@ -67,8 +68,6 @@ class _SignUpScreenState extends AuthBaseScreenState<SignUpScreen> {
     phoneNumberFocusNode.addListener(() {
       setState(() {});
     });
-
-    debugPrint('AuthScreen initState: $_currentStep');
   }
 
   @override
@@ -89,6 +88,8 @@ class _SignUpScreenState extends AuthBaseScreenState<SignUpScreen> {
     _genderFocusNode.dispose();
     super.dispose();
   }
+
+  //////////////////////////////////////////////////////////////
 
   // 전화번호 입력 단계인지 확인하는 메서드
   bool get _isPhoneStep => _currentStep == AuthStep.phoneSignup;
@@ -204,50 +205,6 @@ class _SignUpScreenState extends AuthBaseScreenState<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-
-      bottomSheet:
-          (_currentStep == AuthStep.name || _currentStep == AuthStep.gender)
-          ? KeyboardVisibilityBuilder(
-              builder: (context, isKeyboardVisible) {
-                final buttonText = 'Continue';
-                final buttonHeight = 50.0;
-
-                Widget? button;
-
-                if (_currentStep == AuthStep.name) {
-                  button = CustomButton(
-                    text: buttonText,
-                    onTap: _isNameValid ? _proceedIfNameFilled : null,
-                    height: buttonHeight,
-                    isKeyboardVisible: isKeyboardVisible,
-                  );
-                }
-
-                if (_currentStep == AuthStep.gender) {
-                  button = CustomButton(
-                    // _currentStep == 4
-                    text: buttonText,
-                    onTap: _birthDate != null ? _allFieldValidCheck : null,
-                    height: buttonHeight,
-                    isKeyboardVisible: isKeyboardVisible,
-                  );
-                }
-
-                return Material(
-                  child: Container(
-                    padding: !isKeyboardVisible
-                        ? EdgeInsets.symmetric(horizontal: 16.0)
-                        : null,
-                    color: Colors.transparent,
-                    child: button,
-                  ),
-                );
-              },
-            )
-          : null,
-
-      bottomNavigationBar: Container(height: kToolbarHeight),
-
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -307,6 +264,50 @@ class _SignUpScreenState extends AuthBaseScreenState<SignUpScreen> {
           ),
         ),
       ),
+
+      // 하단 버튼 위젯
+      bottomSheet:
+          (_currentStep == AuthStep.name || _currentStep == AuthStep.gender)
+          ? KeyboardVisibilityBuilder(
+              builder: (context, isKeyboardVisible) {
+                final buttonText = 'Continue';
+                final buttonHeight = 50.0;
+
+                Widget? button;
+
+                if (_currentStep == AuthStep.name) {
+                  button = CustomButton(
+                    text: buttonText,
+                    onTap: _isNameValid ? _proceedIfNameFilled : null,
+                    height: buttonHeight,
+                    isKeyboardVisible: isKeyboardVisible,
+                  );
+                }
+
+                if (_currentStep == AuthStep.gender) {
+                  button = CustomButton(
+                    // _currentStep == 4
+                    text: buttonText,
+                    onTap: _birthDate != null ? _allFieldValidCheck : null,
+                    height: buttonHeight,
+                    isKeyboardVisible: isKeyboardVisible,
+                  );
+                }
+
+                return Material(
+                  child: Container(
+                    padding: !isKeyboardVisible
+                        ? EdgeInsets.symmetric(horizontal: 16.0)
+                        : null,
+                    color: Colors.transparent,
+                    child: button,
+                  ),
+                );
+              },
+            )
+          : null,
+
+      bottomNavigationBar: Container(height: kToolbarHeight),
     );
   }
 }
