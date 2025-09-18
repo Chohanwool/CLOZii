@@ -1,4 +1,3 @@
-import 'package:clozii/features/auth/service/auth_service.dart';
 import 'package:flutter/material.dart';
 
 // core
