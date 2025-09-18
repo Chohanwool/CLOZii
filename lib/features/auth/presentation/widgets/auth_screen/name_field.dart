@@ -1,7 +1,9 @@
-import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// core
+import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/theme/context_extension.dart';
 
 class NameField extends StatefulWidget {
   const NameField({

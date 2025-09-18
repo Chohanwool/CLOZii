@@ -1,5 +1,8 @@
-import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
+
+// core
+import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/theme/context_extension.dart';
 
 class GenderDropdownField extends StatelessWidget {
   final FocusNode focusNode;
@@ -46,7 +49,7 @@ class GenderDropdownField extends StatelessWidget {
         floatingLabelBehavior: FloatingLabelBehavior.always,
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black54),
+          borderSide: BorderSide(color: AppColors.black54),
         ),
       ),
     );

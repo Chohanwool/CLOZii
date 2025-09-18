@@ -1,5 +1,10 @@
-import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
+
+// core
+import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/theme/context_extension.dart';
+
+// packages
 import 'package:intl/intl.dart';
 
 class DatePickerField extends StatefulWidget {
@@ -140,7 +145,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
 
         border: const OutlineInputBorder(),
         focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black54),
+          borderSide: BorderSide(color: AppColors.black54),
         ),
       ),
     );

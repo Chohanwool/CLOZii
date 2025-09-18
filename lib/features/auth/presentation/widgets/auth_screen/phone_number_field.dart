@@ -1,7 +1,11 @@
-import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// core
+import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/theme/context_extension.dart';
+
+// packages
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart'; // 전화번호 입력 포맷팅에 필요한 패키지
 
 /// 전화번호 입력 필드 위젯

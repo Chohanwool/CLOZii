@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
+// core
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:flutter/material.dart';
 
 enum Age { youth, adult }
 
