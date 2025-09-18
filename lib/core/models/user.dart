@@ -1,6 +1,6 @@
 class User {
   const User({
-    required this.id,
+    required this.uid,
     required this.name,
     required this.email,
     required this.phoneNumber,
@@ -12,7 +12,7 @@ class User {
     required this.updatedAt,
   });
 
-  final String id;
+  final String uid;
   final String name;
   final String email;
   final String phoneNumber;
