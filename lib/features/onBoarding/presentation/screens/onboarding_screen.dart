@@ -17,15 +17,17 @@ class OnBoardingScreen extends StatelessWidget {
   // 회원가입 화면으로 이동
   void navigateToSignUp(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (BuildContext context) => SignUpScreen()),
+      MaterialPageRoute(
+        builder: (BuildContext context) => const SignUpScreen(),
+      ),
     );
   }
 
   // 로그인 화면으로 이동
   void navigateToLogin(BuildContext context) {
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (BuildContext context) => const LoginScreen()),
+    );
   }
 
   @override
