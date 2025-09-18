@@ -1,8 +1,10 @@
-import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/home/presentation/screens/tabs/chat_tab_screen.dart';
+import 'package:clozii/features/home/presentation/screens/tabs/home_tab_screen.dart';
+import 'package:clozii/features/home/presentation/screens/tabs/map_tab_screen.dart';
+import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:clozii/features/home/presentation/widgets/bottom_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -19,9 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
   // 각 탭에 해당하는 화면들
   final List<Widget> _screens = [
     const HomeTabScreen(),
-    const SearchTabScreen(),
-    const AddTabScreen(),
-    const SettingsTabScreen(),
+    const MapTabScreen(),
+    const ChatTabScreen(),
+    const MyTabScreen(),
   ];
 
   // 지역 목록
@@ -191,62 +193,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
       ],
-    );
-  }
-}
-
-// 각 탭 화면들
-class HomeTabScreen extends StatelessWidget {
-  const HomeTabScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Home Tab', style: TextStyle(fontSize: 24)),
-    );
-  }
-}
-
-class SearchTabScreen extends StatelessWidget {
-  const SearchTabScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Map Tab', style: TextStyle(fontSize: 24)));
-  }
-}
-
-class AddTabScreen extends StatelessWidget {
-  const AddTabScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Chat Tab', style: TextStyle(fontSize: 24)),
-    );
-  }
-}
-
-class SettingsTabScreen extends StatelessWidget {
-  const SettingsTabScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text('My Tab', style: TextStyle(fontSize: 24)),
-          const SizedBox(height: 24),
-          CustomButton(
-            text: 'Logout',
-            width: 140.0,
-            onTap: () {
-              FirebaseAuth.instance.signOut();
-            },
-          ),
-        ],
-      ),
     );
   }
 }
