@@ -1,5 +1,6 @@
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/features/auth/presentation/screens/auth_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 // core
@@ -16,16 +17,18 @@ import 'package:clozii/core/widgets/custom_text_link.dart';
 class OnBoardingScreen extends StatelessWidget {
   const OnBoardingScreen({super.key});
 
-  /// 로그인 / 회원가입 화면으로 이동하는 메서드
-  /// - [authType] 파라미터로 이동할 화면의 타입을 지정
-  ///   (AuthType.login → 로그인 화면)
-  ///   (AuthType.signup → 회원가입 화면)
-  void navigateToAuth(BuildContext context, AuthType authType) {
+  // 회원가입 화면으로 이동
+  void navigateToSignUp(BuildContext context) {
     Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (BuildContext context) => AuthScreen(authType: authType),
-      ),
+      MaterialPageRoute(builder: (BuildContext context) => SignUpScreen()),
     );
+  }
+
+  // 로그인 화면으로 이동
+  void navigateToLogin(BuildContext context) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (BuildContext context) => LoginScreen()));
   }
 
   @override
@@ -44,13 +47,9 @@ class OnBoardingScreen extends StatelessWidget {
                 right: 0,
                 child: Column(
                   children: [
-                    _SignUpButton(
-                      onTap: () => navigateToAuth(context, AuthType.signup),
-                    ),
+                    _SignUpButton(onTap: () => navigateToSignUp(context)),
                     const SizedBox(height: 8.0),
-                    _LoginPromt(
-                      onTap: () => navigateToAuth(context, AuthType.login),
-                    ),
+                    _LoginPromt(onTap: () => navigateToLogin(context)),
                   ],
                 ),
               ),

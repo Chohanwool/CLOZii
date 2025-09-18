@@ -16,16 +16,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
-class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key, required this.authType});
-
-  final AuthType authType;
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
 
   @override
-  State<AuthScreen> createState() => _AuthScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   // _currentStep을 [ 1, 2, 3, 4 ]로 비교하는 대신
   // enum으로 관리해서 가독성 향상시킴
   late AuthStep _currentStep;
@@ -57,9 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
   void initState() {
     super.initState();
 
-    _currentStep = widget.authType == AuthType.signup
-        ? AuthStep.phoneSignup
-        : AuthStep.phoneLogin;
+    _currentStep = AuthStep.phoneSignup;
 
     // 각 필드별 이벤트 리스너 등록하여 입력 값 변경 시 이벤트 발생
     _phoneNumberController.addListener(_checkPhoneNumberValid);
@@ -118,11 +114,6 @@ class _AuthScreenState extends State<AuthScreen> {
     // _currentStep == (AuthStep.phoneSignup 또는 AuthStep.phoneLogin) 인 경우
     if (cleanNumber.length == phoneNumberMaxLength && _isPhoneStep) {
       debugPrint(_completePhoneNumber);
-
-      // 로그인 화면에서는 전화번호 입력 필드만 필요하므로, _currentStep을 변경 시킬 필요가 없음
-      if (widget.authType == AuthType.login) {
-        return;
-      }
 
       // 전화번호 입력 완료 시 이름 필드로 이동(다음 단계로 이동)
       setState(() {
@@ -302,7 +293,7 @@ class _AuthScreenState extends State<AuthScreen> {
       MaterialPageRoute(
         builder: (context) => VerificationScreen(
           phoneNumber: phoneNumber,
-          authType: widget.authType,
+          authType: AuthType.signup,
           verificationId: verificationId,
           resendToken: resendToken,
           onResendCode: (String phoneNumber) {
@@ -319,9 +310,7 @@ class _AuthScreenState extends State<AuthScreen> {
       appBar: AppBar(),
 
       bottomSheet:
-          (_currentStep == AuthStep.name ||
-              _currentStep == AuthStep.gender ||
-              widget.authType == AuthType.login)
+          (_currentStep == AuthStep.name || _currentStep == AuthStep.gender)
           ? KeyboardVisibilityBuilder(
               builder: (context, isKeyboardVisible) {
                 final buttonText = 'Continue';
@@ -343,30 +332,6 @@ class _AuthScreenState extends State<AuthScreen> {
                     // _currentStep == 4
                     text: buttonText,
                     onTap: _birthDate != null ? _allFieldValidCheck : null,
-                    height: buttonHeight,
-                    isKeyboardVisible: isKeyboardVisible,
-                  );
-                }
-
-                if (widget.authType == AuthType.login) {
-                  button = CustomButton(
-                    text: buttonText,
-                    onTap: () {
-                      if (_isPhoneNumberRegistered()) {
-                        _sendVerificationCode(_completePhoneNumber);
-                      } else {
-                        final isFormValid =
-                            _formKey.currentState?.validate() ?? false;
-
-                        if (!isFormValid) return;
-
-                        showAlertDialog(
-                          context,
-                          'This phone number is not registered. Please sign up first.',
-                        );
-                      }
-                    },
-
                     height: buttonHeight,
                     isKeyboardVisible: isKeyboardVisible,
                   );
