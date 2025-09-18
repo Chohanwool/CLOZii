@@ -218,19 +218,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
             debugPrint('isFirstVerification: $_isFirstVerification');
             if (mounted) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => VerificationScreen(
-                    phoneNumber: phoneNumber,
-                    authType: widget.authType,
-                    verificationId: verificationId,
-                    resendToken: resendToken,
-                    onResendCode: (String phoneNumber) {
-                      _sendVerificationCode(phoneNumber);
-                    },
-                  ),
-                ),
-              );
+              _navigateToVerification(phoneNumber, verificationId, resendToken);
             }
           }
         },
@@ -259,22 +247,15 @@ class _AuthScreenState extends State<AuthScreen> {
 
     if (!isFormValid) return;
 
-    // 가입된 전화번호인지 확인, 확인 후 가입된 전화번호라면 인증 화면으로 이동
-    // TODO: 가입된 전화번호 확인 로직 구현
+    // 전화번호가 가입된 번호면 온보딩 화면으로 pop
     if (_isPhoneNumberRegistered()) {
-      if (widget.authType == AuthType.login) {
-        _navigateToVerification(_completePhoneNumber);
-      }
+      final result = await showAlertDialog(
+        context,
+        'This phone number is already registered. Try signing in.',
+      );
 
-      if (widget.authType == AuthType.signup) {
-        final result = await showAlertDialog(
-          context,
-          'This phone number is already registered. Try signing in.',
-        );
-
-        if (result != null && mounted) {
-          Navigator.of(context).pop();
-        }
+      if (result != null && mounted) {
+        Navigator.of(context).pop();
       }
 
       return;
@@ -299,12 +280,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     // 약관 통과 시 인증번호 전송
     if (isPop) {
-      // await Future.delayed(const Duration(milliseconds: 350)); // 예시
-
-      // //TODO: DB에 유저가 입력한 정보 저장
-      // await Future.delayed(
-      //   const Duration(milliseconds: 800),
-      // ); // DB에 데이터를 저장하는 시간을 임의로 대체
+      //TODO: DB에 유저가 입력한 정보 저장
       await _sendVerificationCode(phone);
     }
   }
@@ -317,13 +293,24 @@ class _AuthScreenState extends State<AuthScreen> {
     return _completePhoneNumber == '+639171234567';
   }
 
-  void _navigateToVerification(String phone) {
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (context) =>
-    //         VerificationScreen(phoneNumber: phone, authType: widget.authType),
-    //   ),
-    // );
+  void _navigateToVerification(
+    String phoneNumber,
+    String verificationId,
+    int? resendToken,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => VerificationScreen(
+          phoneNumber: phoneNumber,
+          authType: widget.authType,
+          verificationId: verificationId,
+          resendToken: resendToken,
+          onResendCode: (String phoneNumber) {
+            _sendVerificationCode(phoneNumber);
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -366,7 +353,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     text: buttonText,
                     onTap: () {
                       if (_isPhoneNumberRegistered()) {
-                        _navigateToVerification(_completePhoneNumber);
+                        _sendVerificationCode(_completePhoneNumber);
                       } else {
                         final isFormValid =
                             _formKey.currentState?.validate() ?? false;
