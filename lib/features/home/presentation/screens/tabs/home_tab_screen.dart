@@ -4,7 +4,7 @@ import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
-import 'package:clozii/features/post/presentation/widgets/post_list_tile.dart';
+import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class HomeTabScreen extends StatefulWidget {

@@ -2,9 +2,9 @@
 import 'package:clozii/core/constants/app_constants.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/image_selector.dart';
-import 'package:clozii/features/post/presentation/widgets/post_content.dart';
-import 'package:clozii/features/post/presentation/widgets/post_title_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/post_content.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/post_title_field.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
