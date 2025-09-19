@@ -1,6 +1,7 @@
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,14 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     );
   }
 
+  // 게시글 생성 모달 띄우기
+  void _showPostCreateModal() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => const PostCreateScreen(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -60,7 +69,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               borderRadius: BorderRadius.circular(100),
               clipBehavior: Clip.hardEdge,
               child: InkWell(
-                onTap: () {},
+                // 게시글 생성 모달 띄우기
+                onTap: _showPostCreateModal,
                 splashFactory: NoSplash.splashFactory, // 버튼 클릭 시 잉크 효과 제거
                 overlayColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.pressed)) {
