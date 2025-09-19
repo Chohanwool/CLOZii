@@ -66,7 +66,18 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    # images
     - assets/images/
+
+    # lottie
+    - assets/lottie/loading_airplane.json
+    - assets/lottie/loading_feeds.json
+    - assets/lottie/loading_check.json
+    - assets/lottie/loading_circular.json
+    - assets/lottie/loading_dots.json
+    - assets/lottie/loading_files.json
+    - assets/lottie/loading_sand.json
+    - assets/lottie/loading_text.json
 
   fonts:
     - family: CLOZii_BalooThambi2
