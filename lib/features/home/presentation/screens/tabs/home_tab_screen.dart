@@ -1,3 +1,4 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
@@ -37,7 +38,17 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   void _showPostCreateModal() {
     showModalBottomSheet(
       context: context,
-      builder: (context) => const PostCreateScreen(),
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (context) => Container(
+        padding: const EdgeInsets.only(
+          top: kToolbarHeight,
+          bottom: kBottomNavigationBarHeight,
+        ),
+        color: AppColors.white,
+        child: const PostCreateScreen(),
+      ),
     );
   }
 
