@@ -45,10 +45,9 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
       isDismissible: false,
       enableDrag: false,
       builder: (context) => Container(
-        padding: const EdgeInsets.only(
-          top: kToolbarHeight,
-          bottom: kBottomNavigationBarHeight,
-        ),
+        // top padding ONLY! - bottom padding 은 모달 내부에서 처리
+        // 여기에서 bottom padding 을 추가하면 모달 내부에서 키보드가 뜰때 버튼이 키보드에 붙지 못함
+        padding: const EdgeInsets.only(top: kToolbarHeight), 
         color: AppColors.white,
         child: AddPhraseModal(),
       ),
