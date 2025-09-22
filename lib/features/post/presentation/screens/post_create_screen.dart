@@ -29,6 +29,9 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
   // 자주 쓰는 문구 리스트
   final _goToPhrases = dummyGoToPhrases;
 
+  // 선택된 자주 쓰는 문구
+  String? _selectedPhrase;
+
   // 자주 쓰는 문구 리스트가 비어있는지 여부
   bool get _isGoToPhrasesEmpty => _goToPhrases.isEmpty;
 
@@ -38,6 +41,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     super.dispose();
   }
 
+  // 자주 쓰는 문구 추가 모달 열기
   void _showAddPhraseModal() async {
     // 자주 쓰는 문구 모달 닫기
     Navigator.of(context).pop();
@@ -67,6 +71,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     _showGoToPhrases();
   }
 
+  // 자주 쓰는 문구 모달 열기
   void _showGoToPhrases() {
     showModalBottomSheet(
       context: context,
@@ -134,6 +139,15 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
                                     dense: true,
 
                                     title: Text(_goToPhrases[index]),
+                                    onTap: () {
+                                      // 선택된 자주 쓰는 문구 저장
+                                      setState(() {
+                                        _selectedPhrase = _goToPhrases[index];
+                                      });
+
+                                      // 자주 쓰는 문구 모달 닫기
+                                      Navigator.of(context).pop();
+                                    },
 
                                     trailing: IconButton(
                                       onPressed: () {},
@@ -185,7 +199,15 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
               const SizedBox(height: 40.0),
 
               // 본문 입력 필드
-              PostContentField(controller: _contentController),
+              PostContentField(
+                controller: _contentController,
+                selectedPhrase: _selectedPhrase,
+                onPhraseAdded: () {
+                  setState(() {
+                    _selectedPhrase = null; // 문구 추가 후 리셋
+                  });
+                },
+              ),
 
               // 자주 쓰는 문구 버튼
               CustomButton(

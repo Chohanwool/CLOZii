@@ -6,15 +6,47 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
 
 class PostContentField extends StatefulWidget {
-  const PostContentField({super.key, required this.controller});
+  const PostContentField({
+    super.key,
+    required this.controller,
+    required this.selectedPhrase,
+    this.onPhraseAdded,
+  });
 
   final TextEditingController controller;
+  final String? selectedPhrase;
+  final VoidCallback? onPhraseAdded;
 
   @override
   State<PostContentField> createState() => _PostContentFieldState();
 }
 
 class _PostContentFieldState extends State<PostContentField> {
+  @override
+  void didUpdateWidget(PostContentField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // 선택된 문구가 null이 아니고 이전 문구와 다르면
+    if (widget.selectedPhrase != null &&
+        widget.selectedPhrase != oldWidget.selectedPhrase) {
+      // 텍스트가 비어있지 않고, 마지막으로 입력된게 줄바꿈이 아니면, '\n' 추가
+      if (widget.controller.text.isNotEmpty &&
+          !widget.controller.text.endsWith('\n')) {
+        widget.controller.text += '\n';
+      }
+
+      // 선택된 문구 추가
+      widget.controller.text += widget.selectedPhrase!;
+
+      // build()나 didUpdateWidget() 같은 빌드 중에 setState()를 호출하면 에러 발생 함
+      // addPostFrameCallback는 빌드가 모두 끝난 이후에 setState를 안전하게 호출할 수 있게 해줌
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // 문구가 추가된 이후, selectedPhrase를 null로 리셋 시키는 함수 호출
+        widget.onPhraseAdded?.call();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
