@@ -2,6 +2,8 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
@@ -24,13 +26,33 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  // 자주 쓰는 문구 비어있는지 여부
-  bool _isGoToPhrasesEmpty = true;
+  // 자주 쓰는 문구 리스트
+  final _goToPhrases = dummyGoToPhrases;
+
+  // 자주 쓰는 문구 리스트가 비어있는지 여부
+  bool get _isGoToPhrasesEmpty => _goToPhrases.isEmpty;
 
   @override
   void dispose() {
     _titleController.dispose();
     super.dispose();
+  }
+
+  void _showAddPhraseModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (context) => Container(
+        padding: const EdgeInsets.only(
+          top: kToolbarHeight,
+          bottom: kBottomNavigationBarHeight,
+        ),
+        color: AppColors.white,
+        child: AddPhraseModal(),
+      ),
+    );
   }
 
   void _showGoToPhrases() {
@@ -55,8 +77,10 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('My Go-To Phrases', style: context.textTheme.titleLarge),
+
+                // 추가 버튼
                 TextButton(
-                  onPressed: () {},
+                  onPressed: _showAddPhraseModal,
                   style: TextButton.styleFrom(
                     iconSize: 26.0,
                     textStyle: context.textTheme.labelLarge!.copyWith(
@@ -85,6 +109,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
                             ),
                           ),
                         )
+                      // 자주 쓰는 문구 - ListTile
                       : Expanded(
                           child: ListView.builder(
                             itemCount: 10,
