@@ -71,6 +71,54 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     _showGoToPhrases();
   }
 
+  void _showMoreOptions() {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: Text(
+              '수정',
+              style: context.textTheme.titleLarge!.copyWith(
+                color: AppColors.info,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              // 수정 로직
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: Text(
+              '삭제',
+              style: context.textTheme.titleLarge!.copyWith(
+                color: AppColors.error,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              // 삭제 로직
+            },
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text(
+            '취소',
+            style: context.textTheme.titleLarge!.copyWith(
+              color: AppColors.warning,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
   // 자주 쓰는 문구 모달 열기
   void _showGoToPhrases() {
     showModalBottomSheet(
@@ -149,8 +197,9 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
                                       Navigator.of(context).pop();
                                     },
 
+                                    // 더보기 버튼
                                     trailing: IconButton(
-                                      onPressed: () {},
+                                      onPressed: _showMoreOptions,
                                       icon: Icon(Icons.more_vert),
                                     ),
                                   ),
