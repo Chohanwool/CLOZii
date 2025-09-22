@@ -38,8 +38,12 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     super.dispose();
   }
 
-  void _showAddPhraseModal() {
-    showModalBottomSheet(
+  void _showAddPhraseModal() async {
+    // 자주 쓰는 문구 모달 닫기
+    Navigator.of(context).pop();
+
+    // 추가한 자주 쓰는 문구 받아오기
+    final phrase = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
@@ -47,11 +51,20 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
       builder: (context) => Container(
         // top padding ONLY! - bottom padding 은 모달 내부에서 처리
         // 여기에서 bottom padding 을 추가하면 모달 내부에서 키보드가 뜰때 버튼이 키보드에 붙지 못함
-        padding: const EdgeInsets.only(top: kToolbarHeight), 
+        padding: const EdgeInsets.only(top: kToolbarHeight),
         color: AppColors.white,
         child: AddPhraseModal(),
       ),
     );
+
+    if (phrase != null) {
+      setState(() {
+        _goToPhrases.add(phrase);
+      });
+    }
+
+    // 자주 쓰는 문구 추가 후 모달 다시 열기 - 새로고침
+    _showGoToPhrases();
   }
 
   void _showGoToPhrases() {
@@ -111,7 +124,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
                       // 자주 쓰는 문구 - ListTile
                       : Expanded(
                           child: ListView.builder(
-                            itemCount: 10,
+                            itemCount: _goToPhrases.length,
                             itemBuilder: (context, index) {
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -120,10 +133,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
                                     contentPadding: EdgeInsets.zero,
                                     dense: true,
 
-                                    title: Text(
-                                      'Go-to Phrase $index',
-                                      style: context.textTheme.bodyLarge,
-                                    ),
+                                    title: Text(_goToPhrases[index]),
 
                                     trailing: IconButton(
                                       onPressed: () {},

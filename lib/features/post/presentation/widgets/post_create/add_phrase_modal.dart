@@ -50,7 +50,9 @@ class _AddPhraseModalState extends State<AddPhraseModal> {
 
       bottomSheet: KeyboardAwareButton(
         text: 'Add',
-        onTap: _controller.text.trim().isEmpty ? null : () {},
+        onTap: _controller.text.trim().isEmpty
+            ? null
+            : () => Navigator.of(context).pop(_controller.text.trim()), // 입력된 문구를 모달 밖으로 반환
       ),
 
       bottomNavigationBar: Container(height: kToolbarHeight),
