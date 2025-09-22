@@ -4,7 +4,12 @@ import 'package:clozii/features/post/presentation/widgets/post_create/go_to_phra
 import 'package:flutter/material.dart';
 
 class AddPhraseModal extends StatefulWidget {
-  const AddPhraseModal({super.key});
+  const AddPhraseModal({super.key, this.phrase});
+
+  // 이전에 입력된 문구
+  // 자주 쓰는 문구 추가하는 경우 -> phrase == null
+  // 자주 쓰는 문구 수정하는 경우 -> phrase != null
+  final String? phrase;
 
   @override
   State<AddPhraseModal> createState() => _AddPhraseModalState();
@@ -18,6 +23,10 @@ class _AddPhraseModalState extends State<AddPhraseModal> {
   void initState() {
     super.initState();
     _controller.addListener(() => setState(() {}));
+
+    if (widget.phrase != null) {
+      _controller.text = widget.phrase!;
+    }
   }
 
   @override
@@ -52,7 +61,9 @@ class _AddPhraseModalState extends State<AddPhraseModal> {
         text: 'Add',
         onTap: _controller.text.trim().isEmpty
             ? null
-            : () => Navigator.of(context).pop(_controller.text.trim()), // 입력된 문구를 모달 밖으로 반환
+            : () => Navigator.of(
+                context,
+              ).pop(_controller.text.trim()), // 입력된 문구를 모달 밖으로 반환
       ),
 
       bottomNavigationBar: Container(height: kToolbarHeight),

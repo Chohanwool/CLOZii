@@ -42,7 +42,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
   }
 
   // 자주 쓰는 문구 추가 모달 열기
-  void _showAddPhraseModal() async {
+  void _showAddPhraseModal(String? currentPhrase) async {
     // 자주 쓰는 문구 모달 닫기
     Navigator.of(context).pop();
 
@@ -57,13 +57,24 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
         // 여기에서 bottom padding 을 추가하면 모달 내부에서 키보드가 뜰때 버튼이 키보드에 붙지 못함
         padding: const EdgeInsets.only(top: kToolbarHeight),
         color: AppColors.white,
-        child: AddPhraseModal(),
+        child: AddPhraseModal(phrase: currentPhrase),
       ),
     );
 
     if (phrase != null) {
+      int index = -1;
+
+      if (currentPhrase != null) {
+        index = _goToPhrases.indexOf(currentPhrase);
+        _goToPhrases.remove(currentPhrase);
+      }
+
       setState(() {
-        _goToPhrases.add(phrase);
+        if (index != -1) {
+          _goToPhrases.insert(index, phrase);
+        } else {
+          _goToPhrases.add(phrase);
+        }
       });
     }
 
@@ -71,7 +82,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     _showGoToPhrases();
   }
 
-  void _showMoreOptions() {
+  void _showMoreOptions(String currentPhrase) {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
@@ -87,6 +98,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
             onPressed: () {
               Navigator.pop(context);
               // 수정 로직
+              _showAddPhraseModal(currentPhrase);
             },
           ),
           CupertinoActionSheetAction(
@@ -100,6 +112,9 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
             onPressed: () {
               Navigator.pop(context);
               // 삭제 로직
+              setState(() {
+                _goToPhrases.remove(currentPhrase);
+              });
             },
           ),
         ],
@@ -145,7 +160,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
 
                 // 추가 버튼
                 TextButton(
-                  onPressed: _showAddPhraseModal,
+                  onPressed: () => _showAddPhraseModal(null),
                   style: TextButton.styleFrom(
                     iconSize: 26.0,
                     textStyle: context.textTheme.labelLarge!.copyWith(
@@ -199,7 +214,8 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
 
                                     // 더보기 버튼
                                     trailing: IconButton(
-                                      onPressed: _showMoreOptions,
+                                      onPressed: () =>
+                                          _showMoreOptions(_goToPhrases[index]),
                                       icon: Icon(Icons.more_vert),
                                     ),
                                   ),
