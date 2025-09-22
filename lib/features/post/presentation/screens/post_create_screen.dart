@@ -9,31 +9,35 @@ import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase
 import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/post_content.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/post_title_field.dart';
+import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PostCreateScreen extends StatefulWidget {
+class PostCreateScreen extends ConsumerStatefulWidget {
   const PostCreateScreen({super.key});
 
   @override
-  State<PostCreateScreen> createState() => _PostCreateScreenState();
+  ConsumerState<PostCreateScreen> createState() => _PostCreateScreenState();
 }
 
-class _PostCreateScreenState extends State<PostCreateScreen> {
+class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   // 컨트롤러
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  // 자주 쓰는 문구 리스트
-  final _goToPhrases = dummyGoToPhrases;
-
   // 선택된 자주 쓰는 문구
   String? _selectedPhrase;
 
-  // 자주 쓰는 문구 리스트가 비어있는지 여부
-  bool get _isGoToPhrasesEmpty => _goToPhrases.isEmpty;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(goToPhrasesProvider.notifier).setInitial(dummyGoToPhrases);
+    });
+  }
 
   @override
   void dispose() {
@@ -47,7 +51,7 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     Navigator.of(context).pop();
 
     // 추가한 자주 쓰는 문구 받아오기
-    final phrase = await showModalBottomSheet(
+    final newPhrase = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
@@ -61,21 +65,17 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
       ),
     );
 
-    if (phrase != null) {
-      int index = -1;
-
+    if (newPhrase != null) {
       if (currentPhrase != null) {
-        index = _goToPhrases.indexOf(currentPhrase);
-        _goToPhrases.remove(currentPhrase);
+        ref
+            .read(goToPhrasesProvider.notifier)
+            .editPhrase(currentPhrase, newPhrase);
       }
 
-      setState(() {
-        if (index != -1) {
-          _goToPhrases.insert(index, phrase);
-        } else {
-          _goToPhrases.add(phrase);
-        }
-      });
+      final goToPhrases = ref.watch(goToPhrasesProvider);
+      if (!goToPhrases.contains(newPhrase)) {
+        goToPhrases.add(newPhrase);
+      }
     }
 
     // 자주 쓰는 문구 추가 후 모달 다시 열기 - 새로고침
@@ -112,9 +112,9 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
             onPressed: () {
               Navigator.pop(context);
               // 삭제 로직
-              setState(() {
-                _goToPhrases.remove(currentPhrase);
-              });
+              ref
+                  .read(goToPhrasesProvider.notifier)
+                  .removePhrase(currentPhrase);
             },
           ),
         ],
@@ -139,97 +139,112 @@ class _PostCreateScreenState extends State<PostCreateScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        height: 400.0,
-        child: Column(
-          children: [
-            // Drag Handle
-            Divider(
-              thickness: 4.0,
-              color: AppColors.black12,
-              indent: 150.0,
-              endIndent: 150.0,
+      builder: (context) => Consumer(
+        builder: (context, ref, _) {
+          final goToPhrases = ref.watch(goToPhrasesProvider);
+          return Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
             ),
-
-            // 자주 쓰는 문구 타이틀 / 추가 버튼
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            height: 400.0,
+            child: Column(
               children: [
-                Text('My Go-To Phrases', style: context.textTheme.titleLarge),
+                // Drag Handle
+                Divider(
+                  thickness: 4.0,
+                  color: AppColors.black12,
+                  indent: 150.0,
+                  endIndent: 150.0,
+                ),
 
-                // 추가 버튼
-                TextButton(
-                  onPressed: () => _showAddPhraseModal(null),
-                  style: TextButton.styleFrom(
-                    iconSize: 26.0,
-                    textStyle: context.textTheme.labelLarge!.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.0,
+                // 자주 쓰는 문구 타이틀 / 추가 버튼
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'My Go-To Phrases',
+                      style: context.textTheme.titleLarge,
                     ),
+
+                    // 추가 버튼
+                    TextButton(
+                      onPressed: () => _showAddPhraseModal(null),
+                      style: TextButton.styleFrom(
+                        iconSize: 26.0,
+                        textStyle: context.textTheme.labelLarge!.copyWith(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      child: const Row(
+                        children: [Icon(Icons.add), Text('Add')],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10.0),
+                const Divider(),
+
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      goToPhrases.isEmpty
+                          ? Center(
+                              child: Text(
+                                'Try adding some go-to phrases.',
+                                style: context.textTheme.bodyMedium!.copyWith(
+                                  color: AppColors.black54,
+                                ),
+                              ),
+                            )
+                          // 자주 쓰는 문구 - ListTile
+                          : Expanded(
+                              child: ListView.builder(
+                                itemCount: goToPhrases.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ListTile(
+                                        contentPadding: EdgeInsets.zero,
+                                        dense: true,
+
+                                        title: Text(goToPhrases[index]),
+                                        onTap: () {
+                                          // 선택된 자주 쓰는 문구 저장
+                                          setState(() {
+                                            _selectedPhrase =
+                                                goToPhrases[index];
+                                          });
+
+                                          // 자주 쓰는 문구 모달 닫기
+                                          Navigator.of(context).pop();
+                                        },
+
+                                        // 더보기 버튼
+                                        trailing: IconButton(
+                                          onPressed: () => _showMoreOptions(
+                                            goToPhrases[index],
+                                          ),
+                                          icon: Icon(Icons.more_vert),
+                                        ),
+                                      ),
+                                      const Divider(),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                    ],
                   ),
-                  child: const Row(children: [Icon(Icons.add), Text('Add')]),
                 ),
               ],
             ),
-
-            const SizedBox(height: 10.0),
-            const Divider(),
-
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _isGoToPhrasesEmpty
-                      ? Center(
-                          child: Text(
-                            'Try adding some go-to phrases.',
-                            style: context.textTheme.bodyMedium!.copyWith(
-                              color: AppColors.black54,
-                            ),
-                          ),
-                        )
-                      // 자주 쓰는 문구 - ListTile
-                      : Expanded(
-                          child: ListView.builder(
-                            itemCount: _goToPhrases.length,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  ListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    dense: true,
-
-                                    title: Text(_goToPhrases[index]),
-                                    onTap: () {
-                                      // 선택된 자주 쓰는 문구 저장
-                                      setState(() {
-                                        _selectedPhrase = _goToPhrases[index];
-                                      });
-
-                                      // 자주 쓰는 문구 모달 닫기
-                                      Navigator.of(context).pop();
-                                    },
-
-                                    // 더보기 버튼
-                                    trailing: IconButton(
-                                      onPressed: () =>
-                                          _showMoreOptions(_goToPhrases[index]),
-                                      icon: Icon(Icons.more_vert),
-                                    ),
-                                  ),
-                                  const Divider(),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
