@@ -1,4 +1,4 @@
- // core
+// core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
@@ -9,6 +9,7 @@ import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase
 import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/post_content_field.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/post_title_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/price_field.dart';
 import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
 
 // packages
@@ -27,6 +28,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   // 컨트롤러
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   // 선택된 자주 쓰는 문구
   String? _selectedPhrase;
@@ -42,6 +44,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   @override
   void dispose() {
     _titleController.dispose();
+    _contentController.dispose();
+    _priceController.dispose();
     super.dispose();
   }
 
@@ -290,6 +294,12 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 width: 160.0,
                 height: 40.0,
               ),
+              const SizedBox(height: 40.0),
+
+              // 가격 입력 필드
+              Text('Price', style: context.textTheme.titleSmall),
+              const SizedBox(height: 10.0),
+              PriceField(controller: _priceController),
             ],
           ),
         ),
