@@ -312,7 +312,10 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 },
               ),
               const SizedBox(height: 16.0),
-              PriceField(controller: _priceController),
+              PriceField(
+                controller: _priceController,
+                isForSale: _selectedTransactionType == TransactionType.sale,
+              ),
             ],
           ),
         ),

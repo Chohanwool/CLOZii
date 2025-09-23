@@ -4,10 +4,17 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class PriceField extends StatefulWidget {
-  const PriceField({super.key, required this.controller});
+  const PriceField({
+    super.key,
+    required this.controller,
+    required this.isForSale,
+  });
 
   // 컨트롤러
   final TextEditingController controller;
+
+  // 판매인지, 나눔인지 여부
+  final bool isForSale;
 
   @override
   State<PriceField> createState() => _PriceFieldState();
@@ -29,10 +36,23 @@ class _PriceFieldState extends State<PriceField> {
     return null;
   }
 
+  // 거래방식이 나눔인 경우, 가격 = 0으로 초기화
+  @override
+  void didUpdateWidget(covariant PriceField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.isForSale == false) {
+      setState(() {
+        widget.controller.text = '0';
+        _isFilled = true; // 가격 필드가 0으로 채워져 있으므로, isFilled = true
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: widget.controller,
+      enabled: widget.isForSale, // 거래방식이 나눔인 경우, 가격 필드 비활성화
 
       validator: (value) {
         if (value == null || value.trim().isEmpty) {
@@ -62,11 +82,18 @@ class _PriceFieldState extends State<PriceField> {
       decoration: InputDecoration(
         isDense: true,
 
+        // 판매인 경우, 필드 배경색 흰색
+        // 나눔인 경우, 필드 배경색 회색
+        filled: true,
+        fillColor: widget.isForSale ? AppColors.white : AppColors.disabled,
+
         prefixText: _isFilled ? '₱ ' : '',
-        prefixStyle: const TextStyle(
-          /// 필드 활성화 시 - 숫자색 검정 / 필드 비활성화 시 - 숫자색 회색
+        prefixStyle: TextStyle(
           fontSize: 16,
-          color: AppColors.black,
+          color: widget.isForSale
+              ? AppColors
+                    .textPrimary // 판매인 경우, 화폐 기호 색 검정
+              : AppColors.disabledText, // 나눔인 경우, 화폐 기호 색 회색
         ),
 
         hintText: _isFilled ? '' : '₱ Please set a price.',
@@ -75,6 +102,11 @@ class _PriceFieldState extends State<PriceField> {
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.black54),
+        ),
+
+        // 나눔인 경우, 필드 테두리 색 회색
+        disabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.borderDark),
         ),
       ),
     );
