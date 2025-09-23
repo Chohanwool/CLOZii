@@ -1,4 +1,4 @@
-// core
+ // core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
@@ -139,56 +139,50 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
-      builder: (context) => Consumer(
-        builder: (context, ref, _) {
-          final goToPhrases = ref.watch(goToPhrasesProvider);
-          return Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 8.0,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        height: 400.0,
+        child: Column(
+          children: [
+            // Drag Handle
+            Divider(
+              thickness: 4.0,
+              color: AppColors.black12,
+              indent: 150.0,
+              endIndent: 150.0,
             ),
-            height: 400.0,
-            child: Column(
+
+            // 자주 쓰는 문구 타이틀 / 추가 버튼
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Drag Handle
-                Divider(
-                  thickness: 4.0,
-                  color: AppColors.black12,
-                  indent: 150.0,
-                  endIndent: 150.0,
-                ),
+                Text('My Go-To Phrases', style: context.textTheme.titleLarge),
 
-                // 자주 쓰는 문구 타이틀 / 추가 버튼
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'My Go-To Phrases',
-                      style: context.textTheme.titleLarge,
+                // 추가 버튼
+                TextButton(
+                  onPressed: () => _showAddPhraseModal(null),
+                  style: TextButton.styleFrom(
+                    iconSize: 26.0,
+                    textStyle: context.textTheme.labelLarge!.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 20.0,
                     ),
-
-                    // 추가 버튼
-                    TextButton(
-                      onPressed: () => _showAddPhraseModal(null),
-                      style: TextButton.styleFrom(
-                        iconSize: 26.0,
-                        textStyle: context.textTheme.labelLarge!.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      child: const Row(
-                        children: [Icon(Icons.add), Text('Add')],
-                      ),
-                    ),
-                  ],
+                  ),
+                  child: const Row(children: [Icon(Icons.add), Text('Add')]),
                 ),
+              ],
+            ),
 
-                const SizedBox(height: 10.0),
-                const Divider(),
+            const SizedBox(height: 10.0),
+            const Divider(),
 
-                Expanded(
-                  child: Column(
+            // Consumer로 감싸서 상태 변화를 실시간으로 감지
+            Expanded(
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final goToPhrases = ref.watch(goToPhrasesProvider);
+
+                  return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       goToPhrases.isEmpty
@@ -239,12 +233,12 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                               ),
                             ),
                     ],
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }
