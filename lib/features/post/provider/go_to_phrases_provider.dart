@@ -1,13 +1,13 @@
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // 상태 = 자주 쓰는 문구 리스트
-final goToPhrasesProvider =
-    StateNotifierProvider<GoToPhrasesNotifier, List<String>>(
-      (ref) => GoToPhrasesNotifier(),
-    );
+final goToPhrasesProvider = NotifierProvider<GoToPhrasesNotifier, List<String>>(
+  GoToPhrasesNotifier.new,
+);
 
-class GoToPhrasesNotifier extends StateNotifier<List<String>> {
-  GoToPhrasesNotifier() : super([]);
+class GoToPhrasesNotifier extends Notifier<List<String>> {
+  @override
+  List<String> build() => [];
 
   void addPhrase(String phrase) {
     state = [...state, phrase];
