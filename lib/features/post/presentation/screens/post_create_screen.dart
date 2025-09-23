@@ -2,6 +2,8 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/post/data/enums.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/transaction_type_selector.dart';
 import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
 
@@ -32,6 +34,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
 
   // 선택된 자주 쓰는 문구
   String? _selectedPhrase;
+
+  // 선택된 거래 타입
+  TransactionType _selectedTransactionType = TransactionType.sale;
 
   @override
   void initState() {
@@ -296,9 +301,17 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               ),
               const SizedBox(height: 40.0),
 
-              // 가격 입력 필드
+              // 가격 / 판매 방법 선택
               Text('Price', style: context.textTheme.titleSmall),
               const SizedBox(height: 10.0),
+              TransactionTypeSelector(
+                onSelected: (type) {
+                  setState(() {
+                    _selectedTransactionType = type;
+                  });
+                },
+              ),
+              const SizedBox(height: 16.0),
               PriceField(controller: _priceController),
             ],
           ),
