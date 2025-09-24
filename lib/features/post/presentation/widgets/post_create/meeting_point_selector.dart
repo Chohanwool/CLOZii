@@ -48,12 +48,19 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
             Text('Select Meeting Point'),
             Icon(Icons.chevron_right),
             Spacer(),
-            if (_detailAddress.isNotEmpty) ...[
-              Text(_detailAddress),
-              SizedBox(width: 8.0),
-            ],
           ],
         ),
+
+        helper: _detailAddress.isNotEmpty
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.check, color: AppColors.success, size: 18.0),
+                  SizedBox(width: 8.0),
+                  Expanded(child: Text(_detailAddress)),
+                ],
+              )
+            : null,
 
         // 필드 활성화 시 테두리 색 지정 - 사실상 기본 테두리 색
         enabledBorder: OutlineInputBorder(
