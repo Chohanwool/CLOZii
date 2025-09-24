@@ -353,6 +353,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 ),
                 const SizedBox(height: 10.0),
                 MeetingPointSelector(),
+
+                const SizedBox(height: kBottomNavigationBarHeight * 2),
               ],
             ),
           ),
