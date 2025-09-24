@@ -312,6 +312,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                     });
                   },
                 ),
+                const SizedBox(height: 10.0),
 
                 // 자주 쓰는 문구 버튼
                 CustomButton(
