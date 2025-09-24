@@ -39,6 +39,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   // 선택된 거래 타입
   TransactionType _selectedTransactionType = TransactionType.sale;
 
+  // Form 키 생성
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -270,85 +273,88 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 10.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10.0),
 
-              // 사진 추가 버튼 - ImagePicker와 연결할 예정
-              ImageSelector(),
-              const SizedBox(height: 40.0),
+                // 사진 추가 버튼 - ImagePicker와 연결할 예정
+                ImageSelector(),
+                const SizedBox(height: 40.0),
 
-              // 제목 입력 필드
-              Text(
-                'Title',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w600,
+                // 제목 입력 필드
+                Text(
+                  'Title',
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10.0),
-              PostTitleField(controller: _titleController),
-              const SizedBox(height: 40.0),
+                const SizedBox(height: 10.0),
+                PostTitleField(controller: _titleController),
+                const SizedBox(height: 40.0),
 
-              // 본문 입력 필드
-              Text(
-                'Content',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w600,
+                // 본문 입력 필드
+                Text(
+                  'Content',
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10.0),
-              PostContentField(
-                controller: _contentController,
-                selectedPhrase: _selectedPhrase,
-                onPhraseAdded: () {
-                  setState(() {
-                    _selectedPhrase = null; // 문구 추가 후 리셋
-                  });
-                },
-              ),
-
-              // 자주 쓰는 문구 버튼
-              CustomButton(
-                text: 'My Go-To Phrases',
-                onTap: _showGoToPhrases,
-                width: 160.0,
-                height: 40.0,
-              ),
-              const SizedBox(height: 40.0),
-
-              // 가격 / 판매 방법 선택
-              Text(
-                'Price',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w600,
+                const SizedBox(height: 10.0),
+                PostContentField(
+                  controller: _contentController,
+                  selectedPhrase: _selectedPhrase,
+                  onPhraseAdded: () {
+                    setState(() {
+                      _selectedPhrase = null; // 문구 추가 후 리셋
+                    });
+                  },
                 ),
-              ),
-              const SizedBox(height: 10.0),
-              TransactionTypeSelector(
-                onSelected: (type) {
-                  setState(() {
-                    _selectedTransactionType = type;
-                  });
-                },
-              ),
-              const SizedBox(height: 16.0),
-              PriceField(
-                controller: _priceController,
-                isForSale: _selectedTransactionType == TransactionType.sale,
-              ),
-              const SizedBox(height: 40.0),
 
-              // 거래 희망 장소 선택
-              Text(
-                'Meeting Point',
-                style: context.textTheme.bodyMedium!.copyWith(
-                  fontWeight: FontWeight.w600,
+                // 자주 쓰는 문구 버튼
+                CustomButton(
+                  text: 'My Go-To Phrases',
+                  onTap: _showGoToPhrases,
+                  width: 160.0,
+                  height: 40.0,
                 ),
-              ),
-              const SizedBox(height: 10.0),
-              MeetingPointSelector(),
-            ],
+                const SizedBox(height: 40.0),
+
+                // 가격 / 판매 방법 선택
+                Text(
+                  'Price',
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                TransactionTypeSelector(
+                  onSelected: (type) {
+                    setState(() {
+                      _selectedTransactionType = type;
+                    });
+                  },
+                ),
+                const SizedBox(height: 16.0),
+                PriceField(
+                  controller: _priceController,
+                  isForSale: _selectedTransactionType == TransactionType.sale,
+                ),
+                const SizedBox(height: 40.0),
+
+                // 거래 희망 장소 선택
+                Text(
+                  'Meeting Point',
+                  style: context.textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 10.0),
+                MeetingPointSelector(),
+              ],
+            ),
           ),
         ),
       ),
@@ -358,9 +364,16 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
         color: AppColors.white,
         child: CustomButton(
           text: 'Complete',
-          onTap: () => debugPrint(
-            'Complete: ${_titleController.text} | ${_contentController.text} | ${_selectedTransactionType.name} | ${_priceController.text} ',
-          ),
+          onTap: () {
+            if (_formKey.currentState!.validate()) {
+              debugPrint('폼 검증 성공! 데이터 저장 진행');
+              debugPrint(
+                'Complete: ${_titleController.text} | ${_contentController.text} | ${_selectedTransactionType.name} | ${_priceController.text} ',
+              );
+            } else {
+              debugPrint('폼 검증 실패');
+            }
+          },
           height: 50.0,
         ),
       ),
