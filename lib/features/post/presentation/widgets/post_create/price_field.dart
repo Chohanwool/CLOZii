@@ -46,6 +46,13 @@ class _PriceFieldState extends State<PriceField> {
         _isFilled = true; // 가격 필드가 0으로 채워져 있으므로, isFilled = true
       });
     }
+
+    if (widget.isForSale == true) {
+      setState(() {
+        widget.controller.clear();
+        _isFilled = false;
+      });
+    }
   }
 
   @override
@@ -61,6 +68,14 @@ class _PriceFieldState extends State<PriceField> {
 
         if (int.tryParse(value) == null) {
           return 'Please enter a valid price.';
+        }
+
+        if (int.parse(value) < 0) {
+          return "Price cannot be negative.";
+        }
+
+        if (widget.isForSale && int.parse(value) == 0) {
+          return 'Please set a price. If you want to give it away, select "For Share".';
         }
 
         return null;
