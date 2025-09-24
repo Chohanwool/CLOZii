@@ -3,7 +3,9 @@ import 'package:clozii/features/post/presentation/widgets/post_create/meeting_po
 import 'package:flutter/material.dart';
 
 class MeetingPointSelector extends StatefulWidget {
-  const MeetingPointSelector({super.key});
+  const MeetingPointSelector({super.key, required this.onAddressSelected});
+
+  final ValueChanged<String> onAddressSelected;
 
   @override
   State<MeetingPointSelector> createState() => _MeetingPointSelectorState();
@@ -26,10 +28,11 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
     );
 
     if (detailAddress != null && context.mounted) {
-      debugPrint('detailAddress: $detailAddress');
       setState(() {
         _detailAddress = detailAddress;
       });
+
+      widget.onAddressSelected(detailAddress);
     }
   }
 

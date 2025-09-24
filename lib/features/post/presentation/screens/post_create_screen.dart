@@ -39,6 +39,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   // 선택된 거래 타입
   TransactionType _selectedTransactionType = TransactionType.sale;
 
+  // 선택된 거래 희망 장소
+  String? _detailAddress;
+
   // Form 키 생성
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -353,7 +356,13 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                   ),
                 ),
                 const SizedBox(height: 10.0),
-                MeetingPointSelector(),
+                MeetingPointSelector(
+                  onAddressSelected: (detailAddress) {
+                    setState(() {
+                      _detailAddress = detailAddress;
+                    });
+                  },
+                ),
 
                 const SizedBox(height: kBottomNavigationBarHeight * 2),
               ],
@@ -371,7 +380,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
             if (_formKey.currentState!.validate()) {
               debugPrint('폼 검증 성공! 데이터 저장 진행');
               debugPrint(
-                'Complete: ${_titleController.text} | ${_contentController.text} | ${_selectedTransactionType.name} | ${_priceController.text} ',
+                'Complete: ${_titleController.text} | ${_contentController.text} | ${_selectedTransactionType.name} | ${_priceController.text} | ${_detailAddress ?? 'No address selected'}',
               );
             } else {
               debugPrint('폼 검증 실패');
