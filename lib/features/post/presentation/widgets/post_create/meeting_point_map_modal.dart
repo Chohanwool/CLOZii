@@ -1,4 +1,5 @@
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/apple_map.dart';
 import 'package:flutter/material.dart';
 
@@ -38,7 +39,27 @@ class MeetingPointMapModal extends StatelessWidget {
           ),
 
           // Map
-          Expanded(child: AppleMap()),
+          Expanded(
+            child: Stack(
+              children: [
+                AppleMap(),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 48.0,
+                    ),
+                    child: CustomButton(
+                      text: 'Save',
+                      onTap: () {},
+                      height: 50.0,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
