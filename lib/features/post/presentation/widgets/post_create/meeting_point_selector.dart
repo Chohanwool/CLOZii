@@ -10,8 +10,10 @@ class MeetingPointSelector extends StatefulWidget {
 }
 
 class _MeetingPointSelectorState extends State<MeetingPointSelector> {
-  void _showMap() {
-    showModalBottomSheet(
+  String _detailAddress = '';
+
+  void _showMap() async {
+    final detailAddress = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
@@ -22,6 +24,13 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
         child: MeetingPointMapModal(),
       ),
     );
+
+    if (detailAddress != null && context.mounted) {
+      debugPrint('detailAddress: $detailAddress');
+      setState(() {
+        _detailAddress = detailAddress;
+      });
+    }
   }
 
   @override
@@ -35,7 +44,15 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
         isDense: true,
 
         hint: Row(
-          children: [Text('Select Meeting Point'), Icon(Icons.chevron_right)],
+          children: [
+            Text('Select Meeting Point'),
+            Icon(Icons.chevron_right),
+            Spacer(),
+            if (_detailAddress.isNotEmpty) ...[
+              Text(_detailAddress),
+              SizedBox(width: 8.0),
+            ],
+          ],
         ),
 
         // 필드 활성화 시 테두리 색 지정 - 사실상 기본 테두리 색

@@ -1,14 +1,35 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/apple_map.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/detail_address_modal.dart';
 import 'package:flutter/material.dart';
 
 class MeetingPointMapModal extends StatelessWidget {
   const MeetingPointMapModal({super.key});
 
+  void _showDetailAddressModal(BuildContext context) async {
+    final detailAddress = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.white,
+      builder: (context) => DetailAddressModal(),
+    );
+
+    if (detailAddress != null) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (context.mounted) {
+          Navigator.of(context).pop(detailAddress);
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 키보드가 올라와도 UI가 움직이지 않도록 설정
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
@@ -52,7 +73,7 @@ class MeetingPointMapModal extends StatelessWidget {
                     ),
                     child: CustomButton(
                       text: 'Save',
-                      onTap: () {},
+                      onTap: () => _showDetailAddressModal(context),
                       height: 50.0,
                     ),
                   ),
