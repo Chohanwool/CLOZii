@@ -3,6 +3,7 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/features/post/data/enums.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_selector.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/transaction_type_selector.dart';
 import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
@@ -346,31 +347,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 ),
               ),
               const SizedBox(height: 10.0),
-              TextField(
-                readOnly: true,
-                onTap: () {
-                  debugPrint('onTap');
-                },
-                decoration: InputDecoration(
-                  isDense: true,
-
-                  suffix: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [Text('Add Location'), Icon(Icons.chevron_right)],
-                  ),
-                  suffixStyle: context.textTheme.bodySmall!.copyWith(
-                    color: AppColors.black54,
-                  ),
-
-                  prefixText: 'Select Meeting Point',
-                  prefixStyle: context.textTheme.bodyLarge,
-
-                  border: OutlineInputBorder(),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: AppColors.black54),
-                  ),
-                ),
-              ),
+              MeetingPointSelector(),
             ],
           ),
         ),
