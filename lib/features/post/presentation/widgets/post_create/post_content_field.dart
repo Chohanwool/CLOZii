@@ -109,7 +109,6 @@ class _PostContentFieldState extends State<PostContentField> {
           }
           return null;
         },
-        onChanged: (value) {},
 
         // 여러 줄 입력에 최적화된 키보드 타입
         // 엔터키(줄바꿈)가 "완료" 대신 "줄바꿈"으로 동작
@@ -121,9 +120,6 @@ class _PostContentFieldState extends State<PostContentField> {
             horizontal: 16.0,
             vertical: 16.0,
           ),
-
-          label: Text('Content', style: context.textTheme.titleLarge),
-          floatingLabelBehavior: FloatingLabelBehavior.always,
 
           hintText: 'Post Content',
           hintStyle: const TextStyle(color: AppColors.gray300, fontSize: 16),

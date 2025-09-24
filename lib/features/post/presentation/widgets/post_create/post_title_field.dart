@@ -77,11 +77,6 @@ class _PostTitleFieldState extends State<PostTitleField> {
       decoration: InputDecoration(
         isDense: true,
 
-        label: Text('Title', style: context.textTheme.titleLarge),
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-
         // 제목 입력 필드 초기화(지움) 버튼
         suffixIcon: widget.controller.text.isNotEmpty
             ? IconButton(

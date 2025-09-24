@@ -279,10 +279,24 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               const SizedBox(height: 40.0),
 
               // 제목 입력 필드
+              Text(
+                'Title',
+                style: context.textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10.0),
               PostTitleField(controller: _titleController),
               const SizedBox(height: 40.0),
 
               // 본문 입력 필드
+              Text(
+                'Content',
+                style: context.textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10.0),
               PostContentField(
                 controller: _contentController,
                 selectedPhrase: _selectedPhrase,
@@ -303,7 +317,12 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               const SizedBox(height: 40.0),
 
               // 가격 / 판매 방법 선택
-              Text('Price', style: context.textTheme.titleSmall),
+              Text(
+                'Price',
+                style: context.textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               const SizedBox(height: 10.0),
               TransactionTypeSelector(
                 onSelected: (type) {
