@@ -1,6 +1,5 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/core/theme/context_extension.dart';
 
 // packages
 import 'package:flutter/material.dart';
