@@ -66,15 +66,17 @@ class _PriceFieldState extends State<PriceField> {
           return 'Please set a price.';
         }
 
-        if (int.tryParse(value) == null) {
+        // 숫자만 남기기
+        final cleanValue = value.replaceAll(RegExp(r'[^0-9]'), '');
+        if (int.tryParse(cleanValue) == null) {
           return 'Please enter a valid price.';
         }
 
-        if (int.parse(value) < 0) {
+        if (int.parse(cleanValue) < 0) {
           return "Price cannot be negative.";
         }
 
-        if (widget.isForSale && int.parse(value) == 0) {
+        if (widget.isForSale && int.parse(cleanValue) == 0) {
           return 'Please set a price. If you want to give it away, select "For Share".';
         }
 
