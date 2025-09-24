@@ -1,5 +1,5 @@
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_map_modal.dart';
 import 'package:flutter/material.dart';
 
 class MeetingPointSelector extends StatefulWidget {
@@ -10,12 +10,26 @@ class MeetingPointSelector extends StatefulWidget {
 }
 
 class _MeetingPointSelectorState extends State<MeetingPointSelector> {
+  void _showMap() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: AppColors.white,
+      builder: (BuildContext context) => Container(
+        padding: EdgeInsets.only(top: kToolbarHeight),
+        child: MeetingPointMapModal(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextField(
       readOnly: true,
       onTap: () {
-        debugPrint('onTap');
+        _showMap();
       },
       decoration: InputDecoration(
         isDense: true,
