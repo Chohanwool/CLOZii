@@ -266,6 +266,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
       ),
       body: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
