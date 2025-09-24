@@ -336,6 +336,41 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 controller: _priceController,
                 isForSale: _selectedTransactionType == TransactionType.sale,
               ),
+              const SizedBox(height: 40.0),
+
+              // 거래 희망 장소 선택
+              Text(
+                'Meeting Point',
+                style: context.textTheme.bodyMedium!.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10.0),
+              TextField(
+                readOnly: true,
+                onTap: () {
+                  debugPrint('onTap');
+                },
+                decoration: InputDecoration(
+                  isDense: true,
+
+                  suffix: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [Text('Add Location'), Icon(Icons.chevron_right)],
+                  ),
+                  suffixStyle: context.textTheme.bodySmall!.copyWith(
+                    color: AppColors.black54,
+                  ),
+
+                  prefixText: 'Select Meeting Point',
+                  prefixStyle: context.textTheme.bodyLarge,
+
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: AppColors.black54),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
