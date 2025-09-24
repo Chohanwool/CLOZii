@@ -352,6 +352,18 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
           ),
         ),
       ),
+
+      bottomSheet: Container(
+        padding: const EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0),
+        color: AppColors.white,
+        child: CustomButton(
+          text: 'Complete',
+          onTap: () => debugPrint(
+            'Complete: ${_titleController.text} | ${_contentController.text} | ${_selectedTransactionType.name} | ${_priceController.text} ',
+          ),
+          height: 50.0,
+        ),
+      ),
     );
   }
 }
