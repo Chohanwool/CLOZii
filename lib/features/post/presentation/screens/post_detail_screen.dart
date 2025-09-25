@@ -259,9 +259,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   // 가격 또는 나눔 표시
                   // Post 객체의 price 필드에 저장된 가격이 있다면 가격을 표시하고,
                   // 없다면(null), 나눔 표시
-                  widget.post.price != null
+                  widget.post.price != 0
                       ? Text(
-                          '\u20B1 ${formatPrice(widget.post.price!)}', //₱
+                          '\u20B1 ${formatPrice(widget.post.price)}', //₱
                           style: context.textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
