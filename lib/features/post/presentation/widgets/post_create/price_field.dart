@@ -1,4 +1,7 @@
+// core
 import 'package:clozii/core/constants/app_constants.dart';
+
+// packages
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';

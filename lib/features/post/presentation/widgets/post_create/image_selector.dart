@@ -4,7 +4,6 @@ import 'package:clozii/core/theme/context_extension.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class ImageSelector extends StatelessWidget {
   const ImageSelector({super.key});

@@ -1,5 +1,10 @@
+// core
 import 'package:clozii/core/constants/app_constants.dart';
+
+// features
 import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_map_modal.dart';
+
+// packages
 import 'package:flutter/material.dart';
 
 class MeetingPointSelector extends StatefulWidget {

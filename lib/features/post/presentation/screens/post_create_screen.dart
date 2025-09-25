@@ -2,11 +2,6 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/data/enums.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_selector.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/transaction_type_selector.dart';
-import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
@@ -14,6 +9,11 @@ import 'package:clozii/features/post/presentation/widgets/post_create/post_conte
 import 'package:clozii/features/post/presentation/widgets/post_create/post_title_field.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/price_field.dart';
 import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
+import 'package:clozii/features/post/data/enums.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_selector.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/transaction_type_selector.dart';
+import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';

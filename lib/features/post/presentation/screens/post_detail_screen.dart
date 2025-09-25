@@ -1,10 +1,15 @@
+// core
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
+
+// features
 import 'package:clozii/features/post/data/post.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/chat_field.dart';
+
+// packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

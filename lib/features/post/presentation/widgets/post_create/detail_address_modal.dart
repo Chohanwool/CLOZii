@@ -1,6 +1,11 @@
+// core
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/keyboard_aware_button.dart';
+
+// features
 import 'package:clozii/features/post/presentation/widgets/post_create/detail_address_field.dart';
+
+// packages
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 

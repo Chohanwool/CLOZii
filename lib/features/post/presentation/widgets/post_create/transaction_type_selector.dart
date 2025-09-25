@@ -1,5 +1,10 @@
+// core
 import 'package:clozii/core/widgets/custom_choice_chips.dart';
+
+// features
 import 'package:clozii/features/post/data/enums.dart';
+
+// packages
 import 'package:flutter/material.dart';
 
 class TransactionTypeSelector extends StatefulWidget {

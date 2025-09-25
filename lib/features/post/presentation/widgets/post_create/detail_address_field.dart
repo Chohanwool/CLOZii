@@ -1,4 +1,7 @@
+// core
 import 'package:clozii/core/constants/app_constants.dart';
+
+// packages
 import 'package:flutter/material.dart';
 
 class DetailAddressField extends StatelessWidget {

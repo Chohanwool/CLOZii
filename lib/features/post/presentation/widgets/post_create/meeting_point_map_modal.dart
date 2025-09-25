@@ -1,8 +1,13 @@
+// core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+
+// features
 import 'package:clozii/features/post/presentation/widgets/post_create/apple_map.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/detail_address_modal.dart';
+
+// packages
 import 'package:flutter/material.dart';
 
 class MeetingPointMapModal extends StatelessWidget {
