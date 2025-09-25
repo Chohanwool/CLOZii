@@ -28,18 +28,19 @@ class _PostContentFieldState extends State<PostContentField> {
     // 선택된 문구가 null이 아니고 이전 문구와 다르면
     if (widget.selectedPhrase != null &&
         widget.selectedPhrase != oldWidget.selectedPhrase) {
-      // 텍스트가 비어있지 않고, 마지막으로 입력된게 줄바꿈이 아니면, '\n' 추가
-      if (widget.controller.text.isNotEmpty &&
-          !widget.controller.text.endsWith('\n')) {
-        widget.controller.text += '\n';
-      }
-
-      // 선택된 문구 추가
-      widget.controller.text += widget.selectedPhrase!;
-
       // build()나 didUpdateWidget() 같은 빌드 중에 setState()를 호출하면 에러 발생 함
       // addPostFrameCallback는 빌드가 모두 끝난 이후에 setState를 안전하게 호출할 수 있게 해줌
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // 텍스트가 비어있지 않고, 마지막으로 입력된게 줄바꿈이 아니면, '\n' 추가
+        if (widget.controller.text.isNotEmpty &&
+            !widget.controller.text.endsWith('\n')) {
+          // 자주 쓰는 문구 추가 시, 현재 내용에서 줄바꿈 한 뒤 추가
+          // 단, 마지막으로 입력된게 줄바꿈이면 추가하지 않음
+          widget.controller.text += '\n';
+        }
+
+        // 선택된 문구 추가
+        widget.controller.text += widget.selectedPhrase!;
         // 문구가 추가된 이후, selectedPhrase를 null로 리셋 시키는 함수 호출
         widget.onPhraseAdded?.call();
       });
