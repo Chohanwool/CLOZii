@@ -2,6 +2,8 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/post/data/dummy_posts.dart';
+import 'package:clozii/features/post/data/post.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
@@ -9,9 +11,8 @@ import 'package:clozii/features/post/presentation/widgets/post_create/post_conte
 import 'package:clozii/features/post/presentation/widgets/post_create/post_title_field.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/price_field.dart';
 import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
-import 'package:clozii/features/post/data/enums.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_selector.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/transaction_type_selector.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/trade_type_selector.dart';
 import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
 
@@ -37,7 +38,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   String? _selectedPhrase;
 
   // 선택된 거래 타입
-  TransactionType _selectedTransactionType = TransactionType.sale;
+  TradeType _selectedTransactionType = TradeType.sell;
 
   // 선택된 거래 희망 장소
   String? _detailAddress;
@@ -334,7 +335,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                   ),
                 ),
                 const SizedBox(height: 10.0),
-                TransactionTypeSelector(
+                TradeTypeSelector(
                   onSelected: (type) {
                     setState(() {
                       _selectedTransactionType = type;
@@ -344,7 +345,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 const SizedBox(height: 16.0),
                 PriceField(
                   controller: _priceController,
-                  isForSale: _selectedTransactionType == TransactionType.sale,
+                  isForSale: _selectedTransactionType == TradeType.sell,
                 ),
                 const SizedBox(height: 40.0),
 
@@ -382,6 +383,42 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               debugPrint(
                 'Complete: ${_titleController.text} | ${_contentController.text} | ${_selectedTransactionType.name} | ${_priceController.text} | ${_detailAddress ?? 'No address selected'}',
               );
+
+              final price = int.parse(
+                _priceController.text.replaceAll(RegExp(r'[^0-9]'), ''),
+              );
+
+              final postDraft = PostDraft(
+                title: _titleController.text,
+                content: _contentController.text,
+                tradeType: _selectedTransactionType,
+                price: price,
+                images: [],
+              );
+
+              final imageUrls = postDraft.images
+                  .map((image) => image.path)
+                  .toList();
+              if (imageUrls.isEmpty) {
+                imageUrls.add(
+                  'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
+                );
+              }
+
+              final post = Post(
+                id: postDraft.hashCode.toString(),
+                title: postDraft.title,
+                content: postDraft.content,
+                imageUrls: imageUrls,
+                price: postDraft.price,
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+                tradeType: postDraft.tradeType,
+              );
+
+              dummyPosts.add(post);
+
+              Navigator.of(context).pop(true);
             } else {
               debugPrint('폼 검증 실패');
             }

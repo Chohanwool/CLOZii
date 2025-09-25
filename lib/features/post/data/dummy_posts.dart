@@ -23,6 +23,7 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://hips.hearstapps.com/hmg-prod/images/gh-best-romance-books-64ecb8c82221e.png?crop=0.502xw:1.00xh;0.250xw,0&resize=1200:*',
     ],
+    price: 0,
   ),
   Post(
     id: '3',
@@ -44,6 +45,7 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://headsupfortails.com/cdn/shop/files/8906002482832_10kg.jpg?v=1754125871&width=1445',
     ],
+    price: 0,
     createdAt: DateTime.now().subtract(const Duration(days: 1)),
     updatedAt: DateTime.now().subtract(const Duration(days: 1)),
     tradeType: TradeType.share,
@@ -55,7 +57,7 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/xps-notebooks/xps-13-9350/spi/platinum/oled/notebook-xps-13-9350-oled-silver-campaign-hero-504x350-ng.psd?fmt=jpg&wid=570&hei=400',
     ],
-    price: 20500.0,
+    price: 20500,
     createdAt: DateTime.now().subtract(const Duration(minutes: 58)),
     updatedAt: DateTime.now().subtract(const Duration(minutes: 58)),
     tradeType: TradeType.sell,
@@ -67,6 +69,7 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://www.ikea.com/global/assets/range-categorisation/images/dinnerware-sets-31781.jpeg',
     ],
+    price: 0,
     createdAt: DateTime.now().subtract(const Duration(hours: 5)),
     updatedAt: DateTime.now().subtract(const Duration(hours: 5)),
     tradeType: TradeType.share,
@@ -78,7 +81,7 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://www.canyon.com/dw/image/v2/BCML_PRD/on/demandware.static/-/Sites-canyon-storefront/default/dwead92c71/category-landing/mountain/seo-mtb-light.jpg?sw=1280&sfrm=jpg&q=80',
     ],
-    price: 8900.0,
+    price: 8900,
     createdAt: DateTime.now().subtract(const Duration(days: 3)),
     updatedAt: DateTime.now().subtract(const Duration(days: 3)),
     tradeType: TradeType.sell,
@@ -90,6 +93,7 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://www.shutterstock.com/shutterstock/photos/517957723/display_1500/stock-photo-wardrobe-with-clothes-and-shopping-bags-on-line-shopping-close-up-on-many-full-bags-in-a-woman-517957723.jpg',
     ],
+    price: 0,
     createdAt: DateTime.now().subtract(const Duration(days: 4)),
     updatedAt: DateTime.now().subtract(const Duration(days: 4)),
     tradeType: TradeType.share,
@@ -101,7 +105,7 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://as1.ftcdn.net/v2/jpg/05/62/73/08/1000_F_562730828_RWKHyahgDFwinSf4vcID8jEG2ns1Bgfd.jpg',
     ],
-    price: 15000.0,
+    price: 15000,
     createdAt: DateTime.now().subtract(const Duration(days: 5)),
     updatedAt: DateTime.now().subtract(const Duration(days: 5)),
     tradeType: TradeType.sell,
@@ -113,6 +117,8 @@ List<Post> dummyPosts = [
     imageUrls: [
       'https://i5.walmartimages.com/seo/Costway-Foldable-Baby-Stroller-2-in-1-Newborn-Infant-Travel-Buggy-Pushchair-22-lbs-Gray_d5d0e7ba-e1df-4ee5-bd37-6c4a934cf317.38a838b43c51749c9fe66efca6bb9f8a.jpeg',
     ],
+    price: 0,
+
     createdAt: DateTime.now().subtract(const Duration(days: 6)),
     updatedAt: DateTime.now().subtract(const Duration(days: 6)),
     tradeType: TradeType.share,

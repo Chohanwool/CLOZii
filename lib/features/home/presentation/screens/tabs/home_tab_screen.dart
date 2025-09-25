@@ -35,8 +35,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   }
 
   // 게시글 생성 모달 띄우기
-  void _showPostCreateModal() {
-    showModalBottomSheet(
+  void _showPostCreateModal() async {
+    final newPost = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
@@ -50,6 +50,10 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
         child: const PostCreateScreen(),
       ),
     );
+
+    if (newPost == true) {
+      _onRefresh();
+    }
   }
 
   @override
