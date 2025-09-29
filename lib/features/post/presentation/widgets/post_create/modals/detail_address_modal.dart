@@ -3,7 +3,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/keyboard_aware_button.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/post_create/detail_address_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/fields/detail_address_field.dart';
 
 // packages
 import 'package:flutter/material.dart';

@@ -4,17 +4,17 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/modal/go_to_phrase_modal.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/modal/more_options_modal.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/post_content_field.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/post_title_field.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/price_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/selectors/image_selector.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/go_to_phrase_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/more_options_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/fields/content_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/fields/title_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/fields/price_field.dart';
 import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_selector.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/trade_type_selector.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/selectors/meeting_point_selector.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/selectors/trade_type_selector.dart';
 import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/modal/add_phrase_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
 

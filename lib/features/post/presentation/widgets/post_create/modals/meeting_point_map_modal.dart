@@ -5,7 +5,7 @@ import 'package:clozii/core/widgets/custom_button.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/apple_map.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/modal/detail_address_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/detail_address_modal.dart';
 
 // packages
 import 'package:flutter/material.dart';

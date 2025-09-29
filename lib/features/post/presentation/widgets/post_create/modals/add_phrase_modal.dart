@@ -3,7 +3,7 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/widgets/keyboard_aware_button.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/post_create/go_to_phrase_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/fields/go_to_phrase_field.dart';
 
 // packages
 import 'package:flutter/material.dart';
