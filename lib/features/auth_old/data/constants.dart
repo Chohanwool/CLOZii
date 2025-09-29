@@ -1,5 +1,5 @@
 // 상수로 분리
-import 'package:clozii/features/auth/data/auth_step.dart';
+import 'package:clozii/features/auth_old/data/auth_step.dart';
 
 const int phoneNumberMaxLength = 11;
 const String phoneNumberPrefix = '+639';

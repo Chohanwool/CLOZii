@@ -7,19 +7,19 @@ import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 
 // features
-import 'package:clozii/features/auth/data/constants.dart';
-import 'package:clozii/features/auth/data/auth_step.dart';
-import 'package:clozii/features/auth/data/auth_type.dart';
+import 'package:clozii/features/auth_old/data/constants.dart';
+import 'package:clozii/features/auth_old/data/auth_step.dart';
+import 'package:clozii/features/auth_old/data/auth_type.dart';
 
 // screens
-import 'package:clozii/features/auth/presentation/screens/auth_base_screen.dart';
+import 'package:clozii/features/auth_old/presentation/screens/auth_base_screen.dart';
 
 // widgets
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/name_field.dart';
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/phone_number_field.dart';
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/date_picker_field.dart';
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/gender_dropdown_field.dart';
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/terms_and_conditions.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/auth_screen/name_field.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/auth_screen/phone_number_field.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/auth_screen/date_picker_field.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/auth_screen/gender_dropdown_field.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/auth_screen/terms_and_conditions.dart';
 
 // packages
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';

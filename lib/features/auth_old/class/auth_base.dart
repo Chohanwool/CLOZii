@@ -1,4 +1,4 @@
-import 'package:clozii/features/auth/data/constants.dart';
+import 'package:clozii/features/auth_old/data/constants.dart';
 import 'package:flutter/cupertino.dart';
 
 abstract class AuthBase<T extends StatefulWidget> extends State<T> {

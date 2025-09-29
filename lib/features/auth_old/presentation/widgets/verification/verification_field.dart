@@ -1,4 +1,4 @@
-import 'package:clozii/features/auth/presentation/widgets/verification/verification_timer.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/verification/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,7 +13,7 @@ class VerificationField extends StatefulWidget {
     required this.seconds, // 남은 초
     required this.onVerified,
     required this.controller,
-    required this.onChanged
+    required this.onChanged,
   });
 
   final int minutes;

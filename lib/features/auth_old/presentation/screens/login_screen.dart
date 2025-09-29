@@ -1,11 +1,11 @@
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/auth/data/auth_step.dart';
-import 'package:clozii/features/auth/data/auth_type.dart';
-import 'package:clozii/features/auth/data/constants.dart';
-import 'package:clozii/features/auth/presentation/screens/auth_base_screen.dart';
-import 'package:clozii/features/auth/presentation/widgets/auth_screen/phone_number_field.dart';
+import 'package:clozii/features/auth_old/data/auth_step.dart';
+import 'package:clozii/features/auth_old/data/auth_type.dart';
+import 'package:clozii/features/auth_old/data/constants.dart';
+import 'package:clozii/features/auth_old/presentation/screens/auth_base_screen.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/auth_screen/phone_number_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -25,7 +25,7 @@ class _LoginScreenState extends AuthBaseScreenState<LoginScreen> {
   @override
   AuthType getAuthType() => AuthType.login;
 
-  // 전화번호 입력 검증 
+  // 전화번호 입력 검증
   // 가입된 전화번호인 경우, 인증번호 요청 - sendVerificationCode()
   // 가입되지 않은 전화번호인 경우, validator 검증 후 등록되지 않은 번호임을 사용자에게 알림
   void _verifyPhoneNumber() {
