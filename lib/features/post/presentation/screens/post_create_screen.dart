@@ -2,8 +2,6 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/data/dummy_posts.dart';
-import 'package:clozii/features/post/data/post.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
@@ -15,6 +13,8 @@ import 'package:clozii/features/post/presentation/widgets/post_create/meeting_po
 import 'package:clozii/features/post/presentation/widgets/post_create/trade_type_selector.dart';
 import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
+import 'package:clozii/features/post/data/dummy_posts.dart';
+import 'package:clozii/features/post/data/post.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
