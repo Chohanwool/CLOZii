@@ -5,6 +5,8 @@ import 'package:clozii/core/widgets/custom_button.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/image_selector.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modal/go_to_phrase_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modal/more_options_modal.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/post_content_field.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/post_title_field.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/price_field.dart';
@@ -12,7 +14,7 @@ import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_selector.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/trade_type_selector.dart';
 import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/add_phrase_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modal/add_phrase_modal.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
 
@@ -102,51 +104,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   void _showMoreOptions(String currentPhrase) {
     showCupertinoModalPopup(
       context: context,
-      builder: (BuildContext context) => CupertinoActionSheet(
-        actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            child: Text(
-              '수정',
-              style: context.textTheme.titleLarge!.copyWith(
-                color: AppColors.info,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              // 수정 로직
-              _showAddPhraseModal(currentPhrase);
-            },
-          ),
-          CupertinoActionSheetAction(
-            child: Text(
-              '삭제',
-              style: context.textTheme.titleLarge!.copyWith(
-                color: AppColors.error,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              // 삭제 로직
-              ref
-                  .read(goToPhrasesProvider.notifier)
-                  .removePhrase(currentPhrase);
-            },
-          ),
-        ],
-        cancelButton: CupertinoActionSheetAction(
-          child: Text(
-            '취소',
-            style: context.textTheme.titleLarge!.copyWith(
-              color: AppColors.warning,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+      builder: (BuildContext context) => MoreOptionsModal(
+        currentPhrase: currentPhrase,
+        onAddPhraseModal: _showAddPhraseModal,
       ),
     );
   }
@@ -159,102 +119,18 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
       builder: (context) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         height: 400.0,
-        child: Column(
-          children: [
-            // Drag Handle
-            Divider(
-              thickness: 4.0,
-              color: AppColors.black12,
-              indent: 150.0,
-              endIndent: 150.0,
-            ),
+        child: GoToPhraseModal(
+          onAddButtonPressed: _showAddPhraseModal,
+          onMoreOptionsPressed: _showMoreOptions,
+          onPhraseSelected: (String currentPhrase) {
+            // 선택된 자주 쓰는 문구 저장
+            setState(() {
+              _selectedPhrase = currentPhrase;
+            });
 
-            // 자주 쓰는 문구 타이틀 / 추가 버튼
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('My Go-To Phrases', style: context.textTheme.titleLarge),
-
-                // 추가 버튼
-                TextButton(
-                  onPressed: () => _showAddPhraseModal(null),
-                  style: TextButton.styleFrom(
-                    iconSize: 26.0,
-                    textStyle: context.textTheme.labelLarge!.copyWith(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                  child: const Row(children: [Icon(Icons.add), Text('Add')]),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 10.0),
-            const Divider(),
-
-            // Consumer로 감싸서 상태 변화를 실시간으로 감지
-            Expanded(
-              child: Consumer(
-                builder: (context, ref, child) {
-                  final goToPhrases = ref.watch(goToPhrasesProvider);
-
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      goToPhrases.isEmpty
-                          ? Center(
-                              child: Text(
-                                'Try adding some go-to phrases.',
-                                style: context.textTheme.bodyMedium!.copyWith(
-                                  color: AppColors.black54,
-                                ),
-                              ),
-                            )
-                          // 자주 쓰는 문구 - ListTile
-                          : Expanded(
-                              child: ListView.builder(
-                                itemCount: goToPhrases.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ListTile(
-                                        contentPadding: EdgeInsets.zero,
-                                        dense: true,
-
-                                        title: Text(goToPhrases[index]),
-                                        onTap: () {
-                                          // 선택된 자주 쓰는 문구 저장
-                                          setState(() {
-                                            _selectedPhrase =
-                                                goToPhrases[index];
-                                          });
-
-                                          // 자주 쓰는 문구 모달 닫기
-                                          Navigator.of(context).pop();
-                                        },
-
-                                        // 더보기 버튼
-                                        trailing: IconButton(
-                                          onPressed: () => _showMoreOptions(
-                                            goToPhrases[index],
-                                          ),
-                                          icon: Icon(Icons.more_vert),
-                                        ),
-                                      ),
-                                      const Divider(),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                    ],
-                  );
-                },
-              ),
-            ),
-          ],
+            // 자주 쓰는 문구 모달 닫기
+            Navigator.of(context).pop();
+          },
         ),
       ),
     );
