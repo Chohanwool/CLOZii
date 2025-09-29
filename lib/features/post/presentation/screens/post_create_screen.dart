@@ -253,6 +253,10 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
         color: AppColors.white,
         child: CustomButton(
           text: 'Complete',
+
+          // 게시글 생성 완료 버튼
+          // TODO: DB와 연동되는 게시글 생성 로직 구현 필요
+          // 임시로 폼 검증 성공 시 더미 데이터에 새로운 게시글 저장 진행
           onTap: () {
             if (_formKey.currentState!.validate()) {
               debugPrint('폼 검증 성공! 데이터 저장 진행');
@@ -264,6 +268,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 _priceController.text.replaceAll(RegExp(r'[^0-9]'), ''),
               );
 
+              // TODO: 리포지토리에서 DB/서버 API에 게시글 저장 필요
+              // 구현 예시는 파일 하단에 주석으로 작성되어 있음
               final postDraft = PostDraft(
                 title: _titleController.text,
                 content: _contentController.text,
@@ -272,6 +278,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 images: [],
               );
 
+              // 실무에서는 PostDraft에 XFile 형식 이미지 리스트를 그대로 넣고 
+              // 실제 저장 시 이미지를 서버에 없로드 후 URL로 변환하는 방식을 사용함 
+              // 구현 예시는 파일 하단에 주석으로 작성되어 있음
               final imageUrls = postDraft.images
                   .map((image) => image.path)
                   .toList();
@@ -281,6 +290,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 );
               }
 
+              // createPost()에서 생성된 게시글을 반환할때 Post 객체로 만들어서 반환 할 예정
+              // 그렇게 하면 화면에도 생성된 게시글을 바로 보여줄 수 있고, 캐싱에도 쓸수 있고, 다른 메서드들에서도 생성된 게시글이 바로 필요할 떄 넣어줄 수 있음.
               final post = Post(
                 id: postDraft.hashCode.toString(),
                 title: postDraft.title,
@@ -296,6 +307,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
 
               Navigator.of(context).pop(true);
             } else {
+              // TODO: 폼 검증 실패 시 에러 처리 필요
               debugPrint('폼 검증 실패');
             }
           },
@@ -305,3 +317,48 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
     );
   }
 }
+
+// 구현 예시 : PostDraft 를 리포지토리에서 받아 실제 Firebase에 저장하는 로직
+
+  // Future<Post> createPost(PostDraft draft) async {
+  //   // 1. 이미지 업로드 후 URL 리스트 생성
+  //   final imageUrls = await _uploadImages(draft.images);
+  //
+  //   // 2. Firestore에 게시글 저장
+  //   final docRef = await FirebaseFirestore.instance.collection('posts').add({
+  //     'title': draft.title,
+  //     'content': draft.content,
+  //     'price': draft.price,
+  //     'tradeType': draft.tradeType.name,
+  //     'imageUrls': imageUrls, // 업로드한 이미지 URL 저장
+  //     'createdAt': FieldValue.serverTimestamp(),
+  //     'updatedAt': FieldValue.serverTimestamp(),
+  //   });
+  //
+  //   // 3. 저장된 데이터 가져오기
+  //   final snapshot = await docRef.get();
+  //
+  //   // 4. Post 객체 반환
+  //   return Post.fromJson(snapshot.data()!..['id'] = docRef.id);
+  // }
+
+// _uploadImages 구현 예시 :
+
+  // Future<List<String>> _uploadImages(List<XFile> images) async {
+  //   List<String> urls = [];
+  //
+  //   for (var image in images) {
+  //     final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+  //     final ref = FirebaseStorage.instance.ref().child('post_images/$fileName'); // Firebase Storage 루트 디렉토리에 이미지가 저장될 경로를 지정 (아직 이미지 파일 없음)
+  //
+  //     // 업로드
+  //     await ref.putFile(File(image.path)); // 이 부분이 실제로 파일을 업로드하는 부분!
+  //
+  //     // 다운로드 URL 획득
+  //     final url = await ref.getDownloadURL(); // 업로드한 이미지의 다운로드 URL 획득
+  //     urls.add(url);
+  //   }
+  //
+  //   // 이미지 URL 리스트 반환
+  //   return urls;
+  // }
