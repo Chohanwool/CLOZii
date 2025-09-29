@@ -2,16 +2,37 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
+// features
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/gallery_modal.dart';
+
 // packages
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ImageSelector extends StatelessWidget {
   const ImageSelector({super.key});
 
+  void showGallery(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.white,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (context) => Container(
+        padding: const EdgeInsets.only(
+          top: kToolbarHeight,
+          bottom: kBottomNavigationBarHeight,
+        ),
+        child: GalleryModal(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () => showGallery(context),
       child: Container(
         height: 80,
         width: 80,
