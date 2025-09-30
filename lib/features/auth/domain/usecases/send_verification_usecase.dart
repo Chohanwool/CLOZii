@@ -7,7 +7,7 @@ class SendVerificationUsecase {
 
   SendVerificationUsecase(this._authRepository);
 
-  Future<AuthResult<bool>> call(String phoneNumber) async {
+  Future<AuthResult<String>> call(String phoneNumber) async {
     try {
       final result = await _authRepository.sendVerificationCode(phoneNumber);
 
