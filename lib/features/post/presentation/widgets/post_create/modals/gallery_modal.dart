@@ -136,6 +136,9 @@ class _GalleryModalState extends State<GalleryModal> {
                       ),
 
                       if (selectedImageIds.contains(asset.id))
+                        Positioned(child: Container(color: AppColors.black26)),
+
+                      if (selectedImageIds.contains(asset.id))
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(
@@ -147,22 +150,47 @@ class _GalleryModalState extends State<GalleryModal> {
                           ),
                         ),
 
-                      Positioned(
-                        top: 5,
-                        right: 5,
-                        child: Icon(
-                          Icons.circle_outlined,
-                          color: AppColors.white,
-                          size: 28.0,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black.withOpacity(0.7),
-                              offset: Offset(0, 0),
-                              blurRadius: 4.0,
+                      if (selectedImageIds.contains(asset.id))
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            width: 24.0,
+                            height: 24.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: context.colors.primary,
                             ),
-                          ],
+                            child: Center(
+                              child: Text(
+                                '${selectedImageIds.indexOf(asset.id) + 1}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+
+                      if (!selectedImageIds.contains(asset.id))
+                        Positioned(
+                          top: 6,
+                          right: 6,
+                          child: Icon(
+                            Icons.circle_outlined,
+                            color: AppColors.white,
+                            size: 28.0,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withOpacity(0.7),
+                                offset: Offset(0, 0),
+                                blurRadius: 4.0,
+                              ),
+                            ],
+                          ),
+                        ),
                     ],
                   ),
                 );
