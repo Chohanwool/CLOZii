@@ -2,7 +2,7 @@ import 'package:clozii/features/auth/domain/entities/auth_result.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthRepository {
-  // 회원가입
+  // 회원가입: 사용자 정보 저장
   Future<AuthResult<User>> signUp({
     required String name,
     required String phoneNumber,
