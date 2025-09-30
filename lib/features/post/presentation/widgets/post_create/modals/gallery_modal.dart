@@ -15,6 +15,7 @@ class GalleryModal extends StatefulWidget {
 
 class _GalleryModalState extends State<GalleryModal> {
   List<AssetEntity> images = [];
+  List<String> selectedImageIds = []; // 선택된 이미지 - AssetEntity.id 만 저장
 
   @override
   void initState() {
@@ -92,11 +93,12 @@ class _GalleryModalState extends State<GalleryModal> {
               ),
             );
           } else {
+            // 현재 사진
+            final asset = images[index - 1];
+
             // 갤러리 사진
             return FutureBuilder<Uint8List?>(
-              future: images[index - 1].thumbnailDataWithSize(
-                ThumbnailSize(200, 200),
-              ),
+              future: asset.thumbnailDataWithSize(ThumbnailSize(200, 200)),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
                     snapshot.hasData) {
@@ -106,7 +108,18 @@ class _GalleryModalState extends State<GalleryModal> {
                   );
 
                   return GestureDetector(
-                    onTap: () => debugPrint('image tapped'),
+                    onTap: () => {
+                      setState(() {
+                        // 갤러리에서 이미지가 탭되면 selectedImages에 AssetEntity.id 를 추가/제거
+                        // 이후에 게시글 생성 시 selectedImages 리스트에 저장된 id 값으로 AssetEntity 객체를 다시 불러올 수 있음
+                        if (selectedImageIds.contains(asset.id)) {
+                          selectedImageIds.remove(asset.id);
+                        } else {
+                          selectedImageIds.add(asset.id);
+                        }
+                      }),
+                      debugPrint(selectedImageIds.length.toString()),
+                    },
                     child: Stack(
                       children: [
                         Positioned.fill(child: img),
