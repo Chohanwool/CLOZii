@@ -117,8 +117,6 @@ class _GalleryModalState extends State<GalleryModal> {
                   return Container(color: Colors.red[200]);
                 }
 
-                final img = Image.memory(snapshot.data!, fit: BoxFit.cover);
-
                 return GestureDetector(
                   onTap: () {
                     setState(() {
@@ -133,7 +131,22 @@ class _GalleryModalState extends State<GalleryModal> {
                   },
                   child: Stack(
                     children: [
-                      Positioned.fill(child: img),
+                      Positioned.fill(
+                        child: Image.memory(snapshot.data!, fit: BoxFit.cover),
+                      ),
+
+                      if (selectedImageIds.contains(asset.id))
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: context.colors.primary,
+                                width: 4.0,
+                              ),
+                            ),
+                          ),
+                        ),
+
                       Positioned(
                         top: 5,
                         right: 5,
