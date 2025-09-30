@@ -1,4 +1,4 @@
-import 'package:clozii/features/auth/enum/auth_step.dart';
+import 'package:clozii/features/auth/core/enum/auth_step.dart';
 
 class AuthConstants {
   static const int phoneNumberMaxLength = 11;
