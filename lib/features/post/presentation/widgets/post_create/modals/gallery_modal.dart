@@ -70,7 +70,7 @@ class _GalleryModalState extends State<GalleryModal> {
           icon: Icon(Icons.close),
         ),
         title: Text('Gallery'),
-        actions: [TextButton(onPressed: () {  }, child: Text('Done'))],
+        actions: [TextButton(onPressed: () {}, child: Text('Done'))],
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -94,33 +94,33 @@ class _GalleryModalState extends State<GalleryModal> {
           } else {
             // 갤러리 사진
             return FutureBuilder<Uint8List?>(
-              future: images[index - 1]
-                  .thumbnailDataWithSize(ThumbnailSize(200, 200)),
+              future: images[index - 1].thumbnailDataWithSize(
+                ThumbnailSize(200, 200),
+              ),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
                     snapshot.hasData) {
-                  
                   final img = Image.memory(
                     snapshot.data!, // Uint8List 바이트 데이터를 이미지로 변환
                     fit: BoxFit.cover,
                   );
 
                   return GestureDetector(
-                    onTap: () => debugPrint('image tapped'), 
+                    onTap: () => debugPrint('image tapped'),
                     child: Stack(
                       children: [
-                        Positioned.fill(child: img), 
+                        Positioned.fill(child: img),
                         Positioned(
-                          top: 5, 
-                          right: 5, 
+                          top: 5,
+                          right: 5,
                           child: Icon(
-                            Icons.circle_outlined, 
-                            color: AppColors.border, 
-                            size: 28.0
-                          )
-                        )
-                      ]
-                    )
+                            Icons.circle_outlined,
+                            color: AppColors.border,
+                            size: 28.0,
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 }
                 return Container(color: Colors.red[200]);
