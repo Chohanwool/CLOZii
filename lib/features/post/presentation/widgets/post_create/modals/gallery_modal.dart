@@ -14,7 +14,8 @@ class GalleryModal extends StatefulWidget {
 }
 
 class _GalleryModalState extends State<GalleryModal> {
-  List<AssetEntity> images = [];
+  List<AssetEntity> images = []; // 불러온 이미지 리스트
+  Map<String, Future<Uint8List?>> thumbnailCache = {}; // 썸네일 캐싱용 맵
   List<String> selectedImageIds = []; // 선택된 이미지 - AssetEntity.id 만 저장
 
   @override
@@ -39,13 +40,22 @@ class _GalleryModalState extends State<GalleryModal> {
         final recentAlbum = albums.first;
         final assetCount = await recentAlbum.assetCountAsync;
 
-        final images = await recentAlbum.getAssetListRange(
+        final loadedImages = await recentAlbum.getAssetListRange(
           start: 0,
           end: assetCount,
         );
-        debugPrint('images: ${images.length}');
+        debugPrint('images: ${loadedImages.length}');
 
-        setState(() => this.images = images);
+        // 썸네일 캐싱
+        for (final image in loadedImages) {
+          thumbnailCache[image.id] = image.thumbnailDataWithSize(
+            ThumbnailSize(200, 200),
+          );
+        }
+
+        setState(() {
+          images = loadedImages;
+        });
       }
     } else {
       PhotoManager.openSetting();
@@ -96,54 +106,53 @@ class _GalleryModalState extends State<GalleryModal> {
             // 현재 사진
             final asset = images[index - 1];
 
-            // 갤러리 사진
             return FutureBuilder<Uint8List?>(
-              future: asset.thumbnailDataWithSize(ThumbnailSize(200, 200)),
+              future: thumbnailCache[asset.id],
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    snapshot.hasData) {
-                  final img = Image.memory(
-                    snapshot.data!, // Uint8List 바이트 데이터를 이미지로 변환
-                    fit: BoxFit.cover,
-                  );
-
-                  return GestureDetector(
-                    onTap: () => {
-                      setState(() {
-                        // 갤러리에서 이미지가 탭되면 selectedImages에 AssetEntity.id 를 추가/제거
-                        // 이후에 게시글 생성 시 selectedImages 리스트에 저장된 id 값으로 AssetEntity 객체를 다시 불러올 수 있음
-                        if (selectedImageIds.contains(asset.id)) {
-                          selectedImageIds.remove(asset.id);
-                        } else {
-                          selectedImageIds.add(asset.id);
-                        }
-                      }),
-                      debugPrint(selectedImageIds.length.toString()),
-                    },
-                    child: Stack(
-                      children: [
-                        Positioned.fill(child: img),
-                        Positioned(
-                          top: 5,
-                          right: 5,
-                          child: Icon(
-                            Icons.circle_outlined,
-                            color: AppColors.white,
-                            size: 28.0,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black.withOpacity(0.7),
-                                offset: Offset(0, 0),
-                                blurRadius: 4.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(color: Colors.grey[300]);
                 }
-                return Container(color: Colors.red[200]);
+
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return Container(color: Colors.red[200]);
+                }
+
+                final img = Image.memory(snapshot.data!, fit: BoxFit.cover);
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (selectedImageIds.contains(asset.id)) {
+                        selectedImageIds.remove(asset.id);
+                      } else {
+                        selectedImageIds.add(asset.id);
+                      }
+
+                      debugPrint(selectedImageIds.length.toString());
+                    });
+                  },
+                  child: Stack(
+                    children: [
+                      Positioned.fill(child: img),
+                      Positioned(
+                        top: 5,
+                        right: 5,
+                        child: Icon(
+                          Icons.circle_outlined,
+                          color: AppColors.white,
+                          size: 28.0,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.7),
+                              offset: Offset(0, 0),
+                              blurRadius: 4.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
             );
           }
