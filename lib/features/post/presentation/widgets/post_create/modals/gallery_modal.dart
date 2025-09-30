@@ -7,7 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class GalleryModal extends StatefulWidget {
-  const GalleryModal({super.key});
+  const GalleryModal({super.key, required this.selectedImageIds});
+
+  final List<String> selectedImageIds;
 
   @override
   State<GalleryModal> createState() => _GalleryModalState();
@@ -21,6 +23,9 @@ class _GalleryModalState extends State<GalleryModal> {
   @override
   void initState() {
     super.initState();
+    if (widget.selectedImageIds.isNotEmpty) {
+      selectedImageIds = List<String>.from(widget.selectedImageIds);
+    }
     _loadImages();
   }
 
@@ -81,7 +86,12 @@ class _GalleryModalState extends State<GalleryModal> {
           icon: Icon(Icons.close),
         ),
         title: Text('Gallery'),
-        actions: [TextButton(onPressed: () {}, child: Text('Done'))],
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(selectedImageIds),
+            child: Text('Done'),
+          ),
+        ],
       ),
       body: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
