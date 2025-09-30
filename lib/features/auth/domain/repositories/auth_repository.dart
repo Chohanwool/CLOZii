@@ -20,7 +20,7 @@ abstract class AuthRepository {
   Future<AuthResult<bool>> isPhoneRegistered(String phoneNumber);
 
   // 인증번호 전송
-  Future<AuthResult<bool>> sendVerificationCode(String phoneNumber);
+  Future<AuthResult<String>> sendVerificationCode(String phoneNumber);
 
   // 인증번호 재전송
   Future<AuthResult<bool>> resendVerificationCode(String phoneNumber);
