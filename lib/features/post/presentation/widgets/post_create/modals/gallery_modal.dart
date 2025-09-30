@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:flutter/material.dart';
@@ -91,14 +93,35 @@ class _GalleryModalState extends State<GalleryModal> {
             );
           } else {
             // 갤러리 사진
-            return FutureBuilder<Widget>(
+            return FutureBuilder<Uint8List?>(
               future: images[index - 1]
-                  .thumbnailDataWithSize(ThumbnailSize(200, 200))
-                  .then((data) => Image.memory(data!, fit: BoxFit.cover)),
+                  .thumbnailDataWithSize(ThumbnailSize(200, 200)),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done &&
                     snapshot.hasData) {
-                  return GestureDetector(onTap: () {debugPrint('image tapped');}, child: snapshot.data!);
+                  
+                  final img = Image.memory(
+                    snapshot.data!, // Uint8List 바이트 데이터를 이미지로 변환
+                    fit: BoxFit.cover,
+                  );
+
+                  return GestureDetector(
+                    onTap: () => debugPrint('image tapped'), 
+                    child: Stack(
+                      children: [
+                        Positioned.fill(child: img), 
+                        Positioned(
+                          top: 5, 
+                          right: 5, 
+                          child: Icon(
+                            Icons.circle_outlined, 
+                            color: AppColors.border, 
+                            size: 28.0
+                          )
+                        )
+                      ]
+                    )
+                  );
                 }
                 return Container(color: Colors.red[200]);
               },
