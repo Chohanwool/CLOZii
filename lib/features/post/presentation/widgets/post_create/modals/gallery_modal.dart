@@ -115,8 +115,15 @@ class _GalleryModalState extends State<GalleryModal> {
                           right: 5,
                           child: Icon(
                             Icons.circle_outlined,
-                            color: AppColors.border,
+                            color: AppColors.white,
                             size: 28.0,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black.withOpacity(0.7),
+                                offset: Offset(0, 0),
+                                blurRadius: 4.0,
+                              ),
+                            ],
                           ),
                         ),
                       ],
