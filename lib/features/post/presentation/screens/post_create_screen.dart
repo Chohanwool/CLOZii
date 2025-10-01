@@ -146,7 +146,11 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            // "저장하지 않은 내역은 사라집니다" 안내 추가 예정
+            ref.read(selectedImageIdsProvider.notifier).clearSelection();
+            Navigator.pop(context);
+          },
           icon: Icon(Icons.close),
         ),
         title: const Text('Sell My Items'),
