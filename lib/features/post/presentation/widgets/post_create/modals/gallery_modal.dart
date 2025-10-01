@@ -1,8 +1,14 @@
+// dart
 import 'dart:typed_data';
 
+// core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
+
+// features
 import 'package:clozii/features/post/provider/selected_image_ids_provider.dart';
+
+// packages
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,10 +40,6 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
       );
 
       if (albums.isNotEmpty) {
-        for (var album in albums) {
-          debugPrint(album.name);
-        }
-
         final recentAlbum = albums.first;
         final assetCount = await recentAlbum.assetCountAsync;
 
