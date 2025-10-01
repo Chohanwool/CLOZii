@@ -115,7 +115,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         surfaceTintColor: Colors.transparent,
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            ref.read(selectedImageIdsProvider.notifier).clearSelection();
+            Navigator.of(context).pop();
+          },
           icon: Icon(Icons.close),
         ),
         title: Text('Gallery'),

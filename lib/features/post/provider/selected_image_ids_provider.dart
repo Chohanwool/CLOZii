@@ -21,4 +21,8 @@ class SelectedImageIdsNotifier extends Notifier<List<String>> {
       state = [...state, id];
     }
   }
+
+  void clearSelection() {
+    state = [];
+  }
 }
