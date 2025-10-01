@@ -2,6 +2,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/image_previews.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/selectors/image_selector.dart';
@@ -17,6 +18,7 @@ import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/provider/selected_image_ids_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
@@ -138,6 +140,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 선택된 사진 ID 리스트
+    final selectedImageIds = ref.watch(selectedImageIdsProvider);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -160,8 +165,30 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               children: [
                 const SizedBox(height: 10.0),
 
-                // 사진 추가 버튼 - ImagePicker와 연결할 예정
-                ImageSelector(),
+                // 사진 선택 섹션 (ImageSelector + 선택된 사진 미리보기)
+                SizedBox(
+                  height: 100.0,
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: selectedImageIds.length + 1,
+                    itemBuilder: (context, index) {
+                      // ImageSelector - 사진 선택 위젯
+                      if (index == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: ImageSelector(),
+                        );
+                      }
+
+                      // 선택된 사진 미리보기
+                      final assetId = selectedImageIds[index - 1];
+
+                      return ImagePreviews(assetId: assetId);
+                    },
+                  ),
+                ),
+
                 const SizedBox(height: 40.0),
 
                 // 제목 입력 필드
@@ -278,8 +305,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 images: [],
               );
 
-              // 실무에서는 PostDraft에 XFile 형식 이미지 리스트를 그대로 넣고 
-              // 실제 저장 시 이미지를 서버에 없로드 후 URL로 변환하는 방식을 사용함 
+              // 실무에서는 PostDraft에 XFile 형식 이미지 리스트를 그대로 넣고
+              // 실제 저장 시 이미지를 서버에 없로드 후 URL로 변환하는 방식을 사용함
               // 구현 예시는 파일 하단에 주석으로 작성되어 있음
               final imageUrls = postDraft.images
                   .map((image) => image.path)
