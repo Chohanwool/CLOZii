@@ -2,30 +2,26 @@ import 'dart:typed_data';
 
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/post/provider/selected_image_ids_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class GalleryModal extends StatefulWidget {
-  const GalleryModal({super.key, required this.selectedImageIds});
-
-  final List<String> selectedImageIds;
+class GalleryModal extends ConsumerStatefulWidget {
+  const GalleryModal({super.key});
 
   @override
-  State<GalleryModal> createState() => _GalleryModalState();
+  ConsumerState<GalleryModal> createState() => _GalleryModalState();
 }
 
-class _GalleryModalState extends State<GalleryModal> {
+class _GalleryModalState extends ConsumerState<GalleryModal> {
   List<AssetEntity> images = []; // 불러온 이미지 리스트
   Map<String, Future<Uint8List?>> thumbnailCache = {}; // 썸네일 캐싱용 맵
-  List<String> selectedImageIds = []; // 선택된 이미지 - AssetEntity.id 만 저장
 
   @override
   void initState() {
     super.initState();
-    if (widget.selectedImageIds.isNotEmpty) {
-      selectedImageIds = List<String>.from(widget.selectedImageIds);
-    }
     _loadImages();
   }
 
@@ -77,6 +73,8 @@ class _GalleryModalState extends State<GalleryModal> {
 
   @override
   Widget build(BuildContext context) {
+    final selectedImageIds = ref.watch(selectedImageIdsProvider);
+
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
@@ -88,7 +86,7 @@ class _GalleryModalState extends State<GalleryModal> {
         title: Text('Gallery'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(selectedImageIds),
+            onPressed: () => Navigator.of(context).pop(),
             child: Text('Done'),
           ),
         ],
@@ -116,6 +114,11 @@ class _GalleryModalState extends State<GalleryModal> {
             // 현재 사진
             final asset = images[index - 1];
 
+            // 현재 사진이 선택되었는 지 여부
+            final isSelected = ref
+                .watch(selectedImageIdsProvider.notifier)
+                .isSelected(asset.id);
+
             return FutureBuilder<Uint8List?>(
               future: thumbnailCache[asset.id],
               builder: (context, snapshot) {
@@ -129,15 +132,11 @@ class _GalleryModalState extends State<GalleryModal> {
 
                 return GestureDetector(
                   onTap: () {
-                    setState(() {
-                      if (selectedImageIds.contains(asset.id)) {
-                        selectedImageIds.remove(asset.id);
-                      } else {
-                        selectedImageIds.add(asset.id);
-                      }
+                    ref
+                        .read(selectedImageIdsProvider.notifier)
+                        .toggleSelection(asset.id);
 
-                      debugPrint(selectedImageIds.length.toString());
-                    });
+                    debugPrint(selectedImageIds.length.toString());
                   },
                   child: Stack(
                     children: [
@@ -145,10 +144,10 @@ class _GalleryModalState extends State<GalleryModal> {
                         child: Image.memory(snapshot.data!, fit: BoxFit.cover),
                       ),
 
-                      if (selectedImageIds.contains(asset.id))
+                      if (isSelected)
                         Positioned(child: Container(color: AppColors.black26)),
 
-                      if (selectedImageIds.contains(asset.id))
+                      if (isSelected)
                         Positioned.fill(
                           child: Container(
                             decoration: BoxDecoration(
@@ -160,7 +159,7 @@ class _GalleryModalState extends State<GalleryModal> {
                           ),
                         ),
 
-                      if (selectedImageIds.contains(asset.id))
+                      if (isSelected)
                         Positioned(
                           top: 8,
                           right: 8,
@@ -184,7 +183,7 @@ class _GalleryModalState extends State<GalleryModal> {
                           ),
                         ),
 
-                      if (!selectedImageIds.contains(asset.id))
+                      if (!isSelected)
                         Positioned(
                           top: 6,
                           right: 6,

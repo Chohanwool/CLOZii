@@ -4,23 +4,18 @@ import 'package:clozii/core/theme/context_extension.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/gallery_modal.dart';
+import 'package:clozii/features/post/provider/selected_image_ids_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ImageSelector extends StatefulWidget {
+class ImageSelector extends ConsumerWidget {
   const ImageSelector({super.key});
 
-  @override
-  State<ImageSelector> createState() => _ImageSelectorState();
-}
-
-class _ImageSelectorState extends State<ImageSelector> {
-  final List<String> selectedImageIds = [];
-
-  void showGallery(BuildContext context) async {
-    final result = await showModalBottomSheet(
+  void showGallery(BuildContext context) {
+    showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.white,
       isScrollControlled: true,
@@ -31,20 +26,15 @@ class _ImageSelectorState extends State<ImageSelector> {
           top: kToolbarHeight,
           bottom: kBottomNavigationBarHeight,
         ),
-        child: GalleryModal(selectedImageIds: selectedImageIds),
+        child: GalleryModal(),
       ),
     );
-
-    if (result != null) {
-      setState(() {
-        selectedImageIds.clear();
-        selectedImageIds.addAll(List<String>.from(result));
-      });
-    }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedImageIds = ref.watch(selectedImageIdsProvider);
+
     return GestureDetector(
       onTap: () => showGallery(context),
       child: Container(
@@ -64,7 +54,7 @@ class _ImageSelectorState extends State<ImageSelector> {
             ),
             // 추가된 사진 개수 표시 - 10장까지 추가 가능
             Text(
-              '${selectedImageIds.length}/10',
+              '${selectedImageIds.length}/${SelectedImageIdsNotifier.maxLength}',
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.black54,
               ),
