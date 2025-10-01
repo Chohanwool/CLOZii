@@ -17,7 +17,7 @@ class GalleryModal extends ConsumerStatefulWidget {
 
 class _GalleryModalState extends ConsumerState<GalleryModal> {
   List<AssetEntity> images = []; // 불러온 이미지 리스트
-  Map<String, Future<Uint8List?>> thumbnailCache = {}; // 썸네일 캐싱용 맵
+  Map<String, Uint8List?> thumbnailCache = {}; // 썸네일 캐싱용 맵
 
   @override
   void initState() {
@@ -47,11 +47,19 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         );
         debugPrint('images: ${loadedImages.length}');
 
-        // 썸네일 캐싱
-        for (final image in loadedImages) {
-          thumbnailCache[image.id] = image.thumbnailDataWithSize(
-            ThumbnailSize(200, 200),
-          );
+        // loadedImages 의 각 AssetEntity 에 대해 썸네일 데이터 로드 (Future)
+        final futureThumbData = loadedImages
+            .map(
+              (asset) => asset.thumbnailDataWithSize(ThumbnailSize(100, 100)),
+            )
+            .toList();
+
+        // 모든 썸네일 로딩 작업을 병렬 처리
+        final thumbDataList = await Future.wait(futureThumbData);
+
+        // 로드 된 썸네일 리스트를 thumbnailCache 맵에 저장
+        for (int i = 0; i < thumbDataList.length; i++) {
+          thumbnailCache[loadedImages[i].id] = thumbDataList[i];
         }
 
         setState(() {
@@ -119,91 +127,84 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                 .watch(selectedImageIdsProvider.notifier)
                 .isSelected(asset.id);
 
-            return FutureBuilder<Uint8List?>(
-              future: thumbnailCache[asset.id],
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Container(color: Colors.grey[300]);
-                }
+            final thumbData = thumbnailCache[asset.id];
 
-                if (!snapshot.hasData || snapshot.data == null) {
-                  return Container(color: Colors.red[200]);
-                }
+            if (thumbData == null) {
+              return Container(color: AppColors.tertiary);
+            }
 
-                return GestureDetector(
-                  onTap: () {
-                    ref
-                        .read(selectedImageIdsProvider.notifier)
-                        .toggleSelection(asset.id);
+            return GestureDetector(
+              onTap: () {
+                ref
+                    .read(selectedImageIdsProvider.notifier)
+                    .toggleSelection(asset.id);
 
-                    debugPrint(selectedImageIds.length.toString());
-                  },
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.memory(snapshot.data!, fit: BoxFit.cover),
-                      ),
-
-                      if (isSelected)
-                        Positioned(child: Container(color: AppColors.black26)),
-
-                      if (isSelected)
-                        Positioned.fill(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: context.colors.primary,
-                                width: 4.0,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                      if (isSelected)
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            width: 24.0,
-                            height: 24.0,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: context.colors.primary,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '${selectedImageIds.indexOf(asset.id) + 1}',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                      if (!isSelected)
-                        Positioned(
-                          top: 6,
-                          right: 6,
-                          child: Icon(
-                            Icons.circle_outlined,
-                            color: AppColors.white,
-                            size: 28.0,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black.withOpacity(0.7),
-                                offset: Offset(0, 0),
-                                blurRadius: 4.0,
-                              ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                );
+                debugPrint(selectedImageIds.length.toString());
               },
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.memory(thumbData, fit: BoxFit.cover),
+                  ),
+
+                  if (isSelected)
+                    Positioned(child: Container(color: AppColors.black26)),
+
+                  if (isSelected)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: context.colors.primary,
+                            width: 4.0,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  if (isSelected)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        width: 24.0,
+                        height: 24.0,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: context.colors.primary,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '${selectedImageIds.indexOf(asset.id) + 1}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  if (!isSelected)
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: Icon(
+                        Icons.circle_outlined,
+                        color: AppColors.white,
+                        size: 28.0,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black.withOpacity(0.7),
+                            offset: Offset(0, 0),
+                            blurRadius: 4.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
             );
           }
         },
