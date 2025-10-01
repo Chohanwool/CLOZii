@@ -140,8 +140,6 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                 ref
                     .read(selectedImageIdsProvider.notifier)
                     .toggleSelection(asset.id);
-
-                debugPrint(selectedImageIds.length.toString());
               },
               child: Stack(
                 children: [
