@@ -27,7 +27,9 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
 
   int _loadedImageCount = 0; // 로드된 이미지 개수
   final int _loadLimit = 2; // 한 번에 로드할 이미지 개수
+
   bool _isLoading = false; // 로딩 상태
+  bool _allImagesLoaded = false; // 모든 이미지가 로드되었는지 여부
 
   @override
   void initState() {
@@ -38,54 +40,62 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   void _loadImages() async {
     _isLoading = true;
 
-    // 사진 접근 권한 요청
-    // 매번 권한을 물어보지 않고, 이미 권한이 허용되어 있으면 바로 결과를 반환
-    final permission = await PhotoManager.requestPermissionExtend();
+    try {
+      // 사진 접근 권한 요청
+      // 매번 권한을 물어보지 않고, 이미 권한이 허용되어 있으면 바로 결과를 반환
+      final permission = await PhotoManager.requestPermissionExtend();
 
-    if (!permission.isAuth) {
-      PhotoManager.openSetting();
-      return;
+      if (!permission.isAuth) {
+        PhotoManager.openSetting();
+        return;
+      }
+
+      final albums = await PhotoManager.getAssetPathList(
+        type: RequestType.image,
+      );
+
+      if (albums.isEmpty) {
+        debugPrint('앨범이 없음');
+        return;
+      }
+
+      final recentAlbum = albums.first;
+      final assetCount = await recentAlbum.assetCountAsync;
+
+      final start = _loadedImageCount;
+      final end = (_loadedImageCount + _loadLimit).clamp(0, assetCount);
+
+      if (start >= end) {
+        debugPrint('모든 사진이 로드됨');
+        _allImagesLoaded = true;
+        return;
+      }
+
+      final loadedImages = await recentAlbum.getAssetListRange(
+        start: start,
+        end: end,
+      );
+
+      // loadedImages 의 각 AssetEntity 에 대해 썸네일 데이터 로드 (Future)
+      final futureThumbData = loadedImages
+          .map((asset) => asset.thumbnailDataWithSize(ThumbnailSize(100, 100)))
+          .toList();
+
+      // 모든 썸네일 로딩 작업을 병렬 처리
+      final thumbDataList = await Future.wait(futureThumbData);
+
+      // 로드 된 썸네일 리스트를 thumbnailCache 맵에 저장
+      for (int i = 0; i < thumbDataList.length; i++) {
+        thumbnailCache[loadedImages[i].id] = thumbDataList[i];
+      }
+
+      setState(() {
+        images.addAll(loadedImages);
+        _loadedImageCount = end;
+      });
+    } finally {
+      _isLoading = false;
     }
-
-    final albums = await PhotoManager.getAssetPathList(type: RequestType.image);
-
-    if (albums.isEmpty) {
-      return;
-    }
-
-    final recentAlbum = albums.first;
-    final assetCount = await recentAlbum.assetCountAsync;
-
-    final start = _loadedImageCount;
-    final end = (_loadedImageCount + _loadLimit).clamp(0, assetCount);
-
-    if (start >= end) return;
-
-    final loadedImages = await recentAlbum.getAssetListRange(
-      start: start,
-      end: end,
-    );
-    debugPrint('images: ${loadedImages.length}');
-
-    // loadedImages 의 각 AssetEntity 에 대해 썸네일 데이터 로드 (Future)
-    final futureThumbData = loadedImages
-        .map((asset) => asset.thumbnailDataWithSize(ThumbnailSize(100, 100)))
-        .toList();
-
-    // 모든 썸네일 로딩 작업을 병렬 처리
-    final thumbDataList = await Future.wait(futureThumbData);
-
-    // 로드 된 썸네일 리스트를 thumbnailCache 맵에 저장
-    for (int i = 0; i < thumbDataList.length; i++) {
-      thumbnailCache[loadedImages[i].id] = thumbDataList[i];
-    }
-
-    setState(() {
-      images.addAll(loadedImages);
-      _loadedImageCount = end;
-    });
-
-    _isLoading = false;
   }
 
   void _openCamera() async {
@@ -119,6 +129,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
       body: NotificationListener<ScrollNotification>(
         onNotification: (scrollInfo) {
           if (!_isLoading &&
+              !_allImagesLoaded &&
               scrollInfo.metrics.pixels >
                   scrollInfo.metrics.maxScrollExtent - 200) {
             _loadImages();
