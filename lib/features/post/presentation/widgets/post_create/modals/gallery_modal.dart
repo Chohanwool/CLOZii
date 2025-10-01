@@ -25,6 +25,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   List<AssetEntity> images = []; // 불러온 이미지 리스트
   Map<String, Uint8List?> thumbnailCache = {}; // 썸네일 캐싱용 맵
 
+  int _loadedImageCount = 0; // 로드된 이미지 개수
+  final int _loadLimit = 2; // 한 번에 로드할 이미지 개수
+  bool _isLoading = false; // 로딩 상태
+
   @override
   void initState() {
     super.initState();
@@ -32,45 +36,56 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   }
 
   void _loadImages() async {
+    _isLoading = true;
+
+    // 사진 접근 권한 요청
+    // 매번 권한을 물어보지 않고, 이미 권한이 허용되어 있으면 바로 결과를 반환
     final permission = await PhotoManager.requestPermissionExtend();
 
-    if (permission.isAuth) {
-      final albums = await PhotoManager.getAssetPathList(
-        type: RequestType.image,
-      );
-
-      if (albums.isNotEmpty) {
-        final recentAlbum = albums.first;
-        final assetCount = await recentAlbum.assetCountAsync;
-
-        final loadedImages = await recentAlbum.getAssetListRange(
-          start: 0,
-          end: assetCount,
-        );
-        debugPrint('images: ${loadedImages.length}');
-
-        // loadedImages 의 각 AssetEntity 에 대해 썸네일 데이터 로드 (Future)
-        final futureThumbData = loadedImages
-            .map(
-              (asset) => asset.thumbnailDataWithSize(ThumbnailSize(100, 100)),
-            )
-            .toList();
-
-        // 모든 썸네일 로딩 작업을 병렬 처리
-        final thumbDataList = await Future.wait(futureThumbData);
-
-        // 로드 된 썸네일 리스트를 thumbnailCache 맵에 저장
-        for (int i = 0; i < thumbDataList.length; i++) {
-          thumbnailCache[loadedImages[i].id] = thumbDataList[i];
-        }
-
-        setState(() {
-          images = loadedImages;
-        });
-      }
-    } else {
+    if (!permission.isAuth) {
       PhotoManager.openSetting();
+      return;
     }
+
+    final albums = await PhotoManager.getAssetPathList(type: RequestType.image);
+
+    if (albums.isEmpty) {
+      return;
+    }
+
+    final recentAlbum = albums.first;
+    final assetCount = await recentAlbum.assetCountAsync;
+
+    final start = _loadedImageCount;
+    final end = (_loadedImageCount + _loadLimit).clamp(0, assetCount);
+
+    if (start >= end) return;
+
+    final loadedImages = await recentAlbum.getAssetListRange(
+      start: start,
+      end: end,
+    );
+    debugPrint('images: ${loadedImages.length}');
+
+    // loadedImages 의 각 AssetEntity 에 대해 썸네일 데이터 로드 (Future)
+    final futureThumbData = loadedImages
+        .map((asset) => asset.thumbnailDataWithSize(ThumbnailSize(100, 100)))
+        .toList();
+
+    // 모든 썸네일 로딩 작업을 병렬 처리
+    final thumbDataList = await Future.wait(futureThumbData);
+
+    // 로드 된 썸네일 리스트를 thumbnailCache 맵에 저장
+    for (int i = 0; i < thumbDataList.length; i++) {
+      thumbnailCache[loadedImages[i].id] = thumbDataList[i];
+    }
+
+    setState(() {
+      images.addAll(loadedImages);
+      _loadedImageCount = end;
+    });
+
+    _isLoading = false;
   }
 
   void _openCamera() async {
@@ -101,113 +116,123 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
           ),
         ],
       ),
-      body: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 4.0,
-          crossAxisSpacing: 4.0,
-        ),
-        itemCount: images.length + 1,
-        itemBuilder: (BuildContext context, int index) {
-          if (index == 0) {
-            return GestureDetector(
-              onTap: _openCamera,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.camera_alt, size: 40.0),
-                  Text('Camera', style: context.textTheme.bodyMedium),
-                ],
-              ),
-            );
-          } else {
-            // 현재 사진
-            final asset = images[index - 1];
+      body: NotificationListener<ScrollNotification>(
+        onNotification: (scrollInfo) {
+          if (!_isLoading &&
+              scrollInfo.metrics.pixels >
+                  scrollInfo.metrics.maxScrollExtent - 200) {
+            _loadImages();
+          }
+          return false;
+        },
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 4.0,
+            crossAxisSpacing: 4.0,
+          ),
+          itemCount: images.length + 1,
+          itemBuilder: (BuildContext context, int index) {
+            if (index == 0) {
+              return GestureDetector(
+                onTap: _openCamera,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.camera_alt, size: 40.0),
+                    Text('Camera', style: context.textTheme.bodyMedium),
+                  ],
+                ),
+              );
+            } else {
+              // 현재 사진
+              final asset = images[index - 1];
 
-            // 현재 사진이 선택되었는 지 여부
-            final isSelected = ref
-                .watch(selectedImageIdsProvider.notifier)
-                .isSelected(asset.id);
+              // 현재 사진이 선택되었는 지 여부
+              final isSelected = ref
+                  .watch(selectedImageIdsProvider.notifier)
+                  .isSelected(asset.id);
 
-            final thumbData = thumbnailCache[asset.id];
+              final thumbData = thumbnailCache[asset.id];
 
-            if (thumbData == null) {
-              return Container(color: AppColors.tertiary);
-            }
+              if (thumbData == null) {
+                return Container(color: AppColors.tertiary);
+              }
 
-            return GestureDetector(
-              onTap: () {
-                ref
-                    .read(selectedImageIdsProvider.notifier)
-                    .toggleSelection(asset.id);
-              },
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.memory(thumbData, fit: BoxFit.cover),
-                  ),
-
-                  if (isSelected)
-                    Positioned(child: Container(color: AppColors.black26)),
-
-                  if (isSelected)
+              return GestureDetector(
+                onTap: () {
+                  ref
+                      .read(selectedImageIdsProvider.notifier)
+                      .toggleSelection(asset.id);
+                },
+                child: Stack(
+                  children: [
                     Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: context.colors.primary,
-                            width: 4.0,
-                          ),
-                        ),
-                      ),
+                      child: Image.memory(thumbData, fit: BoxFit.cover),
                     ),
 
-                  if (isSelected)
-                    Positioned(
-                      top: 8,
-                      right: 8,
-                      child: Container(
-                        width: 24.0,
-                        height: 24.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: context.colors.primary,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '${selectedImageIds.indexOf(asset.id) + 1}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                    if (isSelected)
+                      Positioned(child: Container(color: AppColors.black26)),
+
+                    if (isSelected)
+                      Positioned.fill(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: context.colors.primary,
+                              width: 4.0,
                             ),
                           ),
                         ),
                       ),
-                    ),
 
-                  if (!isSelected)
-                    Positioned(
-                      top: 6,
-                      right: 6,
-                      child: Icon(
-                        Icons.circle_outlined,
-                        color: AppColors.white,
-                        size: 28.0,
-                        shadows: [
-                          Shadow(
-                            color: Colors.black.withOpacity(0.7),
-                            offset: Offset(0, 0),
-                            blurRadius: 4.0,
+                    if (isSelected)
+                      Positioned(
+                        top: 8,
+                        right: 8,
+                        child: Container(
+                          width: 24.0,
+                          height: 24.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: context.colors.primary,
                           ),
-                        ],
+                          child: Center(
+                            child: Text(
+                              '${selectedImageIds.indexOf(asset.id) + 1}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                ],
-              ),
-            );
-          }
-        },
+
+                    if (!isSelected)
+                      Positioned(
+                        top: 6,
+                        right: 6,
+                        child: Icon(
+                          Icons.circle_outlined,
+                          color: AppColors.white,
+                          size: 28.0,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.7),
+                              offset: Offset(0, 0),
+                              blurRadius: 4.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
