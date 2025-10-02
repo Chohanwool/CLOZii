@@ -17,19 +17,8 @@ class SelectedImageNotifier extends Notifier<Map<String, Uint8List?>> {
   @override
   Map<String, Uint8List?> build() => {};
 
-  bool isSelected(String id) => state.containsKey(id);
-
-  void toggleSelection(String id, Uint8List? thumbnailData) {
-    if (isSelected(id)) {
-      final newState = Map<String, Uint8List?>.from(state);
-      newState.remove(id);
-      state = newState;
-    } else {
-      if (state.length == maxLength) return;
-      final newState = Map<String, Uint8List?>.from(state);
-      newState[id] = thumbnailData;
-      state = newState;
-    }
+  void saveChanges(Map<String, Uint8List?> newState) {
+    state = newState;
   }
 
   void undoChanges(Map<String, Uint8List?> previousState) {

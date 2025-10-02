@@ -28,6 +28,9 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   late Map<String, Uint8List?>
   previousState; // 이전 선택 상태 저장용 - 갤러리 모달에서 X 누르면 이전 상태로 복원
 
+  late Map<String, Uint8List?>
+  newState; // 현재 선택하는 사진 상태 저장용 - 갤러리 모달에서 Done 버튼 누르면 프로바이더에 이 상태 저장
+
   int _loadedImageCount = 0; // 로드된 이미지 개수
   final int _loadLimit = 2; // 한 번에 로드할 이미지 개수
 
@@ -38,6 +41,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   void initState() {
     super.initState();
     previousState = ref.read(selectedImageProvider);
+    newState = Map<String, Uint8List?>.from(previousState);
     _loadImages();
   }
 
@@ -110,10 +114,13 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
     }
   }
 
+  // 이미지 선택 여부 확인
+  bool isSelected(String id) {
+    return newState.containsKey(id);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final selectedImageIds = ref.watch(selectedImageProvider);
-
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
@@ -128,7 +135,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         title: Text('Gallery'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () {
+              ref.read(selectedImageProvider.notifier).saveChanges(newState);
+              Navigator.of(context).pop();
+            },
             child: Text('Done'),
           ),
         ],
@@ -166,11 +176,6 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
               // 현재 사진
               final asset = images[index - 1];
 
-              // 현재 사진이 선택되었는 지 여부
-              final isSelected = ref
-                  .watch(selectedImageProvider.notifier)
-                  .isSelected(asset.id);
-
               final thumbData = thumbnailCache[asset.id];
 
               if (thumbData == null) {
@@ -179,9 +184,15 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
 
               return GestureDetector(
                 onTap: () {
-                  ref
-                      .read(selectedImageProvider.notifier)
-                      .toggleSelection(asset.id, thumbnailCache[asset.id]);
+                  setState(() {
+                    if (newState.containsKey(asset.id)) {
+                      newState.remove(asset.id);
+                    } else {
+                      if (newState.length < SelectedImageNotifier.maxLength) {
+                        newState[asset.id] = thumbnailCache[asset.id];
+                      }
+                    }
+                  });
                 },
                 child: Stack(
                   children: [
@@ -189,10 +200,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                       child: Image.memory(thumbData, fit: BoxFit.cover),
                     ),
 
-                    if (isSelected)
+                    if (isSelected(asset.id))
                       Positioned(child: Container(color: AppColors.black26)),
 
-                    if (isSelected)
+                    if (isSelected(asset.id))
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
@@ -204,7 +215,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                         ),
                       ),
 
-                    if (isSelected)
+                    if (isSelected(asset.id))
                       Positioned(
                         top: 8,
                         right: 8,
@@ -217,7 +228,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           ),
                           child: Center(
                             child: Text(
-                              '${selectedImageIds.keys.toList().indexOf(asset.id) + 1}',
+                              '${newState.keys.toList().indexOf(asset.id) + 1}',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -228,7 +239,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                         ),
                       ),
 
-                    if (!isSelected)
+                    if (!isSelected(asset.id))
                       Positioned(
                         top: 6,
                         right: 6,
