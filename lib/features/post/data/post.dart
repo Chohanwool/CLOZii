@@ -1,4 +1,4 @@
-import 'package:image_picker/image_picker.dart';
+import 'dart:typed_data';
 
 enum TradeType { sell, share }
 
@@ -6,14 +6,14 @@ class PostDraft {
   PostDraft({
     required this.title,
     this.content,
-    List<XFile>? images,
+    required this.images,
     required this.price,
     required this.tradeType,
-  }) : images = images ?? [];
+  });
 
   String title;
   String? content;
-  List<XFile> images;
+  List<Uint8List?> images;
   int price;
   TradeType tradeType;
 }

@@ -30,6 +30,10 @@ class SelectedImageNotifier extends Notifier<Map<String, Uint8List?>> {
     return state[id];
   }
 
+  List<Uint8List?> getAllThumbnails() {
+    return state.values.toList();
+  }
+
   void removeImage(String id) {
     if (state.containsKey(id)) {
       // state = {...state}..remove(id);

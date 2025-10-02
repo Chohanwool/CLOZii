@@ -300,30 +300,32 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 _priceController.text.replaceAll(RegExp(r'[^0-9]'), ''),
               );
 
-              // TODO: 리포지토리에서 DB/서버 API에 게시글 저장 필요
-              // 구현 예시는 파일 하단에 주석으로 작성되어 있음
+              final selectedImageThumbnails = ref
+                  .read(selectedImageProvider.notifier)
+                  .getAllThumbnails();
+
+              // TODO: 리포지토리에서 Firestore DB에 게시글 저장해야 함
+              // createPost() : FirebaseFirestore에 PostDraft 저장 후 Post 객체 반환
               final postDraft = PostDraft(
                 title: _titleController.text,
                 content: _contentController.text,
                 tradeType: _selectedTransactionType,
                 price: price,
-                images: [],
+                images: selectedImageThumbnails,
               );
 
-              // 실무에서는 PostDraft에 XFile 형식 이미지 리스트를 그대로 넣고
-              // 실제 저장 시 이미지를 서버에 없로드 후 URL로 변환하는 방식을 사용함
-              // 구현 예시는 파일 하단에 주석으로 작성되어 있음
+              // createPost()에서 uploadImages()로 Firebase Storage에 Uint8List 이미지 업로드 후 URL 리스트 반환
               final imageUrls = postDraft.images
-                  .map((image) => image.path)
+                  .map(
+                    // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
+                    (image) => image != null
+                        ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2cFWmgmh-xRsLXiuWYedhR7Xtwrc1Hz11iGSd9W2GTOUoW1oY_UQvmZedKYBEMHzrX3U&usqp=CAU'
+                        : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
+                  )
                   .toList();
-              if (imageUrls.isEmpty) {
-                imageUrls.add(
-                  'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
-                );
-              }
 
-              // createPost()에서 생성된 게시글을 반환할때 Post 객체로 만들어서 반환 할 예정
-              // 그렇게 하면 화면에도 생성된 게시글을 바로 보여줄 수 있고, 캐싱에도 쓸수 있고, 다른 메서드들에서도 생성된 게시글이 바로 필요할 떄 넣어줄 수 있음.
+              // createPost()에서 반환할때 Post 객체를 만들어서 반환 할 예정
+              // 반환된 객체는 화면에도 바로 보여줄 수 있고, 캐싱에도 쓸수 있고, 다른 메서드들에서도 필요하면 넣어줄 수 있음.
               final post = Post(
                 id: postDraft.hashCode.toString(),
                 title: postDraft.title,
