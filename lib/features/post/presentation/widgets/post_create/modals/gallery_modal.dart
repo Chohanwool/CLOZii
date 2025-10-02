@@ -25,6 +25,9 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   List<AssetEntity> images = []; // 불러온 이미지 리스트
   Map<String, Uint8List?> thumbnailCache = {}; // 썸네일 캐싱용 맵
 
+  late Map<String, Uint8List?>
+  previousState; // 이전 선택 상태 저장용 - 갤러리 모달에서 X 누르면 이전 상태로 복원
+
   int _loadedImageCount = 0; // 로드된 이미지 개수
   final int _loadLimit = 2; // 한 번에 로드할 이미지 개수
 
@@ -34,6 +37,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   @override
   void initState() {
     super.initState();
+    previousState = ref.read(selectedImageProvider);
     _loadImages();
   }
 
@@ -116,7 +120,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
         leading: IconButton(
           onPressed: () {
-            ref.read(selectedImageProvider.notifier).clearSelection();
+            ref.read(selectedImageProvider.notifier).undoChanges(previousState);
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.close),

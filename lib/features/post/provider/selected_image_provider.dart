@@ -32,6 +32,10 @@ class SelectedImageNotifier extends Notifier<Map<String, Uint8List?>> {
     }
   }
 
+  void undoChanges(Map<String, Uint8List?> previousState) {
+    state = previousState;
+  }
+
   Uint8List? getThumbnail(String id) {
     if (!state.containsKey(id)) return null;
     return state[id];
