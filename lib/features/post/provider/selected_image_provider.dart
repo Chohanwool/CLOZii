@@ -30,6 +30,15 @@ class SelectedImageNotifier extends Notifier<Map<String, Uint8List?>> {
     return state[id];
   }
 
+  void removeImage(String id) {
+    if (state.containsKey(id)) {
+      // state = {...state}..remove(id);
+      final newState = Map<String, Uint8List?>.from(state);
+      newState.remove(id);
+      state = newState;
+    }
+  }
+
   void clearSelection() {
     state = {};
   }

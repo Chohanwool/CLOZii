@@ -189,7 +189,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                         index - 1,
                       );
 
-                      return ImagePreviews(assetId: assetId);
+                      return ImagePreview(assetId: assetId);
                     },
                   ),
                 ),

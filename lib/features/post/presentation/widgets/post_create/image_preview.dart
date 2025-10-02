@@ -2,8 +2,8 @@ import 'package:clozii/features/post/provider/selected_image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ImagePreviews extends ConsumerWidget {
-  const ImagePreviews({super.key, required this.assetId});
+class ImagePreview extends ConsumerWidget {
+  const ImagePreview({super.key, required this.assetId});
 
   final String assetId;
 
@@ -36,14 +36,19 @@ class ImagePreviews extends ConsumerWidget {
             Positioned(
               top: -4.0,
               right: -4.0,
-              child: Container(
-                width: 16.0,
-                height: 16.0,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black, // 불투명 배경
+              child: GestureDetector(
+                onTap: () {
+                  ref.read(selectedImageProvider.notifier).removeImage(assetId);
+                },
+                child: Container(
+                  width: 16.0,
+                  height: 16.0,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black, // 불투명 배경
+                  ),
+                  child: const Icon(Icons.close, size: 14, color: Colors.white),
                 ),
-                child: const Icon(Icons.close, size: 14, color: Colors.white),
               ),
             ),
           ],
