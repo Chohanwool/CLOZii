@@ -2,7 +2,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/image_previews.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/image_preview.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/selectors/image_selector.dart';
@@ -18,7 +18,7 @@ import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
-import 'package:clozii/features/post/provider/selected_image_ids_provider.dart';
+import 'package:clozii/features/post/provider/selected_image_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
@@ -141,14 +141,14 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   @override
   Widget build(BuildContext context) {
     // 선택된 사진 ID 리스트
-    final selectedImageIds = ref.watch(selectedImageIdsProvider);
+    final selectedImageIds = ref.watch(selectedImageProvider);
 
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
             // "저장하지 않은 내역은 사라집니다" 안내 추가 예정
-            ref.read(selectedImageIdsProvider.notifier).clearSelection();
+            ref.read(selectedImageProvider.notifier).clearSelection();
             Navigator.pop(context);
           },
           icon: Icon(Icons.close),
@@ -185,8 +185,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                         );
                       }
 
-                      // 선택된 사진 미리보기
-                      final assetId = selectedImageIds[index - 1];
+                      String assetId = selectedImageIds.keys.elementAt(
+                        index - 1,
+                      );
 
                       return ImagePreviews(assetId: assetId);
                     },

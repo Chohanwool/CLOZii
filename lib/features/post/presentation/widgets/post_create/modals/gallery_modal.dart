@@ -6,7 +6,7 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
 // features
-import 'package:clozii/features/post/provider/selected_image_ids_provider.dart';
+import 'package:clozii/features/post/provider/selected_image_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';
@@ -108,7 +108,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedImageIds = ref.watch(selectedImageIdsProvider);
+    final selectedImageIds = ref.watch(selectedImageProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -116,7 +116,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
         leading: IconButton(
           onPressed: () {
-            ref.read(selectedImageIdsProvider.notifier).clearSelection();
+            ref.read(selectedImageProvider.notifier).clearSelection();
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.close),
@@ -164,7 +164,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
 
               // 현재 사진이 선택되었는 지 여부
               final isSelected = ref
-                  .watch(selectedImageIdsProvider.notifier)
+                  .watch(selectedImageProvider.notifier)
                   .isSelected(asset.id);
 
               final thumbData = thumbnailCache[asset.id];
@@ -176,8 +176,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
               return GestureDetector(
                 onTap: () {
                   ref
-                      .read(selectedImageIdsProvider.notifier)
-                      .toggleSelection(asset.id);
+                      .read(selectedImageProvider.notifier)
+                      .toggleSelection(asset.id, thumbnailCache[asset.id]);
                 },
                 child: Stack(
                   children: [
@@ -213,7 +213,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           ),
                           child: Center(
                             child: Text(
-                              '${selectedImageIds.indexOf(asset.id) + 1}',
+                              '${selectedImageIds.keys.toList().indexOf(asset.id) + 1}',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
