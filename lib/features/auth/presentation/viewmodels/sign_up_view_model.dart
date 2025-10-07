@@ -6,6 +6,8 @@ import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SignUpViewModel extends Notifier<SignUpState> {
+  final formKey = GlobalKey<FormState>();
+
   //TODO: 나중에 signUpUseCase 읽어와야함
   late FocusNode phoneNumberFocusNode;
   late FocusNode nameFocusNode;
@@ -82,7 +84,13 @@ class SignUpViewModel extends Notifier<SignUpState> {
     }
   }
 
-  Future<void> proceedToNextStep() async {}
+  void checkAllFieldsValid() {
+    final isFormValid = formKey.currentState?.validate() ?? false;
+
+    if (!isFormValid) return;
+
+    debugPrint(' ✅ All fields are valid ' + state.toString());
+  }
 
   Future<void> termsAgree() async {}
 }

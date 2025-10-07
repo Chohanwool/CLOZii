@@ -36,31 +36,34 @@ class SignUpScreen extends ConsumerWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  signUpState.stepTitle,
-                  style: context.textTheme.titleLarge,
-                ),
-                const SizedBox(height: 24.0),
+            child: Form(
+              key: signUpNotifier.formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    signUpState.stepTitle,
+                    style: context.textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 24.0),
 
-                SignUpForm(
-                  signUpState: signUpState,
+                  SignUpForm(
+                    signUpState: signUpState,
 
-                  onPhoneChanged: signUpNotifier.updatePhoneNumber,
-                  phoneNumberFocusNode: signUpNotifier.phoneNumberFocusNode,
+                    onPhoneChanged: signUpNotifier.updatePhoneNumber,
+                    phoneNumberFocusNode: signUpNotifier.phoneNumberFocusNode,
 
-                  onNameChanged: signUpNotifier.updateName,
-                  nameFocusNode: signUpNotifier.nameFocusNode,
+                    onNameChanged: signUpNotifier.updateName,
+                    nameFocusNode: signUpNotifier.nameFocusNode,
 
-                  onBirthDateChanged: signUpNotifier.updateBirthDate,
-                  birthDateFocusNode: signUpNotifier.birthDateFocusNode,
+                    onBirthDateChanged: signUpNotifier.updateBirthDate,
+                    birthDateFocusNode: signUpNotifier.birthDateFocusNode,
 
-                  onGenderChanged: signUpNotifier.updateGender,
-                  genderFocusNode: signUpNotifier.genderFocusNode,
-                ),
-              ],
+                    onGenderChanged: signUpNotifier.updateGender,
+                    genderFocusNode: signUpNotifier.genderFocusNode,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -87,8 +90,7 @@ class SignUpScreen extends ConsumerWidget {
                   button = CustomButton(
                     text: buttonText,
                     onTap: () {
-                      // TODO: 약관 표시 후 인증 화면으로 이동
-                      debugPrint(signUpState.toString());
+                      signUpNotifier.checkAllFieldsValid();
                     },
                     height: buttonHeight,
                     isKeyboardVisible: isKeyboardVisible,
