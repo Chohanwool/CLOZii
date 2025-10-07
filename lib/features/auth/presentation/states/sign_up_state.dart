@@ -9,6 +9,7 @@ class SignUpState {
   final bool isLoading;
   final String? errorMessage;
   final bool isSuccess;
+  final bool showTermsAndAgree;
 
   const SignUpState({
     this.currentStep = AuthStep.phoneSignup,
@@ -19,6 +20,7 @@ class SignUpState {
     this.isLoading = false,
     this.errorMessage,
     this.isSuccess = false,
+    this.showTermsAndAgree = false,
   });
 
   SignUpState copyWith({
@@ -30,6 +32,7 @@ class SignUpState {
     bool? isLoading,
     String? errorMessage,
     bool? isSuccess,
+    bool? showTermsAndAgree,
   }) {
     return SignUpState(
       currentStep: currentStep ?? this.currentStep,
@@ -40,6 +43,7 @@ class SignUpState {
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
       isSuccess: isSuccess ?? this.isSuccess,
+      showTermsAndAgree: showTermsAndAgree ?? this.showTermsAndAgree,
     );
   }
 

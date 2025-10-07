@@ -92,19 +92,24 @@ class SignUpViewModel extends Notifier<SignUpState> {
     // ✅ 로딩 시작 - 오버레이 표시됨
     state = state.copyWith(isLoading: true);
 
+    //TODO: 연락처 중복 확인 로직 추가
     // 서버 통신 등 시간이 걸리는 작업
-    await Future.delayed(Duration(seconds: 2));
+    // await Future.delayed(Duration(seconds: 2));
 
     // ✅ 로딩 종료 - 오버레이 제거됨
-    state = state.copyWith(isLoading: false);
-    debugPrint(state.isLoading.toString());
+    // state = state.copyWith(isLoading: false);
 
-    //TODO: 연락처 중복 확인 로직 추가
+    debugPrint(
+      '✅ VERIFIED: ${state.name} | ${state.phoneNumber} | ${state.birthDate} | ${state.gender}',
+    );
 
-    // debugPrint(
-    //   '✅ VERIFIED: ${state.name} | ${state.phoneNumber} | ${state.birthDate} | ${state.gender}',
-    // );
+    // viewModel에서는 위젯을 import하면 안되기 때문에 새로운 상태 값을 추가하여
+    // 상태 값만 변경하여 위젯에서 사용할 수 있도록 함
+    state = state.copyWith(isLoading: false, showTermsAndAgree: true);
   }
 
-  Future<void> termsAgree() async {}
+  void sendVerificationCode() {
+    // TODO: 인증번호 전송 로직 추가
+    debugPrint('✅ SEND VERIFICATION CODE');
+  }
 }

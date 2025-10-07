@@ -1,7 +1,10 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
 import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
+import 'package:clozii/features/auth/presentation/widgets/terms_and_conditions.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -51,6 +54,26 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         } else {
           _loadingOverlay?.remove();
           _loadingOverlay = null;
+        }
+      }
+    });
+
+    // showTermsAndAgree 감지 - 약관 모달 표시
+    ref.listen<SignUpState>(signUpProvider, (previous, next) async {
+      if (previous?.showTermsAndAgree != next.showTermsAndAgree) {
+        if (next.showTermsAndAgree) {
+          final isPop = await showModalBottomSheet(
+            context: context,
+            barrierColor: AppColors.black26,
+            backgroundColor: AppColors.white,
+            isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
+            // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
+            builder: (context) => const TermsAndConditions(), // 모달 내용: 약
+          );
+
+          if (isPop) {
+            signUpNotifier.sendVerificationCode();
+          }
         }
       }
     });
