@@ -33,14 +33,20 @@ class CustomButton extends StatelessWidget {
       // 버튼 클릭 시 동작 (null이면 동작하지 않음)
       onTap: onTap,
       child: Container(
-        width: width, // 가로를 최대 너비로 확장
+        width: !isKeyboardVisible
+            ? width
+            : MediaQuery.of(context).size.width * 0.9, // 가로를 최대 너비로 확장
+        // width: MediaQuery.of(context).size.width * 0.9,
         height: height, // 버튼 높이
+        margin: !isKeyboardVisible
+            ? null
+            : const EdgeInsets.symmetric(vertical: 12.0),
         decoration: BoxDecoration(
           // 버튼 색상
           color: isButtonEnabled ? context.colors.primary : AppColors.disabled,
           borderRadius: !isKeyboardVisible
               ? BorderRadius.circular(8.0)
-              : null, // 모서리를 둥글게
+              : BorderRadius.circular(12.0), // 모서리를 둥글게
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center, // 가운데 정렬
