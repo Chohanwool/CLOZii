@@ -7,6 +7,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 
 // features
 import 'package:clozii/features/post/provider/selected_image_provider.dart';
+import 'package:clozii/features/post/data/image_data.dart';
 
 // packages
 import 'package:flutter/material.dart';
@@ -22,13 +23,13 @@ class GalleryModal extends ConsumerStatefulWidget {
 }
 
 class _GalleryModalState extends ConsumerState<GalleryModal> {
-  List<AssetEntity> images = []; // 불러온 이미지 리스트
+  List<String> imageIds = []; // 불러온 이미디(AssetEntity) id 리스트
   Map<String, Uint8List?> thumbnailCache = {}; // 썸네일 캐싱용 맵
 
-  late Map<String, Uint8List?>
+  late Map<String, ImageData>
   previousState; // 이전 선택 상태 저장용 - 갤러리 모달에서 X 누르면 이전 상태로 복원
 
-  late Map<String, Uint8List?>
+  late Map<String, ImageData>
   newState; // 현재 선택하는 사진 상태 저장용 - 갤러리 모달에서 Done 버튼 누르면 프로바이더에 이 상태 저장
 
   int _loadedImageCount = 0; // 로드된 이미지 개수
@@ -41,7 +42,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   void initState() {
     super.initState();
     previousState = ref.read(selectedImageProvider);
-    newState = Map<String, Uint8List?>.from(previousState);
+    newState = Map<String, ImageData>.from(previousState);
     _loadImages();
   }
 
@@ -98,11 +99,29 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
       }
 
       setState(() {
-        images.addAll(loadedImages);
+        imageIds.addAll(loadedImages.map((asset) => asset.id).toList());
         _loadedImageCount = end;
       });
     } finally {
       _isLoading = false;
+    }
+  }
+
+  void _loadOriginalImages(Map<String, ImageData> newState) async {
+    for (final entry in newState.entries) {
+      String assetId = entry.key;
+      ImageData imageData = entry.value;
+
+      // 이미 원본 이미지가 로드된 경우는 스킵
+      if (imageData.originBytes != null) continue;
+
+      final asset = await AssetEntity.fromId(assetId);
+      final originalImage = await asset?.originBytes;
+
+      if (originalImage != null) {
+        imageData.originBytes = originalImage;
+        debugPrint('Original Image Byte: $originalImage');
+      }
     }
   }
 
@@ -136,6 +155,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         actions: [
           TextButton(
             onPressed: () {
+              _loadOriginalImages(newState);
               ref.read(selectedImageProvider.notifier).saveChanges(newState);
               Navigator.of(context).pop();
             },
@@ -159,7 +179,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
             mainAxisSpacing: 4.0,
             crossAxisSpacing: 4.0,
           ),
-          itemCount: images.length + 1,
+          itemCount: imageIds.length + 1,
           itemBuilder: (BuildContext context, int index) {
             if (index == 0) {
               return GestureDetector(
@@ -174,9 +194,9 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
               );
             } else {
               // 현재 사진
-              final asset = images[index - 1];
+              final assetId = imageIds[index - 1];
 
-              final thumbData = thumbnailCache[asset.id];
+              final thumbData = thumbnailCache[assetId];
 
               if (thumbData == null) {
                 return Container(color: AppColors.tertiary);
@@ -185,11 +205,13 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    if (newState.containsKey(asset.id)) {
-                      newState.remove(asset.id);
+                    if (newState.containsKey(assetId)) {
+                      newState.remove(assetId);
                     } else {
                       if (newState.length < SelectedImageNotifier.maxLength) {
-                        newState[asset.id] = thumbnailCache[asset.id];
+                        final imageData = ImageData();
+                        imageData.thumbnailBytes = thumbData;
+                        newState[assetId] = imageData;
                       }
                     }
                   });
@@ -200,10 +222,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                       child: Image.memory(thumbData, fit: BoxFit.cover),
                     ),
 
-                    if (isSelected(asset.id))
+                    if (isSelected(assetId))
                       Positioned(child: Container(color: AppColors.black26)),
 
-                    if (isSelected(asset.id))
+                    if (isSelected(assetId))
                       Positioned.fill(
                         child: Container(
                           decoration: BoxDecoration(
@@ -215,7 +237,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                         ),
                       ),
 
-                    if (isSelected(asset.id))
+                    if (isSelected(assetId))
                       Positioned(
                         top: 8,
                         right: 8,
@@ -228,7 +250,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           ),
                           child: Center(
                             child: Text(
-                              '${newState.keys.toList().indexOf(asset.id) + 1}',
+                              '${newState.keys.toList().indexOf(assetId) + 1}',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -239,7 +261,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                         ),
                       ),
 
-                    if (!isSelected(asset.id))
+                    if (!isSelected(assetId))
                       Positioned(
                         top: 6,
                         right: 6,
