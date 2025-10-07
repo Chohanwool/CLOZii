@@ -84,12 +84,26 @@ class SignUpViewModel extends Notifier<SignUpState> {
     }
   }
 
-  void checkAllFieldsValid() {
+  Future<void> checkAllFieldsValid() async {
     final isFormValid = formKey.currentState?.validate() ?? false;
 
     if (!isFormValid) return;
 
-    debugPrint(' ✅ All fields are valid ' + state.toString());
+    // ✅ 로딩 시작 - 오버레이 표시됨
+    state = state.copyWith(isLoading: true);
+
+    // 서버 통신 등 시간이 걸리는 작업
+    await Future.delayed(Duration(seconds: 2));
+
+    // ✅ 로딩 종료 - 오버레이 제거됨
+    state = state.copyWith(isLoading: false);
+    debugPrint(state.isLoading.toString());
+
+    //TODO: 연락처 중복 확인 로직 추가
+
+    // debugPrint(
+    //   '✅ VERIFIED: ${state.name} | ${state.phoneNumber} | ${state.birthDate} | ${state.gender}',
+    // );
   }
 
   Future<void> termsAgree() async {}

@@ -1,5 +1,7 @@
+import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
+import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
@@ -15,13 +17,43 @@ import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dar
 // widgets
 import 'package:clozii/features/auth/presentation/widgets/forms/sign_up_form.dart';
 
-class SignUpScreen extends ConsumerWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  OverlayEntry? _loadingOverlay;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _loadingOverlay?.remove();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final signUpState = ref.watch(signUpProvider);
     final signUpNotifier = ref.read(signUpProvider.notifier);
+
+    // signUpState.isLoading 변경 시 로딩 오버레이 추가/제거
+    ref.listen<SignUpState>(signUpProvider, (previous, next) {
+      if (previous?.isLoading != next.isLoading) {
+        if (next.isLoading) {
+          _loadingOverlay = showLoadingOverlay(context);
+        } else {
+          _loadingOverlay?.remove();
+          _loadingOverlay = null;
+        }
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(
