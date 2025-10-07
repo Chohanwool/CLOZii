@@ -1,3 +1,4 @@
+// import 'package:clozii/auth_sample/presentation/screens/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
 // core
@@ -5,7 +6,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/constants/app_constants.dart';
 
 // features
-import 'package:clozii/features/auth_old/presentation/screens/sign_up_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:clozii/features/auth_old/presentation/screens/login_screen.dart';
 
 // widgets
