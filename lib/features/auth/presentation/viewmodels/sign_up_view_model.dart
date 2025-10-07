@@ -19,6 +19,15 @@ class SignUpViewModel extends Notifier<SignUpState> {
     birthDateFocusNode = FocusNode();
     genderFocusNode = FocusNode();
 
+    // provider에서 .autoDispose를 사용한 부분을 실질적으로 콜백으로 등록하는 부분
+    // 프로바이더 해제 시, autoDispose 동작 -> onDispose 콜백 호출
+    ref.onDispose(() {
+      phoneNumberFocusNode.dispose();
+      nameFocusNode.dispose();
+      birthDateFocusNode.dispose();
+      genderFocusNode.dispose();
+    });
+
     return const SignUpState();
   }
 

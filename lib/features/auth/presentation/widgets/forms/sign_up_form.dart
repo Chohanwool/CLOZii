@@ -61,10 +61,6 @@ class _SignUpFormState extends State<SignUpForm> {
     _phoneController.dispose();
     _nameController.dispose();
     _dateController.dispose();
-    widget.phoneNumberFocusNode.dispose();
-    widget.nameFocusNode.dispose();
-    widget.birthDateFocusNode.dispose();
-    widget.genderFocusNode.dispose();
     super.dispose();
   }
 
