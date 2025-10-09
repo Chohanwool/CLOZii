@@ -5,8 +5,8 @@ import 'package:clozii/core/theme/context_extension.dart';
 // package
 import 'package:flutter/material.dart';
 
-class GoogleMap extends StatelessWidget {
-  const GoogleMap({super.key});
+class MeetingPointSelector extends StatelessWidget {
+  const MeetingPointSelector({super.key});
 
   @override
   Widget build(BuildContext context) {
