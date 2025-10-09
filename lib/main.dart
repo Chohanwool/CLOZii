@@ -1,13 +1,19 @@
-import 'package:clozii/features/home/presentation/screens/home_screen.dart';
+import 'package:flutter/material.dart';
+
+// core
+import 'package:clozii/core/theme/theme.dart';
+
+// APIs
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// firebase
 import 'package:clozii/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:clozii/core/theme/theme.dart';
 
-// onBoarding
+// screens
+import 'package:clozii/features/home/presentation/screens/home_screen.dart';
 import 'package:clozii/features/onBoarding/presentation/screens/onboarding_screen.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
