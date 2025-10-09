@@ -115,6 +115,10 @@ class SignUpViewModel extends Notifier<SignUpState> {
     state = state.copyWith(isLoading: false, showTermsAndAgree: true);
   }
 
+  void setShowTermsAndAgreeToFalse() {
+    state = state.copyWith(showTermsAndAgree: false);
+  }
+
   // Firebase 연락처 인증 로직 호출
   Future<void> sendVerificationCode() async {
     try {

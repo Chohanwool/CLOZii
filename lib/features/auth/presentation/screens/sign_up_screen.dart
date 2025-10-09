@@ -64,17 +64,21 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     ref.listen<SignUpState>(signUpProvider, (previous, next) async {
       if (previous?.showTermsAndAgree != next.showTermsAndAgree) {
         if (next.showTermsAndAgree) {
-          final isPop = await showModalBottomSheet(
-            context: context,
-            barrierColor: AppColors.black26,
-            backgroundColor: AppColors.white,
-            isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
-            // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
-            builder: (context) => const TermsAndConditions(), // 모달 내용: 약
-          );
+          final isPop =
+              await showModalBottomSheet(
+                context: context,
+                barrierColor: AppColors.black26,
+                backgroundColor: AppColors.white,
+                isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
+                // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
+                builder: (context) => const TermsAndConditions(), // 모달 내용: 약
+              ) ??
+              false; // 약관 동의하지 않고 모달만 닫은 경우 false 반환
 
           if (isPop) {
             signUpNotifier.sendVerificationCode();
+          } else {
+            signUpNotifier.setShowTermsAndAgreeToFalse();
           }
         }
       }
