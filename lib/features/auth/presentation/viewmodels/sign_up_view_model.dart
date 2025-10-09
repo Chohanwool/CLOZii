@@ -111,5 +111,6 @@ class SignUpViewModel extends Notifier<SignUpState> {
   void sendVerificationCode() {
     // TODO: 인증번호 전송 로직 추가
     debugPrint('✅ SEND VERIFICATION CODE');
+    debugPrint('✅ FORMATTED PHONE NUMBER: ${state.formattedPhoneNumber}');
   }
 }

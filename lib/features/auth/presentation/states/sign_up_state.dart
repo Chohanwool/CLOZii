@@ -1,3 +1,4 @@
+import 'package:clozii/features/auth/auth_constants.dart';
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
 
 class SignUpState {
@@ -22,6 +23,9 @@ class SignUpState {
     this.isSuccess = false,
     this.showTermsAndAgree = false,
   });
+
+  String get formattedPhoneNumber =>
+      '${AuthConstants.phoneNumberPrefix}${phoneNumber.replaceAll('-', '').replaceFirst('09', '')}';
 
   SignUpState copyWith({
     AuthStep? currentStep,
