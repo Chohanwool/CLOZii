@@ -34,6 +34,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     return const SignUpState();
   }
 
+  /// 연락처 필드 입력시 호출
   void updatePhoneNumber(String phoneNumber) {
     final rawNumber = phoneNumber.replaceAll('-', '');
 
@@ -51,10 +52,12 @@ class SignUpViewModel extends Notifier<SignUpState> {
     // debugPrint(state.toString());
   }
 
+  // 이름 필드 입력시 호출
   void updateName(String name) {
     state = state.copyWith(name: name, errorMessage: null);
   }
 
+  // 이름 필드 입력 후, 하단 'Continue' 버튼 클릭 -> 생년월일 선택 필드 노출
   void showBirthDatePicker() {
     if (state.isNameValid && state.currentStep == AuthStep.name) {
       state = state.copyWith(currentStep: AuthStep.birthdate);
@@ -65,6 +68,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     }
   }
 
+  // 생년월일 필드 값 선택시 호출
   void updateBirthDate(DateTime? birthDate) {
     state = state.copyWith(birthDate: birthDate, errorMessage: null);
 
@@ -77,6 +81,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     }
   }
 
+  // 성별 필드 값 선택시 호출
   void updateGender(String? gender) {
     state = state.copyWith(gender: gender, errorMessage: null);
 
@@ -85,6 +90,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     }
   }
 
+  // 모든 필드 유효성 검증
   Future<void> checkAllFieldsValid() async {
     final isFormValid = formKey.currentState?.validate() ?? false;
 
@@ -109,6 +115,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     state = state.copyWith(isLoading: false, showTermsAndAgree: true);
   }
 
+  // Firebase 연락처 인증 로직 호출
   Future<void> sendVerificationCode() async {
     try {
       // 로딩 오버레이
@@ -125,7 +132,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
         debugPrint('✅ VERIFICATION CODE SENT SUCCESSFULLY');
         debugPrint('verificationId: ${result.data}');
 
-        // TODO: VerificationScreen으로 이동
+        // VerificationScreen 이동을 위한 상태 값 변경 및 로딩 오버레이 제거
         state = state.copyWith(
           isLoading: false,
           isSuccess: true,
