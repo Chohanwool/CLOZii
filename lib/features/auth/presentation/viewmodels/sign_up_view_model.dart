@@ -1,3 +1,4 @@
+import 'package:clozii/features/auth/presentation/providers/send_verification_usecase_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
@@ -108,9 +109,42 @@ class SignUpViewModel extends Notifier<SignUpState> {
     state = state.copyWith(isLoading: false, showTermsAndAgree: true);
   }
 
-  void sendVerificationCode() {
-    // TODO: 인증번호 전송 로직 추가
-    debugPrint('✅ SEND VERIFICATION CODE');
-    debugPrint('✅ FORMATTED PHONE NUMBER: ${state.formattedPhoneNumber}');
+  Future<void> sendVerificationCode() async {
+    try {
+      // 로딩 오버레이
+      state = state.copyWith(isLoading: true, showTermsAndAgree: false);
+
+      // 유스케이스 읽어오기
+      final sendVerificationUsecase = ref.read(sendVerificationUsecaseProvider);
+      final result = await sendVerificationUsecase(state.formattedPhoneNumber);
+
+      debugPrint('------------------');
+      debugPrint(result.data);
+
+      if (result.isSuccess) {
+        debugPrint('✅ VERIFICATION CODE SENT SUCCESSFULLY');
+        debugPrint('verificationId: ${result.data}');
+
+        // TODO: VerificationScreen으로 이동
+        state = state.copyWith(
+          isLoading: false,
+          isSuccess: true,
+          verificationId: result.data,
+        );
+      } else {
+        debugPrint('❌ VERIFICATION CODE SEND FAILED');
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage:
+              result.failure?.message ?? 'Failed to send verification code',
+        );
+      }
+    } catch (e) {
+      debugPrint('❌ ERROR IN sendVerificationCode: $e');
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'An unexpected error occurred',
+      );
+    }
   }
 }

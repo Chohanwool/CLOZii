@@ -19,6 +19,9 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/presentation/widgets/terms_and_conditions.dart';
 
+// screens
+import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
+
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
 
@@ -73,6 +76,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           if (isPop) {
             signUpNotifier.sendVerificationCode();
           }
+        }
+      }
+    });
+
+    // 인증번호 전송 성공 감지 - VerificationScreen으로 이동
+    ref.listen<SignUpState>(signUpProvider, (previous, next) {
+      if (previous?.isSuccess != next.isSuccess && next.isSuccess) {
+        if (next.verificationId != null) {
+          Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: (contxt) => VerificationScreen()));
+          debugPrint('✅ Navigate to VerificationScreen');
         }
       }
     });

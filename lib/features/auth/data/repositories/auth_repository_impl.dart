@@ -1,6 +1,10 @@
+import 'dart:async';
+
+import 'package:clozii/features/auth/core/errors/auth_failures.dart';
 import 'package:clozii/features/auth/domain/entities/auth_result.dart';
 import 'package:clozii/features/auth/domain/repositories/auth_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/rendering.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   @override
@@ -34,7 +38,71 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthResult<String>> sendVerificationCode(String phoneNumber) async {
-    Future.delayed(const Duration(seconds: 2));
+    debugPrint('연락처 정보: $phoneNumber');
+
+    var auth = FirebaseAuth.instance;
+
+    try {
+      final Completer<String> completer = Completer<String>();
+
+      await auth.verifyPhoneNumber(
+        phoneNumber: phoneNumber,
+
+        // Android 기기의 SMS 코드 자동 처리
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // ANDROID ONLY!
+
+          await auth.signInWithCredential(credential);
+        },
+
+        // 잘못된 전화번호나 SMS 할당량 초과 여부 등의 실패 이벤트 처리
+        verificationFailed: (FirebaseAuthException e) {
+          debugPrint('=== Firebase Auth Error ===');
+          debugPrint('Error Code: ${e.code}');
+          debugPrint('Error Message: ${e.message}');
+          debugPrint('=======================');
+
+          if (!completer.isCompleted) {
+            completer.completeError(e);
+          }
+        },
+
+        // Firebase에서 기기로 코드가 전송된 경우를 처리
+        codeSent: (String verificationId, int? resendToken) async {
+          debugPrint('=== codeSent ===');
+          debugPrint('verificationId: $verificationId');
+
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
+        },
+
+        // 자동 SMS 코드 처리 실패 시 시간 초과
+        timeout: const Duration(seconds: 60),
+        codeAutoRetrievalTimeout: (String verificationId) {
+          debugPrint('Code auto retrieval timeout');
+
+          if (!completer.isCompleted) {
+            completer.complete(verificationId);
+          }
+        },
+      );
+
+      final verificationId = await completer.future;
+      return AuthResult.success(verificationId);
+      //
+    } on FirebaseAuthException catch (e) {
+      debugPrint('FirebaseAuthException: ${e.message}');
+      return AuthResult.failure(
+        AuthenticationFailure(
+          e.message ?? 'Firebase auth error occurred',
+          e.code,
+        ),
+      );
+    } catch (e) {
+      debugPrint('UnknownError: $e');
+      return AuthResult.failure(UnknownFailure(e.toString()));
+    }
 
     // 임시 작성
     return await AuthResult.success('123456');

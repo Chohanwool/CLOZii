@@ -12,6 +12,10 @@ class SignUpState {
   final bool isSuccess;
   final bool showTermsAndAgree;
 
+  // 인증번호 관련
+  final String? verificationId;
+  final int? resendToken;
+
   const SignUpState({
     this.currentStep = AuthStep.phoneSignup,
     this.phoneNumber = '',
@@ -22,6 +26,8 @@ class SignUpState {
     this.errorMessage,
     this.isSuccess = false,
     this.showTermsAndAgree = false,
+    this.verificationId,
+    this.resendToken,
   });
 
   String get formattedPhoneNumber =>
@@ -37,6 +43,8 @@ class SignUpState {
     String? errorMessage,
     bool? isSuccess,
     bool? showTermsAndAgree,
+    String? verificationId,
+    int? resendToken,
   }) {
     return SignUpState(
       currentStep: currentStep ?? this.currentStep,
@@ -48,6 +56,8 @@ class SignUpState {
       errorMessage: errorMessage ?? this.errorMessage,
       isSuccess: isSuccess ?? this.isSuccess,
       showTermsAndAgree: showTermsAndAgree ?? this.showTermsAndAgree,
+      verificationId: verificationId ?? this.verificationId,
+      resendToken: resendToken ?? this.resendToken,
     );
   }
 
