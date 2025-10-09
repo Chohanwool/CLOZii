@@ -339,6 +339,9 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
 
               dummyPosts.add(post);
 
+              // DB에 게시글 저장 후 SelectedImageNotifier 초기화
+              ref.read(selectedImageProvider.notifier).clearSelection();
+
               Navigator.of(context).pop(true);
             } else {
               // TODO: 폼 검증 실패 시 에러 처리 필요
