@@ -140,8 +140,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 선택된 사진 ID 리스트
-    final selectedImageIds = ref.watch(selectedImageProvider);
+    // 선택된 사진 데이터 - Map<String, ImageData>
+    final selectedImageMap = ref.watch(selectedImageProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -175,7 +175,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                   child: ListView.builder(
                     physics: const AlwaysScrollableScrollPhysics(),
                     scrollDirection: Axis.horizontal,
-                    itemCount: selectedImageIds.length + 1,
+                    itemCount: selectedImageMap.length + 1,
                     itemBuilder: (context, index) {
                       // ImageSelector - 사진 선택 위젯
                       if (index == 0) {
@@ -185,7 +185,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                         );
                       }
 
-                      String assetId = selectedImageIds.keys.elementAt(
+                      String assetId = selectedImageMap.keys.elementAt(
                         index - 1,
                       );
 
