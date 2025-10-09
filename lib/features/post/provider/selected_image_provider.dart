@@ -26,6 +26,11 @@ class SelectedImageNotifier extends Notifier<Map<String, ImageData>> {
     state = previousState;
   }
 
+  Uint8List? getOrigin(String id) {
+    if (!state.containsKey(id)) return null;
+    return state[id]!.originBytes;
+  }
+
   Uint8List? getThumbnail(String id) {
     if (!state.containsKey(id)) return null;
     return state[id]!.thumbnailBytes;
