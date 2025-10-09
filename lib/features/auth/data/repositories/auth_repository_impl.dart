@@ -103,9 +103,6 @@ class AuthRepositoryImpl implements AuthRepository {
       debugPrint('UnknownError: $e');
       return AuthResult.failure(UnknownFailure(e.toString()));
     }
-
-    // 임시 작성
-    return await AuthResult.success('123456');
   }
 
   @override
