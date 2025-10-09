@@ -5,8 +5,8 @@ import 'package:clozii/core/theme/context_extension.dart';
 // package
 import 'package:flutter/material.dart';
 
-class AppleMap extends StatelessWidget {
-  const AppleMap({super.key});
+class GoogleMap extends StatelessWidget {
+  const GoogleMap({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class AppleMap extends StatelessWidget {
         color: AppColors.black,
         child: Center(
           child: Text(
-            'Apple Map',
+            'Google Map',
             style: context.textTheme.titleLarge!.copyWith(color: Colors.white),
           ),
         ),
