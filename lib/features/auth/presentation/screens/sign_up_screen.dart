@@ -1,24 +1,23 @@
-import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/core/utils/show_loading_overlay.dart';
-import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/auth/core/enum/auth_step.dart';
-import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
-import 'package:clozii/features/auth/presentation/widgets/terms_and_conditions.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 // APIs
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // core
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
 
 // providers/states
 import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
+import 'package:clozii/features/auth/core/enum/auth_step.dart';
+import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
 
 // widgets
 import 'package:clozii/features/auth/presentation/widgets/forms/sign_up_form.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:clozii/core/utils/show_loading_overlay.dart';
+import 'package:clozii/features/auth/presentation/widgets/terms_and_conditions.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});
