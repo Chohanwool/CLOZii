@@ -1,19 +1,21 @@
 // core
 // package
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/post/provider/meeting_point_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MeetingPointSelector extends StatefulWidget {
+class MeetingPointSelector extends ConsumerStatefulWidget {
   const MeetingPointSelector({super.key});
 
   @override
-  State<MeetingPointSelector> createState() => _MeetingPointSelectorState();
+  ConsumerState<MeetingPointSelector> createState() =>
+      _MeetingPointSelectorState();
 }
 
-class _MeetingPointSelectorState extends State<MeetingPointSelector> {
+class _MeetingPointSelectorState extends ConsumerState<MeetingPointSelector> {
   late final GoogleMapController? _controller;
-  LatLng centerLatLng = LatLng(14.2639, 121.0742);
 
   static const CameraPosition kInitialPosition = CameraPosition(
     target: LatLng(14.2639, 121.0742),
@@ -51,10 +53,13 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
               );
 
               setState(() {
-                centerLatLng = markerLatLng;
+                ref
+                    .read(meetingPointProvider.notifier)
+                    .setMeetingPoint(markerLatLng);
               });
 
-              debugPrint("마커가 가리키는 지도 좌표: $markerLatLng");
+              final meetingPoint = ref.read(meetingPointProvider);
+              debugPrint("설정된 거래희망장소 좌표: $meetingPoint");
             },
             // markers: {
             //   Marker(
