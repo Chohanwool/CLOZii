@@ -23,6 +23,8 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // 키보드가 올라와도 UI가 움직이지 않도록 설정
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           GoogleMap(
