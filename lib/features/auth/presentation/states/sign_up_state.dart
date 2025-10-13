@@ -17,6 +17,7 @@ class SignUpState {
   final int? resendToken;
 
   // 약관동의 관련
+  final bool isAllAgreed; // 전체 동의
   final bool isTermAgreed; // 이용약관
   final bool isPrivacyPolicyAgreed; // 개인정보 약관
   final bool isLocationPolicyAgreed; // 위치정보
@@ -37,6 +38,9 @@ class SignUpState {
     this.showTermsAndAgree = false,
     this.verificationId,
     this.resendToken,
+
+    // 약관 동의 관련
+    this.isAllAgreed = false,
     this.isTermAgreed = false,
     this.isPrivacyPolicyAgreed = false,
     this.isLocationPolicyAgreed = false,
@@ -61,6 +65,7 @@ class SignUpState {
     bool? showTermsAndAgree,
     String? verificationId,
     int? resendToken,
+    bool? isAllAgreed,
     bool? isTermAgreed,
     bool? isPrivacyPolicyAgreed,
     bool? isLocationPolicyAgreed,
@@ -81,6 +86,7 @@ class SignUpState {
       showTermsAndAgree: showTermsAndAgree ?? this.showTermsAndAgree,
       verificationId: verificationId ?? this.verificationId,
       resendToken: resendToken ?? this.resendToken,
+      isAllAgreed: isAllAgreed ?? this.isAllAgreed,
       isTermAgreed: isTermAgreed ?? this.isTermAgreed,
       isPrivacyPolicyAgreed:
           isPrivacyPolicyAgreed ?? this.isPrivacyPolicyAgreed,
