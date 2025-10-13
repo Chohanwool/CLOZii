@@ -40,6 +40,19 @@ class SignUpState {
     this.resendToken,
 
     // 약관 동의 관련
+    // 18세 이상 인증
+    // - 제휴를 통해 통신사 조회 API를 쓰면 18세 이상 여부 확인 가능
+    //   한국처럼 표준화된 API가 공개되어 있진 않고, 개별 통신사(Globe, Smart, DITO)와 계약해야 함
+    // - SMS 인증으로 본인 번호 확인 → 추가로 신분증 사진 + 셀피 인증 요청
+    //   Onfido, Jumio, ShuftiPro, SmileID 같은 외부 KYC 서비스가 API로 제공
+
+    // 	•	서비스사가 법적으로 해야 할 건 “14세 미만 가입 불가”를 약관에 명시하고, 생년월일을 받는 절차 정도.
+    // 	•	실제 나이 위변조는 사용자 책임이고, 서비스사는 면책됩니다.
+    // 	•	그래서 당근마켓, 쿠팡, 네이버 등도 별도 나이 검증 절차 없이 SMS 인증만으로 운영합니다.
+
+    // ✅ CLOZ 같은 글로벌 서비스도 필리핀 로컬 법률 기준으로:
+    // 	•	가입 시 “만 18세 이상만 사용 가능”을 약관에 명시.
+    // 	•	사용자 입력 + SMS 인증만으로 처리 → 실제 나이 확인은 안 하지만 법적 책임은 회피 가능.
     this.isAllAgreed = false,
     this.isTermAgreed = false,
     this.isPrivacyPolicyAgreed = false,
@@ -153,7 +166,18 @@ class SignUpState {
         other.gender == gender &&
         other.isLoading == isLoading &&
         other.errorMessage == errorMessage &&
-        other.isSuccess == isSuccess;
+        other.isSuccess == isSuccess &&
+        other.showTermsAndAgree == showTermsAndAgree &&
+        other.verificationId == verificationId &&
+        other.resendToken == resendToken &&
+        other.isAllAgreed == isAllAgreed &&
+        other.isTermAgreed == isTermAgreed &&
+        other.isPrivacyPolicyAgreed == isPrivacyPolicyAgreed &&
+        other.isLocationPolicyAgreed == isLocationPolicyAgreed &&
+        other.isAgeVerified == isAgeVerified &&
+        other.isMarketingAgreed == isMarketingAgreed &&
+        other.isThirdPartyAgreed == isThirdPartyAgreed &&
+        other.isPushAgreed == isPushAgreed;
   }
 
   @override
@@ -165,7 +189,18 @@ class SignUpState {
         gender.hashCode ^
         isLoading.hashCode ^
         errorMessage.hashCode ^
-        isSuccess.hashCode;
+        isSuccess.hashCode ^
+        showTermsAndAgree.hashCode ^
+        verificationId.hashCode ^
+        resendToken.hashCode ^
+        isAllAgreed.hashCode ^
+        isTermAgreed.hashCode ^
+        isPrivacyPolicyAgreed.hashCode ^
+        isLocationPolicyAgreed.hashCode ^
+        isAgeVerified.hashCode ^
+        isMarketingAgreed.hashCode ^
+        isThirdPartyAgreed.hashCode ^
+        isPushAgreed.hashCode;
   }
 
   @override
