@@ -64,9 +64,10 @@ class _SignUpFormState extends State<SignUpForm> {
     super.dispose();
   }
 
-  String _formatDate(DateTime date) {
-    return '${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}/${date.year}';
-  }
+  // birthDate 값을 DateTime에서 String 으로 변경하며 더 이상 사용 X
+  // String _formatDate(DateTime date) {
+  //   return '${date.month.toString().padLeft(2, '0')}/${date.day.toString().padLeft(2, '0')}/${date.year}';
+  // }
 
   /// 아래에서 위로 입력필드가 순서에 맞게 노출되는 방식
   /// 순서) 연락처 -> 이름(별명) -> 생년월일 -> 성별
