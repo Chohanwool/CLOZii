@@ -16,6 +16,15 @@ class SignUpState {
   final String? verificationId;
   final int? resendToken;
 
+  // 약관동의 관련
+  final bool isTermAgreed; // 이용약관
+  final bool isPrivacyPolicyAgreed; // 개인정보 약관
+  final bool isLocationPolicyAgreed; // 위치정보
+  final bool isAgeVerified; // 연령 확인
+  final bool isMarketingAgreed; // 마켓 수신 동의
+  final bool isThirdPartyAgreed; // 제3자 서비스(파이어베이스 등) 데이터 공유
+  final bool isPushAgreed; // 푸시 노티피케이션 동의
+
   const SignUpState({
     this.currentStep = AuthStep.phoneSignup,
     this.phoneNumber = '',
@@ -28,6 +37,13 @@ class SignUpState {
     this.showTermsAndAgree = false,
     this.verificationId,
     this.resendToken,
+    this.isTermAgreed = false,
+    this.isPrivacyPolicyAgreed = false,
+    this.isLocationPolicyAgreed = false,
+    this.isAgeVerified = false,
+    this.isMarketingAgreed = false,
+    this.isThirdPartyAgreed = false,
+    this.isPushAgreed = false,
   });
 
   String get formattedPhoneNumber =>
@@ -45,6 +61,13 @@ class SignUpState {
     bool? showTermsAndAgree,
     String? verificationId,
     int? resendToken,
+    bool? isTermAgreed,
+    bool? isPrivacyPolicyAgreed,
+    bool? isLocationPolicyAgreed,
+    bool? isAgeVerified,
+    bool? isMarketingAgreed,
+    bool? isThirdPartyAgreed,
+    bool? isPushAgreed,
   }) {
     return SignUpState(
       currentStep: currentStep ?? this.currentStep,
@@ -58,6 +81,15 @@ class SignUpState {
       showTermsAndAgree: showTermsAndAgree ?? this.showTermsAndAgree,
       verificationId: verificationId ?? this.verificationId,
       resendToken: resendToken ?? this.resendToken,
+      isTermAgreed: isTermAgreed ?? this.isTermAgreed,
+      isPrivacyPolicyAgreed:
+          isPrivacyPolicyAgreed ?? this.isPrivacyPolicyAgreed,
+      isLocationPolicyAgreed:
+          isLocationPolicyAgreed ?? this.isLocationPolicyAgreed,
+      isAgeVerified: isAgeVerified ?? this.isAgeVerified,
+      isMarketingAgreed: isMarketingAgreed ?? this.isMarketingAgreed,
+      isThirdPartyAgreed: isThirdPartyAgreed ?? this.isThirdPartyAgreed,
+      isPushAgreed: isPushAgreed ?? this.isPushAgreed,
     );
   }
 
