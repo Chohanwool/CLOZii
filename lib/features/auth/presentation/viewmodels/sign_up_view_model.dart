@@ -94,7 +94,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     }
   }
 
-  // 모든 필드 유효성 검증
+  // 모든 필드 유효성 검증 및 검증 후 약관 동의 모달 노출
   Future<void> checkAllFieldsValid() async {
     final isFormValid = formKey.currentState?.validate() ?? false;
 
@@ -114,9 +114,10 @@ class SignUpViewModel extends Notifier<SignUpState> {
     // 상태 값만 변경하여 위젯에서 사용할 수 있도록 함
     state = state.copyWith(isLoading: false, showTermsAndAgree: true);
 
-    debugPrint(state.toString());
+    debugPrint('SignUpState: ${state.toString()}');
   }
 
+  // 약관 동의 모달 닫기
   void setShowTermsAndAgreeToFalse() {
     state = state.copyWith(showTermsAndAgree: false);
   }

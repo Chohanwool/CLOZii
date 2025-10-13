@@ -75,6 +75,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               ) ??
               false; // 약관 동의하지 않고 모달만 닫은 경우 false 반환
 
+          // 약관 동의 여부에 따른 분기 처리
           if (isPop) {
             signUpNotifier.sendVerificationCode();
           } else {
