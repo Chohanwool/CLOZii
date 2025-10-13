@@ -5,7 +5,7 @@ class SignUpState {
   final AuthStep currentStep;
   final String phoneNumber;
   final String name;
-  final DateTime? birthDate;
+  final String? birthDate;
   final String? gender;
   final bool isLoading;
   final String? errorMessage;
@@ -37,7 +37,7 @@ class SignUpState {
     AuthStep? currentStep,
     String? phoneNumber,
     String? name,
-    DateTime? birthDate,
+    String? birthDate,
     String? gender,
     bool? isLoading,
     String? errorMessage,

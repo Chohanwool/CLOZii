@@ -52,7 +52,7 @@ class _SignUpFormState extends State<SignUpForm> {
     _phoneController.text = widget.signUpState.phoneNumber;
     _nameController.text = widget.signUpState.name;
     if (widget.signUpState.birthDate != null) {
-      _dateController.text = _formatDate(widget.signUpState.birthDate!);
+      _dateController.text = widget.signUpState.birthDate!;
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:clozii/features/auth/core/enum/auth_step.dart';
 import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 class SignUpViewModel extends Notifier<SignUpState> {
   final formKey = GlobalKey<FormState>();
@@ -70,7 +71,10 @@ class SignUpViewModel extends Notifier<SignUpState> {
 
   // 생년월일 필드 값 선택시 호출
   void updateBirthDate(DateTime? birthDate) {
-    state = state.copyWith(birthDate: birthDate, errorMessage: null);
+    // 시간 정보를 제거한 날짜 정보로 변경
+    final String formattedDate = DateFormat('yyyy-MM-dd').format(birthDate!);
+
+    state = state.copyWith(birthDate: formattedDate, errorMessage: null);
 
     if (state.isBirthDateValid && state.currentStep == AuthStep.birthdate) {
       state = state.copyWith(currentStep: AuthStep.gender);
@@ -106,13 +110,11 @@ class SignUpViewModel extends Notifier<SignUpState> {
     // ✅ 로딩 종료 - 오버레이 제거됨
     // state = state.copyWith(isLoading: false);
 
-    debugPrint(
-      '✅ VERIFIED: ${state.name} | ${state.phoneNumber} | ${state.birthDate} | ${state.gender}',
-    );
-
     // viewModel에서는 위젯을 import하면 안되기 때문에 새로운 상태 값을 추가하여
     // 상태 값만 변경하여 위젯에서 사용할 수 있도록 함
     state = state.copyWith(isLoading: false, showTermsAndAgree: true);
+
+    debugPrint(state.toString());
   }
 
   void setShowTermsAndAgreeToFalse() {
