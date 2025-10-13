@@ -205,6 +205,30 @@ class SignUpState {
 
   @override
   String toString() {
-    return 'SignUpState(currentStep: $currentStep, phoneNumber: $phoneNumber, name: $name, birthDate: $birthDate, gender: $gender, isLoading: $isLoading, errorMessage: $errorMessage, isSuccess: $isSuccess)';
+    return '''
+SignUpState(
+  currentStep: $currentStep,
+  phoneNumber: $phoneNumber,
+  name: $name,
+  birthDate: $birthDate,
+  gender: $gender,
+  isLoading: $isLoading,
+  errorMessage: $errorMessage,
+  isSuccess: $isSuccess,
+  showTermsAndAgree: $showTermsAndAgree,
+  verificationId: $verificationId,
+  resendToken: $resendToken,
+
+  // 약관 동의 관련
+  isAllAgreed: $isAllAgreed,
+  isTermAgreed: $isTermAgreed,
+  isPrivacyPolicyAgreed: $isPrivacyPolicyAgreed,
+  isLocationPolicyAgreed: $isLocationPolicyAgreed,
+  isAgeVerified: $isAgeVerified,
+  isMarketingAgreed: $isMarketingAgreed,
+  isThirdPartyAgreed: $isThirdPartyAgreed,
+  isPushAgreed: $isPushAgreed
+)
+''';
   }
 }
