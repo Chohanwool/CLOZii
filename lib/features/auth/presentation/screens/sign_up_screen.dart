@@ -68,16 +68,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           final isPop =
               await showModalBottomSheet(
                 context: context,
+                isScrollControlled: true, // 높이 제한을 해제합니다.
                 barrierColor: AppColors.black26,
                 backgroundColor: AppColors.white,
-                builder: (termsContext) => TermsAndConditions(
+                builder: (context) => TermsAndConditions(
                   onShowAgreementDetail: (type) {
                     showModalBottomSheet(
-                      context: termsContext, // 올바른 context 사용
+                      context: context, // 올바른 context 사용
                       isScrollControlled: true,
                       isDismissible: false,
                       enableDrag: false,
-                      builder: (detailContext) => AgreementDetail(type: type),
+                      builder: (_) => AgreementDetail(type: type),
                     );
                   },
                 ), // 모달 내용: 약

@@ -26,29 +26,17 @@ class TermsAndConditions extends ConsumerStatefulWidget {
 }
 
 class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
-  // 전체 동의 체크박스 상태
-  bool isCheckedAll = false;
-
-  // 필수 약관 동의 체크박스 상태
-  bool isMainChecked = false;
-
-  // 선택 약관 동의 체크박스 상태
-  bool isOptionalChecked = false;
-
-  // 필수 약관 상세 내용 펼침 여부
-  bool isListOpen = false;
-
   // 연령 확인 라디오 버튼 선택 값 - 기본 값 선택 안됨
   Age? _selectedOption;
 
   Future<void> _onSubmit() async {
-    if (!isMainChecked) {
-      showAlertDialog(
-        context,
-        'You must accept the Terms and Conditions to proceed.',
-      );
-      return;
-    }
+    // if (!isMainChecked) {
+    //   showAlertDialog(
+    //     context,
+    //     'You must accept the Terms and Conditions to proceed.',
+    //   );
+    //   return;
+    // }
 
     if (_selectedOption == Age.youth) {
       showAlertDialog(
@@ -68,35 +56,24 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
     Navigator.of(context).pop(true);
   }
 
-  /// 선택 약관 동의 토글
-  /// - 필수와 선택 모두 체크되어 있으면 -> 전체 동의 항목도 체크
-  /// - 전체 체크 상태에서 선택 항목 체크 해제 시 -> 전체 동의 항목도 체크 해제
-  void _toggleOptional() {
-    setState(() {
-      isOptionalChecked = !isOptionalChecked;
-      if (isMainChecked && isOptionalChecked) {
-        isCheckedAll = true;
-      } else {
-        isCheckedAll = false;
-      }
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final signUpState = ref.watch(signUpProvider);
     final signUpNotifier = ref.read(signUpProvider.notifier);
 
     /// 모달이 자식만큼만 펼쳐지게 하는 위젯
-    return Wrap(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(
-            top: 8.0,
-            bottom: 30.0,
-            left: 12.0,
-            right: 12.0,
-          ),
+    return SafeArea(
+      top: false,
+      bottom: true,
+      child: Padding(
+        // padding: const EdgeInsets.only(
+        //   top: 8.0,
+        //   bottom: 30.0,
+        //   left: 12.0,
+        //   right: 12.0,
+        // ),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               // 전체 동의 체크박스 + 라벨
@@ -145,63 +122,120 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                           : Theme.of(context).disabledColor,
                     ),
                   ),
-                  const Text('(Required) Terms and Conditions'),
+                  Expanded(child: const Text('(Required) Terms of Service')),
                   IconButton(
                     onPressed: () =>
                         widget.onShowAgreementDetail(AgreementType.terms),
-                    icon: Icon(
-                      isListOpen ? Icons.expand_more : Icons.chevron_right,
-                    ),
+                    icon: Icon(Icons.expand_more),
                   ),
                 ],
               ),
 
-              // 필수 약관 상세 내용 펼침 부분
-              if (isListOpen)
-                Column(
-                  children: [
-                    Align(
-                      alignment: AlignmentGeometry.xy(-0.43, 0),
-                      child: const Text(
-                        '(Required) Terms and Conditions',
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-                    Align(
-                      alignment: AlignmentGeometry.xy(-0.43, 0),
-                      child: const Text(
-                        '(Required) Terms and Conditions',
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    ),
-                    const SizedBox(height: 19),
-                    Align(
-                      alignment: AlignmentGeometry.xy(-0.43, 0),
-                      child: const Text(
-                        '(Required) Terms and Conditions',
-                        style: TextStyle(decoration: TextDecoration.underline),
-                      ),
-                    ),
-                    const SizedBox(height: 7),
-                  ],
-                ),
-
-              // 선택 약관 동의 체크박스 + 라벨
               Row(
                 children: [
-                  // 커스텀 체크 박스 (테두리 X)
-                  // TODO: 체크 박스 토글 시 애니메이션 효과 추가
                   IconButton(
-                    onPressed: _toggleOptional,
+                    onPressed: () {
+                      final newValue = !signUpState.isTermAgreed;
+                      signUpNotifier.updateIndividualAgreement(
+                        isTermAgreed: newValue,
+                      );
+                    },
                     icon: Icon(
                       Icons.check,
-                      color: isOptionalChecked
+                      color: signUpState.isTermAgreed
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).disabledColor,
                     ),
                   ),
-                  const Text('(Optional) Terms and Conditions'),
+                  Expanded(child: const Text('(Required) Privacy Policy')),
+                  IconButton(
+                    onPressed: () =>
+                        widget.onShowAgreementDetail(AgreementType.privacy),
+                    icon: Icon(Icons.expand_more),
+                  ),
+                ],
+              ),
+
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      final newValue = !signUpState.isTermAgreed;
+                      signUpNotifier.updateIndividualAgreement(
+                        isTermAgreed: newValue,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.check,
+                      color: signUpState.isTermAgreed
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).disabledColor,
+                    ),
+                  ),
+                  Expanded(
+                    child: const Text('(Required) Location Access Consent'),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        widget.onShowAgreementDetail(AgreementType.location),
+                    icon: Icon(Icons.expand_more),
+                  ),
+                ],
+              ),
+
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      final newValue = !signUpState.isTermAgreed;
+                      signUpNotifier.updateIndividualAgreement(
+                        isTermAgreed: newValue,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.check,
+                      color: signUpState.isTermAgreed
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).disabledColor,
+                    ),
+                  ),
+                  Expanded(
+                    child: const Text(
+                      '(Optional) Third-party Data Sharing Consent',
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        widget.onShowAgreementDetail(AgreementType.privacy),
+                    icon: Icon(Icons.expand_more),
+                  ),
+                ],
+              ),
+
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      final newValue = !signUpState.isTermAgreed;
+                      signUpNotifier.updateIndividualAgreement(
+                        isTermAgreed: newValue,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.check,
+                      color: signUpState.isTermAgreed
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).disabledColor,
+                    ),
+                  ),
+                  Expanded(
+                    child: const Text('(Optional) Push Notification Consent'),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        widget.onShowAgreementDetail(AgreementType.privacy),
+                    icon: Icon(Icons.expand_more),
+                  ),
                 ],
               ),
 
@@ -265,7 +299,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
             ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
