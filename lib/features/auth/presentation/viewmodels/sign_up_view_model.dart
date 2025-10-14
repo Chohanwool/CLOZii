@@ -178,16 +178,6 @@ class SignUpViewModel extends Notifier<SignUpState> {
     print(state.isPushAgreed);
   }
 
-  // 약관 상세 탭 -> 상세 내용을 포함한 모달 열기 위한 상태 변경 요청
-  void requestOpenAgreementDetail(AgreementType type) {
-    state = state.copyWith(pendingAgreementToOpen: type);
-  }
-
-  // 약관 상세 상태 초기화
-  void clearPendingAgreement() {
-    state = state.copyWith(pendingAgreementToOpen: null);
-  }
-
   // Firebase 연락처 인증 로직 호출
   Future<void> sendVerificationCode() async {
     try {
