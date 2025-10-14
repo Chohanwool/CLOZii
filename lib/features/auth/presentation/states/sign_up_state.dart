@@ -1,4 +1,5 @@
 import 'package:clozii/features/auth/auth_constants.dart';
+import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
 
 class SignUpState {
@@ -25,6 +26,7 @@ class SignUpState {
   final bool isMarketingAgreed; // 마켓 수신 동의
   final bool isThirdPartyAgreed; // 제3자 서비스(파이어베이스 등) 데이터 공유
   final bool isPushAgreed; // 푸시 노티피케이션 동의
+  final AgreementType? pendingAgreementToOpen; // 약관 상세 대상 타입
 
   const SignUpState({
     this.currentStep = AuthStep.phoneSignup,
@@ -61,6 +63,7 @@ class SignUpState {
     this.isMarketingAgreed = false,
     this.isThirdPartyAgreed = false,
     this.isPushAgreed = false,
+    this.pendingAgreementToOpen,
   });
 
   String get formattedPhoneNumber =>
@@ -86,6 +89,7 @@ class SignUpState {
     bool? isMarketingAgreed,
     bool? isThirdPartyAgreed,
     bool? isPushAgreed,
+    AgreementType? pendingAgreementToOpen,
   }) {
     return SignUpState(
       currentStep: currentStep ?? this.currentStep,
@@ -109,6 +113,8 @@ class SignUpState {
       isMarketingAgreed: isMarketingAgreed ?? this.isMarketingAgreed,
       isThirdPartyAgreed: isThirdPartyAgreed ?? this.isThirdPartyAgreed,
       isPushAgreed: isPushAgreed ?? this.isPushAgreed,
+      pendingAgreementToOpen:
+          pendingAgreementToOpen ?? this.pendingAgreementToOpen,
     );
   }
 
@@ -177,7 +183,8 @@ class SignUpState {
         other.isAgeVerified == isAgeVerified &&
         other.isMarketingAgreed == isMarketingAgreed &&
         other.isThirdPartyAgreed == isThirdPartyAgreed &&
-        other.isPushAgreed == isPushAgreed;
+        other.isPushAgreed == isPushAgreed &&
+        other.pendingAgreementToOpen == pendingAgreementToOpen;
   }
 
   @override
@@ -200,7 +207,8 @@ class SignUpState {
         isAgeVerified.hashCode ^
         isMarketingAgreed.hashCode ^
         isThirdPartyAgreed.hashCode ^
-        isPushAgreed.hashCode;
+        isPushAgreed.hashCode ^
+        pendingAgreementToOpen.hashCode;
   }
 
   @override

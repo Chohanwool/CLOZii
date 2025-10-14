@@ -1,3 +1,4 @@
+import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 import 'package:clozii/features/auth/presentation/providers/send_verification_usecase_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -120,6 +121,71 @@ class SignUpViewModel extends Notifier<SignUpState> {
   // 약관 동의 모달 닫기
   void setShowTermsAndAgreeToFalse() {
     state = state.copyWith(showTermsAndAgree: false);
+  }
+
+  void toggleAllAgreement() {
+    final newAgreementState = !state.isAllAgreed;
+    state = state.copyWith(
+      isAllAgreed: newAgreementState,
+      isTermAgreed: newAgreementState,
+      isPrivacyPolicyAgreed: newAgreementState,
+      isLocationPolicyAgreed: newAgreementState,
+      isMarketingAgreed: newAgreementState,
+      isThirdPartyAgreed: newAgreementState,
+      isPushAgreed: newAgreementState,
+    );
+  }
+
+  void updateIndividualAgreement({
+    bool? isTermAgreed,
+    bool? isPrivacyPolicyAgreed,
+    bool? isLocationPolicyAgreed,
+    bool? isAgeVerified,
+    bool? isMarketingAgreed,
+    bool? isThirdPartyAgreed,
+    bool? isPushAgreed,
+  }) {
+    final newState = state.copyWith(
+      isTermAgreed: isTermAgreed ?? state.isTermAgreed,
+      isPrivacyPolicyAgreed:
+          isPrivacyPolicyAgreed ?? state.isPrivacyPolicyAgreed,
+      isLocationPolicyAgreed:
+          isLocationPolicyAgreed ?? state.isLocationPolicyAgreed,
+      isAgeVerified: isAgeVerified ?? state.isAgeVerified,
+      isMarketingAgreed: isMarketingAgreed ?? state.isMarketingAgreed,
+      isThirdPartyAgreed: isThirdPartyAgreed ?? state.isThirdPartyAgreed,
+      isPushAgreed: isPushAgreed ?? state.isPushAgreed,
+    );
+
+    final allAgreed = [
+      newState.isTermAgreed,
+      newState.isPrivacyPolicyAgreed,
+      newState.isLocationPolicyAgreed,
+      newState.isAgeVerified,
+      newState.isMarketingAgreed,
+      newState.isThirdPartyAgreed,
+      newState.isPushAgreed,
+    ].every((e) => e);
+
+    state = newState.copyWith(isAllAgreed: allAgreed);
+
+    print(state.isTermAgreed);
+    print(state.isPrivacyPolicyAgreed);
+    print(state.isLocationPolicyAgreed);
+    print(state.isAgeVerified);
+    print(state.isMarketingAgreed);
+    print(state.isThirdPartyAgreed);
+    print(state.isPushAgreed);
+  }
+
+  // 약관 상세 탭 -> 상세 내용을 포함한 모달 열기 위한 상태 변경 요청
+  void requestOpenAgreementDetail(AgreementType type) {
+    state = state.copyWith(pendingAgreementToOpen: type);
+  }
+
+  // 약관 상세 상태 초기화
+  void clearPendingAgreement() {
+    state = state.copyWith(pendingAgreementToOpen: null);
   }
 
   // Firebase 연락처 인증 로직 호출
