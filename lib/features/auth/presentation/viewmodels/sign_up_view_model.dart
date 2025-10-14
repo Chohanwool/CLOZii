@@ -1,4 +1,3 @@
-import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 import 'package:clozii/features/auth/presentation/providers/send_verification_usecase_provider.dart';
 import 'package:flutter/material.dart';
 
