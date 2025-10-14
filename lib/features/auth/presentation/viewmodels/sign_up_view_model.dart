@@ -139,7 +139,6 @@ class SignUpViewModel extends Notifier<SignUpState> {
     bool? isTermAgreed,
     bool? isPrivacyPolicyAgreed,
     bool? isLocationPolicyAgreed,
-    bool? isAgeVerified,
     bool? isMarketingAgreed,
     bool? isThirdPartyAgreed,
     bool? isPushAgreed,
@@ -150,7 +149,6 @@ class SignUpViewModel extends Notifier<SignUpState> {
           isPrivacyPolicyAgreed ?? state.isPrivacyPolicyAgreed,
       isLocationPolicyAgreed:
           isLocationPolicyAgreed ?? state.isLocationPolicyAgreed,
-      isAgeVerified: isAgeVerified ?? state.isAgeVerified,
       isMarketingAgreed: isMarketingAgreed ?? state.isMarketingAgreed,
       isThirdPartyAgreed: isThirdPartyAgreed ?? state.isThirdPartyAgreed,
       isPushAgreed: isPushAgreed ?? state.isPushAgreed,
@@ -160,21 +158,14 @@ class SignUpViewModel extends Notifier<SignUpState> {
       newState.isTermAgreed,
       newState.isPrivacyPolicyAgreed,
       newState.isLocationPolicyAgreed,
-      newState.isAgeVerified,
       newState.isMarketingAgreed,
       newState.isThirdPartyAgreed,
       newState.isPushAgreed,
     ].every((e) => e);
 
-    state = newState.copyWith(isAllAgreed: allAgreed);
+    
 
-    print(state.isTermAgreed);
-    print(state.isPrivacyPolicyAgreed);
-    print(state.isLocationPolicyAgreed);
-    print(state.isAgeVerified);
-    print(state.isMarketingAgreed);
-    print(state.isThirdPartyAgreed);
-    print(state.isPushAgreed);
+    state = newState.copyWith(isAllAgreed: allAgreed);
   }
 
   // Firebase 연락처 인증 로직 호출

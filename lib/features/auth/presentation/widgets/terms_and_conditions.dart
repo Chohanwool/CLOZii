@@ -66,13 +66,13 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
       top: false,
       bottom: true,
       child: Padding(
-        // padding: const EdgeInsets.only(
-        //   top: 8.0,
-        //   bottom: 30.0,
-        //   left: 12.0,
-        //   right: 12.0,
-        // ),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+        padding: const EdgeInsets.only(
+          top: 8.0,
+          bottom: 30.0,
+          left: 12.0,
+          right: 12.0,
+        ),
+        // padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -135,14 +135,14 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      final newValue = !signUpState.isTermAgreed;
+                      final newValue = !signUpState.isPrivacyPolicyAgreed;
                       signUpNotifier.updateIndividualAgreement(
-                        isTermAgreed: newValue,
+                        isPrivacyPolicyAgreed: newValue,
                       );
                     },
                     icon: Icon(
                       Icons.check,
-                      color: signUpState.isTermAgreed
+                      color: signUpState.isPrivacyPolicyAgreed
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).disabledColor,
                     ),
@@ -160,14 +160,14 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      final newValue = !signUpState.isTermAgreed;
+                      final newValue = !signUpState.isLocationPolicyAgreed;
                       signUpNotifier.updateIndividualAgreement(
-                        isTermAgreed: newValue,
+                        isLocationPolicyAgreed: newValue,
                       );
                     },
                     icon: Icon(
                       Icons.check,
-                      color: signUpState.isTermAgreed
+                      color: signUpState.isLocationPolicyAgreed
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).disabledColor,
                     ),
@@ -187,14 +187,43 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      final newValue = !signUpState.isTermAgreed;
+                      final newValue = !signUpState.isMarketingAgreed;
                       signUpNotifier.updateIndividualAgreement(
-                        isTermAgreed: newValue,
+                        isMarketingAgreed: newValue,
                       );
                     },
                     icon: Icon(
                       Icons.check,
-                      color: signUpState.isTermAgreed
+                      color: signUpState.isMarketingAgreed
+                          ? Theme.of(context).colorScheme.primary
+                          : Theme.of(context).disabledColor,
+                    ),
+                  ),
+                  Expanded(
+                    child: const Text(
+                      '(Optional) Marketing and Promotional Consent',
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: () =>
+                        widget.onShowAgreementDetail(AgreementType.marketing),
+                    icon: Icon(Icons.expand_more),
+                  ),
+                ],
+              ),
+
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      final newValue = !signUpState.isThirdPartyAgreed;
+                      signUpNotifier.updateIndividualAgreement(
+                        isThirdPartyAgreed: newValue,
+                      );
+                    },
+                    icon: Icon(
+                      Icons.check,
+                      color: signUpState.isThirdPartyAgreed
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).disabledColor,
                     ),
@@ -206,7 +235,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   ),
                   IconButton(
                     onPressed: () =>
-                        widget.onShowAgreementDetail(AgreementType.privacy),
+                        widget.onShowAgreementDetail(AgreementType.thirdParty),
                     icon: Icon(Icons.expand_more),
                   ),
                 ],
@@ -216,14 +245,14 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      final newValue = !signUpState.isTermAgreed;
+                      final newValue = !signUpState.isPushAgreed;
                       signUpNotifier.updateIndividualAgreement(
-                        isTermAgreed: newValue,
+                        isPushAgreed: newValue,
                       );
                     },
                     icon: Icon(
                       Icons.check,
-                      color: signUpState.isTermAgreed
+                      color: signUpState.isPushAgreed
                           ? Theme.of(context).colorScheme.primary
                           : Theme.of(context).disabledColor,
                     ),
@@ -233,7 +262,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   ),
                   IconButton(
                     onPressed: () =>
-                        widget.onShowAgreementDetail(AgreementType.privacy),
+                        widget.onShowAgreementDetail(AgreementType.push),
                     icon: Icon(Icons.expand_more),
                   ),
                 ],
@@ -291,6 +320,8 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                       const Text('I am under 18 years old'),
                     ],
                   ),
+
+                  const SizedBox(height: 12.0),
 
                   // 제출 버튼
                   CustomButton(text: 'Continue', onTap: _onSubmit),
