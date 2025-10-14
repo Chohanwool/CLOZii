@@ -1,3 +1,4 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 import 'package:flutter/material.dart';
 
@@ -73,21 +74,12 @@ We may send marketing communications about new offers or features.
     final title = getTitle();
     final content = getContent();
 
-    return SafeArea(
-      top: true,
-      bottom: true,
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height,
+    return Container(
+      decoration: BoxDecoration(color: Colors.white),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 50.0),
         child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: AppBar(
-            title: Text(title),
-            automaticallyImplyLeading: false,
-            leading: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
+          appBar: AppBar(title: Text(title)),
           body: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -101,30 +93,11 @@ We may send marketing communications about new offers or features.
                       content,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         height: 1.5,
-                        color: Colors.black87,
+                        color: AppColors.black87,
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onPressed: () => Navigator.pop(context, true),
-                    child: const Text(
-                      'I Agree',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 12),
               ],
             ),
           ),

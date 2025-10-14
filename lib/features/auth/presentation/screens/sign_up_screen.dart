@@ -18,6 +18,7 @@ import 'package:clozii/features/auth/presentation/widgets/forms/sign_up_form.dar
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 import 'package:clozii/features/auth/presentation/widgets/terms_and_conditions.dart';
+import 'package:clozii/features/auth/presentation/widgets/agreement_detail.dart';
 
 // screens
 import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
@@ -69,9 +70,17 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 context: context,
                 barrierColor: AppColors.black26,
                 backgroundColor: AppColors.white,
-                isScrollControlled: true, // 모달이 화면 높이만큼 채워짐
-                // - 하지만 약관 위젯에서 Wrap 위젯 사용해서 내부 요소만큼만 모달이 채워짐
-                builder: (context) => const TermsAndConditions(), // 모달 내용: 약
+                builder: (termsContext) => TermsAndConditions(
+                  onShowAgreementDetail: (type) {
+                    showModalBottomSheet(
+                      context: termsContext, // 올바른 context 사용
+                      isScrollControlled: true,
+                      isDismissible: false,
+                      enableDrag: false,
+                      builder: (detailContext) => AgreementDetail(type: type),
+                    );
+                  },
+                ), // 모달 내용: 약
               ) ??
               false; // 약관 동의하지 않고 모달만 닫은 경우 false 반환
 

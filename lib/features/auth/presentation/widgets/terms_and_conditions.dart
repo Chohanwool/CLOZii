@@ -17,7 +17,9 @@ enum Age { youth, adult }
 /// - 필수 약관 상세 내용 펼치기 기능
 /// - 연령 확인 라디오 버튼과 시작 버튼 포함
 class TermsAndConditions extends ConsumerStatefulWidget {
-  const TermsAndConditions({super.key});
+  const TermsAndConditions({super.key, required this.onShowAgreementDetail});
+
+  final Function(AgreementType) onShowAgreementDetail;
 
   @override
   ConsumerState<TermsAndConditions> createState() => _TermsAndConditionsState();
@@ -85,24 +87,6 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
     final signUpState = ref.watch(signUpProvider);
     final signUpNotifier = ref.read(signUpProvider.notifier);
 
-    // 약관 상세 open pending 처리
-    ref.listen(signUpProvider, (previous, next) {
-      if (next.pendingAgreementToOpen != null) {
-        showModalBottomSheet(
-          context: context,
-          // useRootNavigator: true, // terms_and_conditions 위에 올리기 위해 사용 필수!!
-          isScrollControlled: true, // 전체화면으로 열기
-          builder: (_) => AgreementDetail(type: next.pendingAgreementToOpen!),
-        );
-
-        // 사용 후 pending 값 초기화
-        // ref.listen의 콜백은 Provider의 상태 변화를 구독하는 "리액티브한" 콜백으로
-        // next는 변경된 상태일 뿐, signUpNotifier 변수는 build 시점의 스냅샷일 가능성이 있기 때문에
-        // ref.read로 명시적으로 읽고 호출해야함
-        ref.read(signUpProvider.notifier).clearPendingAgreement();
-      }
-    });
-
     /// 모달이 자식만큼만 펼쳐지게 하는 위젯
     return Wrap(
       children: [
@@ -163,9 +147,8 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   ),
                   const Text('(Required) Terms and Conditions'),
                   IconButton(
-                    onPressed: () => signUpNotifier.requestOpenAgreementDetail(
-                      AgreementType.terms,
-                    ),
+                    onPressed: () =>
+                        widget.onShowAgreementDetail(AgreementType.terms),
                     icon: Icon(
                       isListOpen ? Icons.expand_more : Icons.chevron_right,
                     ),
