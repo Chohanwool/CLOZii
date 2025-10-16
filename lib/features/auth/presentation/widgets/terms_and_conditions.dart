@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 // core
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 
+// Libraries
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// providers
 import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
 
 enum Age { youth, adult }

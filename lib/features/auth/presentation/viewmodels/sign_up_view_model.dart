@@ -1,9 +1,15 @@
-import 'package:clozii/features/auth/presentation/providers/send_verification_usecase_provider.dart';
 import 'package:flutter/material.dart';
 
+// core
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
+
+// state
 import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
 
+// usecases
+import 'package:clozii/features/auth/presentation/providers/send_verification_usecase_provider.dart';
+
+// APIs
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -162,8 +168,6 @@ class SignUpViewModel extends Notifier<SignUpState> {
       newState.isThirdPartyAgreed,
       newState.isPushAgreed,
     ].every((e) => e);
-
-    
 
     state = newState.copyWith(isAllAgreed: allAgreed);
   }

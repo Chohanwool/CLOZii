@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
+
+// core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/features/auth/core/enum/agreement_type.dart';
-import 'package:flutter/material.dart';
 
 class AgreementDetail extends StatelessWidget {
   const AgreementDetail({super.key, required this.type});
