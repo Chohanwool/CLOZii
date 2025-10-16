@@ -20,7 +20,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
   int _minutes = 1;
   int _seconds = 0;
 
-  int _failedAttemps = 0;
+  // int _failedAttemps = 0;
 
   final TextEditingController _optController = TextEditingController();
 
