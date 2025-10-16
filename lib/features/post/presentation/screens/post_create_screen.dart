@@ -2,6 +2,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/image_preview.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/selectors/image_selector.dart';
@@ -17,6 +18,8 @@ import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/provider/meeting_point_provider.dart';
+import 'package:clozii/features/post/provider/selected_image_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
@@ -138,10 +141,17 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 선택된 사진 데이터 - Map<String, ImageData>
+    final selectedImageMap = ref.watch(selectedImageProvider);
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            // "저장하지 않은 내역은 사라집니다" 안내 추가 예정
+            ref.read(selectedImageProvider.notifier).clearSelection();
+            Navigator.pop(context);
+          },
           icon: Icon(Icons.close),
         ),
         title: const Text('Sell My Items'),
@@ -160,8 +170,31 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               children: [
                 const SizedBox(height: 10.0),
 
-                // 사진 추가 버튼 - ImagePicker와 연결할 예정
-                ImageSelector(),
+                // 사진 선택 섹션 (ImageSelector + 선택된 사진 미리보기)
+                SizedBox(
+                  height: 100.0,
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: selectedImageMap.length + 1,
+                    itemBuilder: (context, index) {
+                      // ImageSelector - 사진 선택 위젯
+                      if (index == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                          child: ImageSelector(),
+                        );
+                      }
+
+                      String assetId = selectedImageMap.keys.elementAt(
+                        index - 1,
+                      );
+
+                      return ImagePreview(assetId: assetId);
+                    },
+                  ),
+                ),
+
                 const SizedBox(height: 40.0),
 
                 // 제목 입력 필드
@@ -268,42 +301,74 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 _priceController.text.replaceAll(RegExp(r'[^0-9]'), ''),
               );
 
-              // TODO: 리포지토리에서 DB/서버 API에 게시글 저장 필요
-              // 구현 예시는 파일 하단에 주석으로 작성되어 있음
+              final selectedImageOrigins = ref
+                  .read(selectedImageProvider.notifier)
+                  .getAllOrigins();
+
+              final selectedImageThumbnails = ref
+                  .read(selectedImageProvider.notifier)
+                  .getAllThumbnails();
+
+              final meetingPoint = ref
+                  .read(meetingPointProvider.notifier)
+                  .getMeetingPoint();
+
+              // TODO: 리포지토리에서 Firestore DB에 게시글 저장해야 함
+              // createPost() : FirebaseFirestore에 PostDraft 저장 후 Post 객체 반환
               final postDraft = PostDraft(
                 title: _titleController.text,
                 content: _contentController.text,
                 tradeType: _selectedTransactionType,
                 price: price,
-                images: [],
+                originImages: selectedImageOrigins,
+                thumbnailImages: selectedImageThumbnails,
+                detailAddress: _detailAddress,
+                meetingPoint: meetingPoint,
               );
 
-              // 실무에서는 PostDraft에 XFile 형식 이미지 리스트를 그대로 넣고 
-              // 실제 저장 시 이미지를 서버에 없로드 후 URL로 변환하는 방식을 사용함 
-              // 구현 예시는 파일 하단에 주석으로 작성되어 있음
-              final imageUrls = postDraft.images
-                  .map((image) => image.path)
+              // createPost()에서 uploadImages()로 Firebase Storage에 Uint8List 이미지 업로드 후 URL 리스트 반환
+              final originImageUrls = postDraft.originImages
+                  .map(
+                    // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
+                    (image) => image != null
+                        ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2cFWmgmh-xRsLXiuWYedhR7Xtwrc1Hz11iGSd9W2GTOUoW1oY_UQvmZedKYBEMHzrX3U&usqp=CAU'
+                        : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
+                  )
                   .toList();
-              if (imageUrls.isEmpty) {
-                imageUrls.add(
-                  'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
-                );
-              }
 
-              // createPost()에서 생성된 게시글을 반환할때 Post 객체로 만들어서 반환 할 예정
-              // 그렇게 하면 화면에도 생성된 게시글을 바로 보여줄 수 있고, 캐싱에도 쓸수 있고, 다른 메서드들에서도 생성된 게시글이 바로 필요할 떄 넣어줄 수 있음.
+              final thumbnailImageUrls = postDraft.thumbnailImages.isNotEmpty
+                  ? postDraft.thumbnailImages
+                        .map(
+                          // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
+                          (image) => image != null
+                              ? 'https://media.istockphoto.com/id/496603666/vector/flat-icon-check.jpg?s=612x612&w=0&k=20&c=BMYf-7moOtevP8t46IjHHbxJ4x4I0ZoFReIp9ApXBqU='
+                              : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
+                        )
+                        .toList()
+                  : [
+                      'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg',
+                    ];
+
+              // createPost()에서 반환할때 Post 객체를 만들어서 반환 할 예정
+              // 반환된 객체는 화면에도 바로 보여줄 수 있고, 캐싱에도 쓸수 있고, 다른 메서드들에서도 필요하면 넣어줄 수 있음.
               final post = Post(
                 id: postDraft.hashCode.toString(),
                 title: postDraft.title,
                 content: postDraft.content,
-                imageUrls: imageUrls,
+                originImageUrls: originImageUrls,
+                thumbnailImageUrls: thumbnailImageUrls,
                 price: postDraft.price,
                 createdAt: DateTime.now(),
                 updatedAt: DateTime.now(),
                 tradeType: postDraft.tradeType,
+                detailAddress: postDraft.detailAddress,
+                meetingPoint: postDraft.meetingPoint,
               );
 
               dummyPosts.add(post);
+
+              // DB에 게시글 저장 후 SelectedImageNotifier 초기화
+              ref.read(selectedImageProvider.notifier).clearSelection();
 
               Navigator.of(context).pop(true);
             } else {

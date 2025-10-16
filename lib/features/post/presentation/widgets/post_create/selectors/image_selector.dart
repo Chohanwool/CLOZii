@@ -4,12 +4,14 @@ import 'package:clozii/core/theme/context_extension.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/gallery_modal.dart';
+import 'package:clozii/features/post/provider/selected_image_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ImageSelector extends StatelessWidget {
+class ImageSelector extends ConsumerWidget {
   const ImageSelector({super.key});
 
   void showGallery(BuildContext context) {
@@ -30,7 +32,9 @@ class ImageSelector extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedImageIds = ref.watch(selectedImageProvider);
+
     return GestureDetector(
       onTap: () => showGallery(context),
       child: Container(
@@ -50,7 +54,7 @@ class ImageSelector extends StatelessWidget {
             ),
             // 추가된 사진 개수 표시 - 10장까지 추가 가능
             Text(
-              '0/10',
+              '${selectedImageIds.length}/${SelectedImageNotifier.maxLength}',
               style: context.textTheme.bodyMedium!.copyWith(
                 color: AppColors.black54,
               ),

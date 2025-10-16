@@ -28,7 +28,10 @@ class PostListTile extends StatelessWidget {
                     color: Colors.black26,
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  child: Image.network(post.imageUrls[0], fit: BoxFit.cover),
+                  child: Image.network(
+                    post.thumbnailImageUrls[0],
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 const SizedBox(width: 16.0),
                 Expanded(
