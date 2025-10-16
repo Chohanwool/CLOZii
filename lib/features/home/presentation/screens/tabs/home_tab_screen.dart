@@ -22,7 +22,7 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     // TODO: 실제 API 호출 - 게시글 목록 조회
     await Future.delayed(const Duration(seconds: 1));
     setState(() {
-      _posts = List<Post>.from(_posts)
+      _posts = List<Post>.from(dummyPosts)
         ..shuffle(); // 예시로 더미 데이터를 셔플해서 마치 새로 불러온 것처럼 보이게 함
     });
   }
