@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// 인증번호 타이머 표시 위젯
-/// - 남은 분(minutes)과 초(seconds)를 받아
+/// - 남은 분(minutes)과 초(seconds)를 받아  
 ///   "MM:SS" 형식으로 0을 채워 표시함
 class VerificationTimer extends StatelessWidget {
   const VerificationTimer({

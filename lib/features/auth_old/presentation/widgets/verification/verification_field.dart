@@ -1,8 +1,6 @@
+import 'package:clozii/features/auth_old/presentation/widgets/verification/verification_timer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-// widgets
-import 'package:clozii/features/auth/presentation/widgets/verification/verification_timer.dart';
 
 /// 인증번호 입력 필드 위젯
 /// - 타이머 레이아웃 위젯 (`VerificationTimer`)를 포함

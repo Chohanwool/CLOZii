@@ -1,0 +1,335 @@
+import 'dart:async';
+
+import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/animation.dart';
+import 'package:clozii/core/utils/show_alert_dialog.dart';
+import 'package:clozii/core/utils/show_loading_overlay.dart';
+import 'package:clozii/features/auth_old/data/auth_type.dart';
+import 'package:clozii/features/auth_old/presentation/screens/login_screen.dart';
+import 'package:clozii/features/auth_old/presentation/screens/sign_up_screen.dart';
+import 'package:clozii/features/auth_old/presentation/widgets/verification/verification_field.dart';
+import 'package:clozii/features/home/presentation/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class VerificationScreen extends StatefulWidget {
+  const VerificationScreen({
+    super.key,
+    required this.phoneNumber,
+    required this.authType,
+    required this.verificationId,
+    required this.resendToken,
+    required this.onResendCode,
+  });
+
+  final String phoneNumber;
+  final AuthType authType;
+  final String verificationId;
+  final int? resendToken;
+  final ValueChanged<String> onResendCode;
+
+  @override
+  State<VerificationScreen> createState() => _VerificationScreenState();
+}
+
+class _VerificationScreenState extends State<VerificationScreen> {
+  // FirebaseAuth 관련 상태 값
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  /// 인증번호 유효 시간 - 타이머
+  Timer? _timer;
+  int _minutes = 1;
+  int _seconds = 0;
+
+  int _failedAttemps = 0;
+
+  final TextEditingController _optController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    // 타이머 해제
+    if (_timer != null) _timer!.cancel();
+
+    _optController.dispose();
+    super.dispose();
+  }
+
+  /// 인증번호 유효시간 카운트다운 시작
+  void _startTimer() {
+    // 기존 타이머가 동작 중이면 취소
+    if (_timer?.isActive ?? false) {
+      _timer!.cancel();
+    }
+    // 초기값 1분
+    _minutes = 1;
+    _seconds = 0;
+
+    // 타이머 초기화 - Timer.periodic (일정 주기마다 특정 로직 수행)
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      setState(() {
+        if (!mounted) return; // 화면이 사라진 상태라면 아무것도 안 함
+
+        if (_seconds > 0) {
+          _seconds--;
+        } else {
+          _minutes--;
+          _seconds = 59;
+        }
+      });
+
+      // 시간이 다 되면 타이머 종료
+      if (_minutes == 0 && _seconds == 0) {
+        timer.cancel();
+      }
+    });
+  }
+
+  /// 인증번호 요청 횟수 제한 관리
+  /// - SharedPreferences를 사용해 앱 종료 후에도 횟수 저장
+  /// - 1분(임시) 동안 최대 5회 제한 (현재 전화번호 구분 로직은 구현 안함)
+  Future<int> _requestCodeCount() async {
+    final requestCooldown = Duration(minutes: 3).inMilliseconds; // 제한 시간 1분
+    final prefs = await SharedPreferences.getInstance(); // 네이티브 저장소 연결
+    final now = DateTime.now().millisecondsSinceEpoch; // 메서드가 호출된 시간 (밀리초)
+
+    int firstRequestTime =
+        prefs.getInt('firstRequestTime') ?? 0; // 제한 횟수 5회 중 첫번째로 요청한 시각
+    int countRemaining = prefs.getInt('countRemaining') ?? 5; // 남은 제한 횟수
+    int diff = now - firstRequestTime; // 메서드가 호출된 시간 - 첫 인증번호 요청 시간
+
+    // 1분이 지났으면 횟수 초기화
+    if (diff > requestCooldown) {
+      await prefs.setInt('firstRequestTime', now); // 제한 시간이 지나면 첫 요청 시간 갱신
+      countRemaining = 5; // 요청 횟수 카운트도 초기화
+    }
+
+    // 핵심 로직‼️
+    // 남은 횟수 감소 후 저장
+    countRemaining--;
+    await prefs.setInt('countRemaining', countRemaining);
+
+    return countRemaining;
+  }
+
+  /// "인증번호 전송" 버튼 클릭 처리
+  void _onSendCodeButtonPressed() async {
+    int count = await _requestCodeCount(); // 요청 제한 횟수 카운트
+    if (count > 0) {
+      // 인증번호 전송 로직 호출
+      widget.onResendCode(widget.phoneNumber);
+      _startTimer(); // 타이머 시작
+    }
+
+    // TODO: 실제 인증번호 전송 로직 구현
+    // TODO: count < 0 이면 전송 차단
+    // TODO: 전송된 인증번호를 상태에 저장해 검증 시 사용
+
+    setState(() {
+      // 스낵바 내용 :
+      // - 최초 요청 시 "인증번호 전송됨" 메시지 표시 - "Verfication code sent."
+      Widget content = Text('Verification code sent.');
+
+      // - 제한 횟수가 남아 있는 경우, 남은 요청 가능 횟수 표시 - "N verfication attems remaining."
+      if (count >= 0) {
+        content = Text('$count verification attemps remaining.');
+      }
+
+      // - 제한 횟수를 초과한 경우 "나중에 다시 시도해주세요" 표시 - "Try again later."
+      if (count < 0) {
+        content = Text('Try again later');
+      }
+
+      // 스낵바 표시
+      _showSnackBar(customContent: content);
+    });
+  }
+
+  Future<void> _handleCodeSubmit() async {
+    final loading = showLoadingOverlay(context);
+    bool removed = false;
+
+    // 인증 제한 시간 체크 후 00:00 이면 인증 X
+    if (_timer != null && !_timer!.isActive) {
+      _showSnackBar(
+        message: 'Your verification time has expired.',
+        extraMessage: 'Please request code again.',
+      );
+
+      loading.remove();
+      return;
+    }
+
+    try {
+      await Future.delayed(const Duration(milliseconds: 300)); // 예시 처리
+      if (!mounted) return;
+
+      debugPrint('verificationId: ${widget.verificationId}');
+      debugPrint('resendToken: ${widget.resendToken}');
+      debugPrint('optController: ${_optController.text}');
+
+      try {
+        // 인증코드 입력 실제 값과 비교
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: widget.verificationId,
+          smsCode: _optController.text,
+        );
+
+        // 로그인 시도(최초시에는 회원가입)
+        UserCredential userCredential = await _auth.signInWithCredential(
+          credential,
+        );
+
+        User? user = userCredential.user;
+
+        if (user != null) {
+          debugPrint('로그인 성공: ${user.phoneNumber}');
+
+          Navigator.of(context).pushAndRemoveUntil(
+            // 메인 화면으로 이동
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+            (Route<dynamic> route) => false, // 기존 스택의 모든 route를 제거
+          );
+        }
+      } catch (e) {
+        debugPrint('로그인 실패: ${e}');
+
+        if (_failedAttemps == 2) {
+          if (mounted) {
+            removed = true;
+            _timer!.cancel();
+            loading.remove();
+            ScaffoldMessenger.of(context).clearSnackBars();
+
+            final result = await showAlertDialog(
+              context,
+              title: 'Verfication Failed',
+              'You have attempted verification too many times. Please try again later.',
+            );
+
+            if (result != null) {
+              if (mounted) {
+                Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
+                  fadeInRoute(
+                    widget.authType == AuthType.signup
+                        ? SignUpScreen()
+                        : LoginScreen(),
+                  ),
+                  (route) => route.isFirst,
+                );
+              }
+            }
+
+            return;
+          }
+        }
+        _failedAttemps++;
+
+        if (mounted) {
+          _showSnackBar(
+            message: 'Verification code does not match.',
+            extraMessage: 'Please try again.',
+          );
+        }
+      }
+    } finally {
+      if (!removed) loading.remove();
+    }
+  }
+
+  void _showSnackBar({
+    String? message,
+    String? extraMessage,
+    Widget? customContent,
+  }) {
+    final defaultContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (message != null) Text(message),
+        if (extraMessage != null) ...[
+          const SizedBox(height: 5.0),
+          Text(extraMessage),
+        ],
+      ],
+    );
+
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          content: customContent ?? defaultContent,
+        ),
+      );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Please enter the verification code',
+                style: context.textTheme.titleLarge,
+              ),
+
+              const SizedBox(height: 24),
+
+              VerificationField(
+                minutes: _minutes,
+                seconds: _seconds,
+                onVerified: () {},
+                controller: _optController,
+                onChanged: (value) async {
+                  // optCode 6자리 입력시 자동 호출
+                  if (value.length == 6) {
+                    await _handleCodeSubmit();
+                  }
+                },
+              ),
+
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    overlayColor: Colors.grey,
+                    minimumSize: Size(0, 0),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal: 12.0,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(4.0),
+                    ),
+                  ),
+                  onPressed: _onSendCodeButtonPressed,
+                  child: Text(
+                    'Send code again',
+                    style: context.textTheme.labelLarge!.copyWith(
+                      color: context.colors.scrim,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

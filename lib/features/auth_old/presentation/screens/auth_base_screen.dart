@@ -1,6 +1,6 @@
-import 'package:clozii/features/auth/data/auth_service.dart';
-import 'package:clozii/features/auth/data/auth_type.dart';
-import 'package:clozii/features/auth/data/constants.dart';
+import 'package:clozii/features/auth_old/data/auth_service.dart';
+import 'package:clozii/features/auth_old/data/auth_type.dart';
+import 'package:clozii/features/auth_old/data/constants.dart';
 import 'package:flutter/material.dart';
 
 abstract class AuthBaseScreen extends StatefulWidget {
@@ -18,7 +18,6 @@ abstract class AuthBaseScreenState<T extends AuthBaseScreen> extends State<T> {
   // 전화번호 완성 메서드: '09...' -> '+639...'
   String get completePhoneNumber =>
       '$phoneNumberPrefix${phoneNumberController.text.replaceAll('-', '').replaceFirst('09', '')}';
-
 
   // AuthService를 통한 인증번호 전송
   Future<void> sendVerificationCode() async {
