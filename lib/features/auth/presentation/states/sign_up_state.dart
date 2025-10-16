@@ -1,5 +1,4 @@
 import 'package:clozii/features/auth/auth_constants.dart';
-import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
 
 class SignUpState {
