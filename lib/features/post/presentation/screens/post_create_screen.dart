@@ -18,6 +18,7 @@ import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/provider/meeting_point_provider.dart';
 import 'package:clozii/features/post/provider/selected_image_provider.dart';
 
 // packages
@@ -300,9 +301,17 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 _priceController.text.replaceAll(RegExp(r'[^0-9]'), ''),
               );
 
+              final selectedImageOrigins = ref
+                  .read(selectedImageProvider.notifier)
+                  .getAllOrigins();
+
               final selectedImageThumbnails = ref
                   .read(selectedImageProvider.notifier)
                   .getAllThumbnails();
+
+              final meetingPoint = ref
+                  .read(meetingPointProvider.notifier)
+                  .getMeetingPoint();
 
               // TODO: 리포지토리에서 Firestore DB에 게시글 저장해야 함
               // createPost() : FirebaseFirestore에 PostDraft 저장 후 Post 객체 반환
@@ -311,11 +320,14 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 content: _contentController.text,
                 tradeType: _selectedTransactionType,
                 price: price,
-                images: selectedImageThumbnails,
+                originImages: selectedImageOrigins,
+                thumbnailImages: selectedImageThumbnails,
+                detailAddress: _detailAddress,
+                meetingPoint: meetingPoint,
               );
 
               // createPost()에서 uploadImages()로 Firebase Storage에 Uint8List 이미지 업로드 후 URL 리스트 반환
-              final imageUrls = postDraft.images
+              final originImageUrls = postDraft.originImages
                   .map(
                     // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
                     (image) => image != null
@@ -324,17 +336,33 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                   )
                   .toList();
 
+              final thumbnailImageUrls = postDraft.thumbnailImages.isNotEmpty
+                  ? postDraft.thumbnailImages
+                        .map(
+                          // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
+                          (image) => image != null
+                              ? 'https://media.istockphoto.com/id/496603666/vector/flat-icon-check.jpg?s=612x612&w=0&k=20&c=BMYf-7moOtevP8t46IjHHbxJ4x4I0ZoFReIp9ApXBqU='
+                              : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
+                        )
+                        .toList()
+                  : [
+                      'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg',
+                    ];
+
               // createPost()에서 반환할때 Post 객체를 만들어서 반환 할 예정
               // 반환된 객체는 화면에도 바로 보여줄 수 있고, 캐싱에도 쓸수 있고, 다른 메서드들에서도 필요하면 넣어줄 수 있음.
               final post = Post(
                 id: postDraft.hashCode.toString(),
                 title: postDraft.title,
                 content: postDraft.content,
-                imageUrls: imageUrls,
+                originImageUrls: originImageUrls,
+                thumbnailImageUrls: thumbnailImageUrls,
                 price: postDraft.price,
                 createdAt: DateTime.now(),
                 updatedAt: DateTime.now(),
                 tradeType: postDraft.tradeType,
+                detailAddress: postDraft.detailAddress,
+                meetingPoint: postDraft.meetingPoint,
               );
 
               dummyPosts.add(post);

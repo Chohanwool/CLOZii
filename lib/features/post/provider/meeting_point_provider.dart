@@ -13,4 +13,8 @@ class MeetingPointNotifier extends Notifier<LatLng?> {
   void setMeetingPoint(LatLng meetingPoint) {
     state = meetingPoint;
   }
+
+  LatLng? getMeetingPoint() {
+    return state;
+  }
 }
