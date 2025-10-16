@@ -1,4 +1,7 @@
+// core
 import 'package:clozii/core/theme/context_extension.dart';
+
+// packages
 import 'package:flutter/material.dart';
 
 class ChatField extends StatefulWidget {

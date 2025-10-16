@@ -48,9 +48,9 @@ class PostListTile extends StatelessWidget {
                             color: Colors.black45,
                           ),
                         ),
-                        post.price != null
+                        post.price != 0
                             ? Text(
-                                '\u20B1 ${formatPrice(post.price!)}', //₱
+                                '\u20B1 ${formatPrice(post.price)}', //₱
                                 style: context.textTheme.bodyLarge!.copyWith(
                                   fontWeight: FontWeight.w600,
                                 ),

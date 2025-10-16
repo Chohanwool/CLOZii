@@ -1,10 +1,15 @@
+// core
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
+
+// features
 import 'package:clozii/features/post/data/post.dart';
-import 'package:clozii/features/post/presentation/widgets/chat_field.dart';
+import 'package:clozii/features/post/presentation/widgets/post_detail/chat_field.dart';
+
+// packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -254,9 +259,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   // 가격 또는 나눔 표시
                   // Post 객체의 price 필드에 저장된 가격이 있다면 가격을 표시하고,
                   // 없다면(null), 나눔 표시
-                  widget.post.price != null
+                  widget.post.price != 0
                       ? Text(
-                          '\u20B1 ${formatPrice(widget.post.price!)}', //₱
+                          '\u20B1 ${formatPrice(widget.post.price)}', //₱
                           style: context.textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.w600,
                           ),

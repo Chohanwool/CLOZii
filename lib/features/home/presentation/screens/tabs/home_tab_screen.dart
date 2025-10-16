@@ -1,8 +1,10 @@
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/features/post/data/dummy_posts.dart';
 import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
-import 'package:clozii/features/post/presentation/widgets/post_list_tile.dart';
+import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
 import 'package:flutter/material.dart';
 
 class HomeTabScreen extends StatefulWidget {
@@ -30,6 +32,28 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
     );
+  }
+
+  // 게시글 생성 모달 띄우기
+  void _showPostCreateModal() async {
+    final newPost = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (context) => Container(
+        padding: const EdgeInsets.only(
+          top: kToolbarHeight,
+          bottom: kBottomNavigationBarHeight,
+        ),
+        color: AppColors.white,
+        child: const PostCreateScreen(),
+      ),
+    );
+
+    if (newPost == true) {
+      _onRefresh();
+    }
   }
 
   @override
@@ -60,7 +84,8 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
               borderRadius: BorderRadius.circular(100),
               clipBehavior: Clip.hardEdge,
               child: InkWell(
-                onTap: () {},
+                // 게시글 생성 모달 띄우기
+                onTap: _showPostCreateModal,
                 splashFactory: NoSplash.splashFactory, // 버튼 클릭 시 잉크 효과 제거
                 overlayColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.pressed)) {

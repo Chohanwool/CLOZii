@@ -7,11 +7,12 @@ import 'package:clozii/core/theme/theme.dart';
 
 // onBoarding
 import 'package:clozii/features/onBoarding/presentation/screens/onboarding_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const CLOZii());
+  runApp(const ProviderScope(child: CLOZii()));
 }
 
 class CLOZii extends StatelessWidget {
