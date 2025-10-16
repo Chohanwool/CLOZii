@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // core
@@ -29,36 +30,6 @@ class TermsAndConditions extends ConsumerStatefulWidget {
 }
 
 class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
-  // 연령 확인 라디오 버튼 선택 값 - 기본 값 선택 안됨
-  Age? _selectedOption;
-
-  Future<void> _onSubmit() async {
-    // if (!isMainChecked) {
-    //   showAlertDialog(
-    //     context,
-    //     'You must accept the Terms and Conditions to proceed.',
-    //   );
-    //   return;
-    // }
-
-    if (_selectedOption == Age.youth) {
-      showAlertDialog(
-        context,
-        'You must be at least 18 years old to use this app.',
-      );
-      return;
-    }
-
-    if (_selectedOption == null) {
-      showAlertDialog(context, 'You need to verify your age!');
-      return;
-    }
-
-    // 약관 동의 후 모달 닫기
-    // return true
-    Navigator.of(context).pop(true);
-  }
-
   @override
   Widget build(BuildContext context) {
     final signUpState = ref.watch(signUpProvider);
@@ -75,7 +46,6 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
           left: 12.0,
           right: 12.0,
         ),
-        // padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -86,7 +56,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   // TODO: 토글 시 애니메이션 효과 추가
                   IconButton(
                     highlightColor: Colors.transparent,
-                    onPressed: () => signUpNotifier.toggleAllAgreement(),
+                    onPressed: signUpNotifier.toggleAllAgreement,
                     icon: Icon(
                       signUpState.isAllAgreed
                           ? Icons.check_circle_rounded
@@ -129,7 +99,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   IconButton(
                     onPressed: () =>
                         widget.onShowAgreementDetail(AgreementType.terms),
-                    icon: Icon(Icons.expand_more),
+                    icon: Icon(CupertinoIcons.chevron_forward),
                   ),
                 ],
               ),
@@ -154,7 +124,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   IconButton(
                     onPressed: () =>
                         widget.onShowAgreementDetail(AgreementType.privacy),
-                    icon: Icon(Icons.expand_more),
+                    icon: Icon(CupertinoIcons.chevron_forward),
                   ),
                 ],
               ),
@@ -181,7 +151,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   IconButton(
                     onPressed: () =>
                         widget.onShowAgreementDetail(AgreementType.location),
-                    icon: Icon(Icons.expand_more),
+                    icon: Icon(CupertinoIcons.chevron_forward),
                   ),
                 ],
               ),
@@ -210,7 +180,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   IconButton(
                     onPressed: () =>
                         widget.onShowAgreementDetail(AgreementType.marketing),
-                    icon: Icon(Icons.expand_more),
+                    icon: Icon(CupertinoIcons.chevron_forward),
                   ),
                 ],
               ),
@@ -239,7 +209,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   IconButton(
                     onPressed: () =>
                         widget.onShowAgreementDetail(AgreementType.thirdParty),
-                    icon: Icon(Icons.expand_more),
+                    icon: Icon(CupertinoIcons.chevron_forward),
                   ),
                 ],
               ),
@@ -266,7 +236,7 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   IconButton(
                     onPressed: () =>
                         widget.onShowAgreementDetail(AgreementType.push),
-                    icon: Icon(Icons.expand_more),
+                    icon: Icon(CupertinoIcons.chevron_forward),
                   ),
                 ],
               ),
@@ -291,15 +261,13 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   // 18세 이상 라디오 버튼
                   Row(
                     children: [
-                      Radio<Age>(
-                        value: Age.adult,
-                        groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
+                      Radio<bool>(
+                        value: true,
+                        groupValue:
+                            signUpState.isAgeVerified, // 모든 라디오 버튼이 공유하는 필드
                         activeColor: Theme.of(context).colorScheme.primary,
                         onChanged: (value) {
-                          setState(() {
-                            // 라디오 버튼의 공유 필드가 나의 value 와 일치하면 선택된 것 ✅
-                            _selectedOption = value;
-                          });
+                          signUpNotifier.updateAgeVerified(value!);
                         },
                       ),
                       const Text('I am 18 years old or above'),
@@ -309,15 +277,13 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   // 18세 미만 라디오 버튼
                   Row(
                     children: [
-                      Radio<Age>(
-                        value: Age.youth,
-                        groupValue: _selectedOption, // 모든 라디오 버튼이 공유하는 필드
+                      Radio<bool>(
+                        value: false,
+                        groupValue:
+                            signUpState.isAgeVerified, // 모든 라디오 버튼이 공유하는 필드
                         activeColor: Theme.of(context).colorScheme.primary,
                         onChanged: (value) {
-                          setState(() {
-                            // 라디오 버튼의 공유 필드가 나의 value 와 일치하면 선택된 것 ✅
-                            _selectedOption = value;
-                          });
+                          signUpNotifier.updateAgeVerified(value!);
                         },
                       ),
                       const Text('I am under 18 years old'),
@@ -327,7 +293,28 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   const SizedBox(height: 12.0),
 
                   // 제출 버튼
-                  CustomButton(text: 'Continue', onTap: _onSubmit),
+                  CustomButton(
+                    text: 'Continue',
+                    onTap: () async {
+                      final isPassed = await signUpNotifier
+                          .submitTermsAndCondition();
+
+                      // await 후에 context 사용 시, 안전하게 사용하기 위해 아래 문 추가
+                      if (!context.mounted) return;
+
+                      if (!isPassed) {
+                        showAlertDialog(
+                          context,
+                          signUpState.errorMessage ?? 'Check required items.',
+                        );
+                        return;
+                      }
+
+                      // 성공 시 모달 닫음
+                      Navigator.of(context).pop(true);
+                      
+                    },
+                  ),
                 ],
               ),
             ],

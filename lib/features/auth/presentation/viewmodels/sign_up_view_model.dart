@@ -125,7 +125,18 @@ class SignUpViewModel extends Notifier<SignUpState> {
 
   // 약관 동의 모달 닫기
   void setShowTermsAndAgreeToFalse() {
-    state = state.copyWith(showTermsAndAgree: false);
+    // 모든 이용약관 초기 값으로 변경후, 모달 종료를 위해 상태 변경
+    state = state.copyWith(
+      showTermsAndAgree: false,
+      isAllAgreed: false,
+      isTermAgreed: false,
+      isPrivacyPolicyAgreed: false,
+      isLocationPolicyAgreed: false,
+      isMarketingAgreed: false,
+      isThirdPartyAgreed: false,
+      isPushAgreed: false,
+      isAgeVerified: false,
+    );
   }
 
   void toggleAllAgreement() {
@@ -170,6 +181,46 @@ class SignUpViewModel extends Notifier<SignUpState> {
     ].every((e) => e);
 
     state = newState.copyWith(isAllAgreed: allAgreed);
+  }
+
+  // 이용약관 동의 모달에서 나이 선택 RADIO 위젯에 연결
+  void updateAgeVerified(bool value) {
+    state = state.copyWith(isAgeVerified: value);
+  }
+
+  Future<bool> submitTermsAndCondition() async {
+    // 필수 항목 검증
+    if (!state.isTermAgreed) {
+      state = state.copyWith(
+        errorMessage: 'Please accept the Terms of Service.',
+      );
+      return false;
+    }
+    if (!state.isPrivacyPolicyAgreed) {
+      state = state.copyWith(errorMessage: 'Please accept the Privacy Policy.');
+      return false;
+    }
+    if (!state.isLocationPolicyAgreed) {
+      state = state.copyWith(
+        errorMessage: 'Please accept the Location Consent.',
+      );
+      return false;
+    }
+    if (!state.isAgeVerified) {
+      state = state.copyWith(
+        errorMessage: 'You must be at least 18 years old.',
+      );
+      return false;
+    }
+
+    // 성공: 에러 메시지 정리
+    state = state.copyWith(errorMessage: null);
+
+    // 다음 단계 트리거는 화면 설계에 맞게 선택:
+    // 1) 모달에서 Navigator.pop(true)로 결과 반환 → 여기서는 true만 반환
+    // 2) 혹은 여기서 바로 sendVerificationCode() 호출도 가능
+    // - 따로 isTermsPassed와 같은 상태를 만들지 않음
+    return true;
   }
 
   // Firebase 연락처 인증 로직 호출
