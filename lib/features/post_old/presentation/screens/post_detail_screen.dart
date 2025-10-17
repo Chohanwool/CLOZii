@@ -6,8 +6,8 @@ import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
 
 // features
-import 'package:clozii/features/post/data/post.dart';
-import 'package:clozii/features/post/presentation/widgets/post_detail/chat_field.dart';
+import 'package:clozii/features/post_old/data/post.dart';
+import 'package:clozii/features/post_old/presentation/widgets/post_detail/chat_field.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';

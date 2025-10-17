@@ -6,8 +6,8 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
 // features
-import 'package:clozii/features/post/provider/selected_image_provider.dart';
-import 'package:clozii/features/post/data/image_data.dart';
+import 'package:clozii/features/post_old/provider/selected_image_provider.dart';
+import 'package:clozii/features/post_old/data/image_data.dart';
 
 // packages
 import 'package:flutter/material.dart';

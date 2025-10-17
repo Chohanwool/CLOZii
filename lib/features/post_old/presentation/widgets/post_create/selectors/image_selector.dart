@@ -3,8 +3,8 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/post_create/modals/gallery_modal.dart';
-import 'package:clozii/features/post/provider/selected_image_provider.dart';
+import 'package:clozii/features/post_old/presentation/widgets/post_create/modals/gallery_modal.dart';
+import 'package:clozii/features/post_old/provider/selected_image_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';

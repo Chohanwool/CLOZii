@@ -3,7 +3,7 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
 // features
-import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
+import 'package:clozii/features/post_old/provider/go_to_phrases_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';

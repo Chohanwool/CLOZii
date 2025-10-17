@@ -1,4 +1,4 @@
-import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post_old/data/post.dart';
 
 List<Post> dummyPosts = [
   Post(

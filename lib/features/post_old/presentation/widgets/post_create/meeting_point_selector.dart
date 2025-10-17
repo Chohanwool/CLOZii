@@ -1,7 +1,7 @@
 // core
 // package
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/features/post/provider/meeting_point_provider.dart';
+import 'package:clozii/features/post_old/provider/meeting_point_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

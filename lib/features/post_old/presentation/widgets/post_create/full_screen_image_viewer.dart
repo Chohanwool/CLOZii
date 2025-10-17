@@ -1,5 +1,5 @@
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/features/post/provider/selected_image_provider.dart';
+import 'package:clozii/features/post_old/provider/selected_image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

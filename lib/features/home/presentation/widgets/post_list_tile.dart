@@ -1,7 +1,7 @@
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
-import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post_old/data/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

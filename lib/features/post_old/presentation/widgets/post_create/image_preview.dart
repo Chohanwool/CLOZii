@@ -1,5 +1,5 @@
-import 'package:clozii/features/post/presentation/widgets/post_create/full_screen_image_viewer.dart';
-import 'package:clozii/features/post/provider/selected_image_provider.dart';
+import 'package:clozii/features/post_old/presentation/widgets/post_create/full_screen_image_viewer.dart';
+import 'package:clozii/features/post_old/provider/selected_image_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
