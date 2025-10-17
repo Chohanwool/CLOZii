@@ -2,9 +2,9 @@
 import 'dart:typed_data';
 
 // features
-import 'package:clozii/features/post_old/data/image_data.dart';
 
 // packages
+import 'package:clozii/features/post/presentation/states/image_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // String : AssetEntity.id
