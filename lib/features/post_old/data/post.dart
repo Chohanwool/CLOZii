@@ -24,6 +24,22 @@ class PostDraft {
   TradeType tradeType;
   String? detailAddress;
   LatLng? meetingPoint;
+
+  Post toPost(String id, DateTime now) {
+    return Post(
+      id: id,
+      title: title,
+      content: content,
+      originImageUrls: [],
+      thumbnailImageUrls: [],
+      price: price,
+      createdAt: now,
+      updatedAt: now,
+      tradeType: tradeType,
+      detailAddress: detailAddress,
+      meetingPoint: meetingPoint,
+    );
+  }
 }
 
 class Post {
@@ -31,15 +47,17 @@ class Post {
     required this.id,
     required this.title,
     required this.content,
-    this.originImageUrls = const [],
-    this.thumbnailImageUrls = const [],
+    required List<String> originImageUrls,
+    required List<String> thumbnailImageUrls,
     required this.price,
     required this.createdAt,
     required this.updatedAt,
     required this.tradeType,
     this.detailAddress,
     this.meetingPoint,
-  }) : favorites = 0,
+  }) : originImageUrls = List.unmodifiable(originImageUrls),
+       thumbnailImageUrls = List.unmodifiable(thumbnailImageUrls),
+       favorites = 0,
        views = 0;
 
   final String id;
@@ -69,13 +87,15 @@ class Post {
     TradeType? tradeType,
     String? detailAddress,
     LatLng? meetingPoint,
+    int? favorites,
+    int? views,
   }) {
-    return Post(
+    final post = Post(
       id: id ?? this.id,
       title: title ?? this.title,
       content: content ?? this.content,
       originImageUrls: originImageUrls ?? this.originImageUrls,
-      thumbnailImageUrls: thumbnailImageUrls ?? this.originImageUrls,
+      thumbnailImageUrls: thumbnailImageUrls ?? this.thumbnailImageUrls,
       price: price ?? this.price,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -83,7 +103,31 @@ class Post {
       detailAddress: detailAddress ?? this.detailAddress,
       meetingPoint: meetingPoint ?? this.meetingPoint,
     );
+    post.favorites = favorites ?? this.favorites;
+    post.views = views ?? this.views;
+    return post;
   }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'content': content,
+    'originImageUrls': originImageUrls,
+    'thumbnailImageUrls': thumbnailImageUrls,
+    'price': price,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'tradeType': tradeType.name,
+    'detailAddress': detailAddress,
+    'meetingPoint': meetingPoint == null
+        ? null
+        : {
+            'latitude': meetingPoint!.latitude,
+            'longitude': meetingPoint!.longitude,
+          },
+    'favorites': favorites,
+    'views': views,
+  };
 
   void incrementFavorites() => favorites++;
   void incrementViews() => views++;
