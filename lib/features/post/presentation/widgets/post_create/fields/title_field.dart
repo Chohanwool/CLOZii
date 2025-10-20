@@ -1,21 +1,23 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PostTitleField extends StatefulWidget {
+class PostTitleField extends ConsumerStatefulWidget {
   const PostTitleField({super.key, required this.controller});
 
   final TextEditingController controller;
 
   @override
-  State<PostTitleField> createState() => _PostTitleFieldState();
+  ConsumerState<PostTitleField> createState() => _PostTitleFieldState();
 }
 
-class _PostTitleFieldState extends State<PostTitleField> {
+class _PostTitleFieldState extends ConsumerState<PostTitleField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
@@ -66,6 +68,9 @@ class _PostTitleFieldState extends State<PostTitleField> {
         return null;
       },
       keyboardType: TextInputType.text,
+      onChanged: (value) {
+        ref.read(postCreateProvider.notifier).setTitle(value);
+      },
 
       // 영문자, 숫자, 특수문자만 허용
       inputFormatters: [

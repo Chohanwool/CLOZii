@@ -1,12 +1,14 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class PriceField extends StatefulWidget {
+class PriceField extends ConsumerStatefulWidget {
   const PriceField({
     super.key,
     required this.controller,
@@ -20,10 +22,10 @@ class PriceField extends StatefulWidget {
   final bool isForSale;
 
   @override
-  State<PriceField> createState() => _PriceFieldState();
+  ConsumerState<PriceField> createState() => _PriceFieldState();
 }
 
-class _PriceFieldState extends State<PriceField> {
+class _PriceFieldState extends ConsumerState<PriceField> {
   final priceFormatter = NumberFormat('#,###');
 
   // 가격 입력 필드 채워져 있는지 여부
@@ -96,6 +98,8 @@ class _PriceFieldState extends State<PriceField> {
 
         if (value.isEmpty) return;
         widget.controller.text = priceFormatter.format(int.parse(value));
+
+        ref.read(postCreateProvider.notifier).setPrice(int.parse(value));
       },
 
       maxLength: 9,

@@ -94,6 +94,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
           // 임시로 폼 검증 성공 시 더미 데이터에 새로운 게시글 저장 진행
           onTap: () {
             debugPrint('게시글 생성 완료 버튼 클릭됨');
+            ref.read(postCreateProvider.notifier).checkAllFieldsValid();
+
             Navigator.of(context).pop();
           },
           height: 50.0,

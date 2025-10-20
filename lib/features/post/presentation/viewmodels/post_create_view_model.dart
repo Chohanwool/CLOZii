@@ -15,6 +15,36 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     return const PostCreateState();
   }
 
+  // 제목 저장 - 매 입력마다 호출됨
+  void setTitle(String title) {
+    state = state.copyWith(title: title);
+  }
+
+  // 본문 저장 - 매 입력마다 호출됨
+  void setContent(String content) {
+    state = state.copyWith(content: content);
+  }
+
+  // 거래 유형 저장
+  void setTradeType(TradeType type) {
+    state = state.copyWith(tradeType: type);
+  }
+
+  // 가격 저장 - 매 입력마다 호출됨
+  void setPrice(int price) {
+    state = state.copyWith(price: price);
+  }
+
+  // 상세 주소 저장
+  void setDetailAddress(String detailAddress) {
+    state = state.copyWith(detailAddress: detailAddress);
+  }
+
+  // 거래희망장소 좌표 저장
+  void setMeetingPoint(LatLng meetingPoint) {
+    state = state.copyWith(meetingPoint: meetingPoint);
+  }
+
   // 선택된 이미지 저장
   void saveImages(Map<String, ImageState> images) {
     state = state.copyWith(selectedImages: images);
@@ -63,30 +93,20 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     }
   }
 
-  // 거래희망장소 좌표 저장
-  void setMeetingPoint(LatLng meetingPoint) {
-    state = state.copyWith(meetingPoint: meetingPoint);
-  }
+  /// 모달 트리거 함수
 
-  // 거래 유형 저장
-  void setTradeType(TradeType type) {
-    state = state.copyWith(tradeType: type);
-  }
-
-  // 상세 주소 저장
-  void setDetailAddress(String detailAddress) {
-    state = state.copyWith(detailAddress: detailAddress);
-  }
-
-  // 모달 관련 메서드들
+  // 자주 쓰는 문구 모달 - 열기
   void showGoToPhrases() {
     state = state.copyWith(showGoToPhrases: true);
   }
 
+  // 자주 쓰는 문구 모달 - 닫기
   void hideGoToPhrases() {
     state = state.copyWith(showGoToPhrases: false);
   }
 
+  // 자주 쓰는 문구 추가 모달 - 열기
+  // currentPhrase : 더보기 -> 수정 클릭 시, 수정할 문구
   void showAddPhraseModal(String? currentPhrase) {
     state = state.copyWith(
       showAddPhraseModal: true,
@@ -94,6 +114,7 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     );
   }
 
+  // 자주 쓰는 문구 추가 모달 - 닫기
   void hideAddPhraseModal() {
     state = state.copyWith(
       showAddPhraseModal: false,
@@ -101,6 +122,8 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     );
   }
 
+  // (GoToPhraseModal) 더보기 모달 - 열기
+  // currentPhrase : 수정 또는 삭제할 문구
   void showMoreOptions(String currentPhrase) {
     state = state.copyWith(
       showMoreOptions: true,
@@ -108,7 +131,21 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     );
   }
 
+  // (GoToPhraseModal) 더보기 모달 - 닫기
   void hideMoreOptions() {
     state = state.copyWith(showMoreOptions: false, currentPhraseForEdit: null);
+  }
+
+  // 게시글 생성 전 검증 로직 및 게시글 생성 유즈 케이스 호출
+  Future<void> checkAllFieldsValid() async {
+    final isFormValid = formKey.currentState!.validate();
+
+    if (!isFormValid) return;
+
+    // CreatePostUseCase 호출
+
+    debugPrint(
+      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.detailAddress} | ${state.meetingPoint} | ${state.selectedImages.length}',
+    );
   }
 }

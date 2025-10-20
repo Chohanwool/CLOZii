@@ -1,6 +1,7 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';
@@ -102,6 +103,11 @@ class _ContentFieldState extends ConsumerState<ContentField> {
         // 여러 줄 입력에 최적화된 키보드 타입
         // 엔터키(줄바꿈)가 "완료" 대신 "줄바꿈"으로 동작
         keyboardType: TextInputType.multiline,
+
+        onChanged: (value) {
+          ref.read(postCreateProvider.notifier).setContent(value);
+        },
+
         decoration: InputDecoration(
           isDense: true,
 
