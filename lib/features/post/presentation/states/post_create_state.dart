@@ -14,6 +14,9 @@ class PostCreateState {
   final LatLng? meetingPoint;
   final Map<String, ImageState> selectedImages;
 
+  // 모든 필드 입력에 대한 검증 성공 여부
+  final bool isAllValid;
+
   // 모달 상태
   final bool showGoToPhrases;
   final bool showAddPhraseModal;
@@ -28,6 +31,7 @@ class PostCreateState {
     this.detailAddress,
     this.meetingPoint,
     this.selectedImages = const {},
+    this.isAllValid = false,
     this.showGoToPhrases = false,
     this.showAddPhraseModal = false,
     this.showMoreOptions = false,
@@ -42,6 +46,7 @@ class PostCreateState {
     String? detailAddress,
     LatLng? meetingPoint,
     Map<String, ImageState>? selectedImages,
+    bool? isAllValid,
     bool? showGoToPhrases,
     bool? showAddPhraseModal,
     bool? showMoreOptions,
@@ -55,6 +60,7 @@ class PostCreateState {
       detailAddress: detailAddress ?? this.detailAddress,
       meetingPoint: meetingPoint ?? this.meetingPoint,
       selectedImages: selectedImages ?? this.selectedImages,
+      isAllValid: isAllValid ?? this.isAllValid,
       showGoToPhrases: showGoToPhrases ?? this.showGoToPhrases,
       showAddPhraseModal: showAddPhraseModal ?? this.showAddPhraseModal,
       showMoreOptions: showMoreOptions ?? this.showMoreOptions,

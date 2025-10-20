@@ -1,6 +1,9 @@
 import 'dart:typed_data';
 
+import 'package:clozii/features/post/application/dto/post_draft.dart';
+import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
+import 'package:clozii/features/post/presentation/provider/create_post_use_case_provider.dart';
 import 'package:clozii/features/post/presentation/states/image_state.dart';
 import 'package:clozii/features/post/presentation/states/post_create_state.dart';
 import 'package:flutter/material.dart';
@@ -143,9 +146,26 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     if (!isFormValid) return;
 
     // CreatePostUseCase 호출
+    final createPostUseCase = ref.read(createPostUseCaseProvider);
+    createPostUseCase(
+      PostDraft(
+        title: state.title,
+        content: state.content,
+        originImages: getAllOrigins(),
+        thumbnailImages: getAllThumbnails(),
+        price: state.price,
+        tradeType: state.tradeType,
+        meetingPoint: state.meetingPoint,
+        detailAddress: state.detailAddress,
+      ),
+    );
 
     debugPrint(
       'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.detailAddress} | ${state.meetingPoint} | ${state.selectedImages.length}',
     );
+
+    debugPrint(dummyPosts.length.toString());
+
+    state = state.copyWith(isAllValid: true);
   }
 }
