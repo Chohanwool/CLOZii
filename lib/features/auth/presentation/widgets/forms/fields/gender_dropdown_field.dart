@@ -27,8 +27,7 @@ class GenderDropdownField extends StatelessWidget {
       ),
       validator: (value) {
         // 값이 비어있거나 제공된 옵션 목록에 없는 경우 에러
-        if (value == null &&
-            !['Male', 'Female', 'Prefer not to say'].contains(value)) {
+        if (value == null || !['M', 'F', 'N'].contains(value)) {
           return 'Please select gender from provided options!';
         }
 
@@ -36,10 +35,10 @@ class GenderDropdownField extends StatelessWidget {
       },
       onChanged: onChanged,
       items: [
-        ...['Male', 'Female', 'Prefer not to say'].map(
-          (g) => DropdownMenuItem(
-            value: g,
-            child: Text(g, style: context.textTheme.bodyLarge),
+        ...{'Male': 'M', 'Female': 'F', 'Prefer not to say': 'N'}.entries.map(
+          (entry) => DropdownMenuItem(
+            value: entry.value,
+            child: Text(entry.key, style: context.textTheme.bodyLarge),
           ),
         ),
       ],
