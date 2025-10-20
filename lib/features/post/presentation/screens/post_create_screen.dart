@@ -67,11 +67,19 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
         surfaceTintColor: Colors.transparent,
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
       ),
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(key: postCreateNotifier.formKey, child: PostCreateForm()),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: postCreateNotifier.formKey,
+              child: PostCreateForm(),
+            ),
+          ),
         ),
       ),
 
