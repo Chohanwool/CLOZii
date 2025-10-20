@@ -6,8 +6,9 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
 // features
-import 'package:clozii/features/post_old/provider/selected_image_provider.dart';
-import 'package:clozii/features/post_old/data/image_data.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/states/image_state.dart';
+import 'package:clozii/features/post/presentation/states/post_create_state.dart';
 
 // packages
 import 'package:flutter/material.dart';
@@ -26,10 +27,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   List<String> imageIds = []; // 불러온 이미디(AssetEntity) id 리스트
   Map<String, Uint8List?> thumbnailCache = {}; // 썸네일 캐싱용 맵
 
-  late Map<String, ImageData>
+  late Map<String, ImageState>
   previousState; // 이전 선택 상태 저장용 - 갤러리 모달에서 X 누르면 이전 상태로 복원
 
-  late Map<String, ImageData>
+  late Map<String, ImageState>
   newState; // 현재 선택하는 사진 상태 저장용 - 갤러리 모달에서 Done 버튼 누르면 프로바이더에 이 상태 저장
 
   int _loadedImageCount = 0; // 로드된 이미지 개수
@@ -41,8 +42,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   @override
   void initState() {
     super.initState();
-    previousState = ref.read(selectedImageProvider);
-    newState = Map<String, ImageData>.from(previousState);
+    previousState = ref.read(postCreateProvider).selectedImages;
+    newState = Map<String, ImageState>.from(previousState);
     _loadImages();
   }
 
@@ -106,10 +107,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
     }
   }
 
-  void _loadOriginalImages(Map<String, ImageData> newState) async {
+  void _loadOriginalImages(Map<String, ImageState> newState) async {
     for (final entry in newState.entries) {
       String assetId = entry.key;
-      ImageData imageData = entry.value;
+      ImageState imageData = entry.value;
 
       // 이미 원본 이미지가 로드된 경우는 스킵
       if (imageData.originBytes != null) continue;
@@ -144,7 +145,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
         leading: IconButton(
           onPressed: () {
-            ref.read(selectedImageProvider.notifier).undoChanges(previousState);
+            ref.read(postCreateProvider.notifier).undoChanges(previousState);
             Navigator.of(context).pop();
           },
           icon: Icon(Icons.close),
@@ -154,7 +155,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
           TextButton(
             onPressed: () {
               _loadOriginalImages(newState);
-              ref.read(selectedImageProvider.notifier).saveChanges(newState);
+              ref.read(postCreateProvider.notifier).saveImages(newState);
               Navigator.of(context).pop();
             },
             child: Text('Done'),
@@ -206,8 +207,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                     if (newState.containsKey(assetId)) {
                       newState.remove(assetId);
                     } else {
-                      if (newState.length < SelectedImageNotifier.maxLength) {
-                        final imageData = ImageData();
+                      if (newState.length < PostCreateState.maxImageCount) {
+                        final imageData = ImageState();
                         imageData.thumbnailBytes = thumbData;
                         newState[assetId] = imageData;
                       }

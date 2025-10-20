@@ -4,8 +4,8 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 
 // features
-import 'package:clozii/features/post_old/presentation/widgets/post_create/meeting_point_map.dart';
-import 'package:clozii/features/post_old/presentation/widgets/post_create/modals/detail_address_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/detail_address_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_map.dart';
 
 // packages
 import 'package:flutter/material.dart';

@@ -1,5 +1,8 @@
-import 'package:clozii/features/post_old/presentation/widgets/post_create/full_screen_image_viewer.dart';
-import 'package:clozii/features/post_old/provider/selected_image_provider.dart';
+// feature
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/full_screen_image_viewer.dart';
+
+// package
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -40,7 +43,7 @@ class ImagePreview extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final thumbnailData = ref
-        .read(selectedImageProvider.notifier)
+        .read(postCreateProvider.notifier)
         .getThumbnail(assetId);
 
     return Row(
@@ -71,7 +74,7 @@ class ImagePreview extends ConsumerWidget {
               right: -4.0,
               child: GestureDetector(
                 onTap: () {
-                  ref.read(selectedImageProvider.notifier).removeImage(assetId);
+                  ref.read(postCreateProvider.notifier).removeImage(assetId);
                 },
                 child: Container(
                   width: 16.0,
