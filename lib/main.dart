@@ -37,7 +37,9 @@ class CLOZii extends StatelessWidget {
           if (snapshot.hasData) {
             return HomeScreen();
           } else {
-            return OnBoardingScreen();
+            // return OnBoardingScreen();
+            // 로그인 구현 전 임시로 항상 메인 화면에 접근 가능하도록 설정
+            return HomeScreen();
           }
         },
       ),
