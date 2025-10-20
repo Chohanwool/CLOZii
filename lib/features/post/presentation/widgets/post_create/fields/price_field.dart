@@ -43,21 +43,22 @@ class _PriceFieldState extends State<PriceField> {
   @override
   void didUpdateWidget(covariant PriceField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.isForSale == false) {
-        setState(() {
-          widget.controller.text = '0';
-          _isFilled = true; // 가격 필드가 0으로 채워져 있으므로, isFilled = true
-        });
-      }
-
-      if (widget.isForSale == true) {
-        setState(() {
-          widget.controller.clear();
-          _isFilled = false;
-        });
-      }
-    });
+    // 거래방식이 실제로 변경되었을 때만 값 초기화
+    if (oldWidget.isForSale != widget.isForSale) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.isForSale == false) {
+          setState(() {
+            widget.controller.text = '0';
+            _isFilled = true; // 가격 필드가 0으로 채워져 있으므로, isFilled = true
+          });
+        } else {
+          setState(() {
+            widget.controller.clear();
+            _isFilled = false;
+          });
+        }
+      });
+    }
   }
 
   @override
