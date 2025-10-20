@@ -262,4 +262,20 @@ class SignUpViewModel extends Notifier<SignUpState> {
       );
     }
   }
+
+  void resetAgreements() {
+    state = state.copyWith(
+      isAllAgreed: false,
+      isTermAgreed: false,
+      isPrivacyPolicyAgreed: false,
+      isLocationPolicyAgreed: false,
+      isMarketingAgreed: false,
+      isThirdPartyAgreed: false,
+      isPushAgreed: false,
+      isAgeVerified: false,
+
+      // sign_up_screen에서 모든 과정 통과 후 verification_screen으로 이동시에 감지를 위한 plag
+      isSuccess: false,
+    );
+  }
 }

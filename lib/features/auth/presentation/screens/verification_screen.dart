@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
+// APIs
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 // core
 import 'package:clozii/core/theme/context_extension.dart';
 
 // widgets
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
 
-class VerificationScreen extends StatefulWidget {
+// providers
+import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
+
+class VerificationScreen extends ConsumerStatefulWidget {
   const VerificationScreen({super.key});
 
   @override
-  State<VerificationScreen> createState() => _VerificationScreenState();
+  ConsumerState<VerificationScreen> createState() => _VerificationScreenState();
 }
 
-class _VerificationScreenState extends State<VerificationScreen> {
+class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   /// 인증번호 유효 시간 - 타이머
   Timer? _timer;
   int _minutes = 1;
@@ -69,8 +75,19 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final signUpState = ref.watch(signUpProvider);
+    final signUpNotifier = ref.read(signUpProvider.notifier);
+
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            signUpNotifier.resetAgreements();
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
