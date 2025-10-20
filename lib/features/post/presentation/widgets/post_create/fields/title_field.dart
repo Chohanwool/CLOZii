@@ -65,7 +65,6 @@ class _PostTitleFieldState extends State<PostTitleField> {
         }
         return null;
       },
-      onChanged: (value) {},
       keyboardType: TextInputType.text,
 
       // 영문자, 숫자, 특수문자만 허용
