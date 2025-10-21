@@ -8,4 +8,8 @@ class PostViewModel extends Notifier<Post?> {
   void setPost(Post post) {
     state = post;
   }
+
+  void clearPost() {
+    state = null;
+  }
 }
