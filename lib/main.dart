@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 // core
 import 'package:clozii/core/theme/theme.dart';
 
@@ -12,8 +10,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 // screens
-import 'package:clozii/features/home/presentation/screens/home_screen.dart';
+import 'package:clozii/presentation/screens/home_screen.dart';
 import 'package:clozii/features/onBoarding/presentation/screens/onboarding_screen.dart';
+
+// packages
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
