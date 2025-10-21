@@ -6,8 +6,8 @@ import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
 
 // features
-import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/provider/post_detail_provider.dart';
+import 'package:clozii/features/post/presentation/provider/post_provider.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/chat_field.dart';
 
 // packages
@@ -18,9 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
-  const PostDetailScreen({super.key, required this.post});
-
-  final Post post;
+  const PostDetailScreen({super.key});
 
   @override
   ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -58,6 +56,14 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final postDetailState = ref.watch(postDetailProvider);
+    // autoDispose로 인해 PostProvider 를 구독하는 위젯이 없으면 자동으로 프로바이더에 등록된 post 가 dispost 됨
+    final post = ref.watch(postProvider);
+
+    if (post == null) {
+      return Scaffold(
+        body: Center(child: const CircularProgressIndicator()),
+      ); // 여기에 lotties 추가 가능
+    }
 
     return Scaffold(
       // 본문 - body widgets
@@ -69,7 +75,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         // SliverAppBar: 상단 앱바
         // SliverToBoxAdapter: 상단 앱바 하단 고정 영역
         slivers: [
-          if (widget.post.originImageUrls.isEmpty)
+          if (post.originImageUrls.isEmpty)
             SliverAppBar(
               // 상단 앱바 배경 색상
               backgroundColor: context.colors.surface,
@@ -99,7 +105,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
             ),
 
           // 상단 앱바
-          if (widget.post.originImageUrls.isNotEmpty)
+          if (post.originImageUrls.isNotEmpty)
             SliverAppBar(
               // 상단 앱바 배경 색상
               backgroundColor: Colors.black,
@@ -194,7 +200,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         // PageView: 이미지 슬라이드 위젯
                         child: PageView(
                           children: [
-                            ...widget.post.originImageUrls.map(
+                            ...post.originImageUrls.map(
                               (url) => Image.network(url, fit: BoxFit.cover),
                             ),
                           ],
@@ -273,15 +279,15 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   const SizedBox(height: 10),
 
                   // 제목
-                  Text(widget.post.title, style: context.textTheme.titleLarge),
+                  Text(post.title, style: context.textTheme.titleLarge),
                   const SizedBox(height: 10),
 
                   // 가격 또는 나눔 표시
                   // Post 객체의 price 필드에 저장된 가격이 있다면 가격을 표시하고,
                   // 없다면(null), 나눔 표시
-                  widget.post.price != 0
+                  post.price != 0
                       ? Text(
-                          '\u20B1 ${formatPrice(widget.post.price)}', //₱
+                          '\u20B1 ${formatPrice(post.price)}', //₱
                           style: context.textTheme.titleLarge!.copyWith(
                             fontWeight: FontWeight.w600,
                           ),
@@ -320,7 +326,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                       ),
                       Text(' · '),
                       Text(
-                        '${showUploadedTime(widget.post.createdAt)} ago',
+                        '${showUploadedTime(post.createdAt)} ago',
                         style: context.textTheme.bodyLarge!.copyWith(
                           color: context.colors.scrim,
                         ),
@@ -330,14 +336,14 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   const SizedBox(height: 24.0),
 
                   // 게시글 내용
-                  Text(widget.post.content, style: context.textTheme.bodyLarge),
+                  Text(post.content, style: context.textTheme.bodyLarge),
 
                   const SizedBox(height: 24.0),
 
                   // 거래 희망 장소
-                  if (widget.post.detailAddress != null &&
-                      widget.post.meetingPointLat != null &&
-                      widget.post.meetingPointLong != null)
+                  if (post.detailAddress != null &&
+                      post.meetingPointLat != null &&
+                      post.meetingPointLong != null)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -350,7 +356,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         Row(
                           children: [
                             CustomTextLink(
-                              linkText: widget.post.detailAddress!,
+                              linkText: post.detailAddress!,
                               onTap: () {},
                             ),
 
@@ -375,8 +381,8 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                             child: GoogleMap(
                               initialCameraPosition: CameraPosition(
                                 target: LatLng(
-                                  widget.post.meetingPointLat!,
-                                  widget.post.meetingPointLong!,
+                                  post.meetingPointLat!,
+                                  post.meetingPointLong!,
                                 ),
                                 zoom: 17.0,
                               ),
@@ -384,8 +390,8 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                                 Marker(
                                   markerId: MarkerId('meetingPoint'),
                                   position: LatLng(
-                                    widget.post.meetingPointLat!,
-                                    widget.post.meetingPointLong!,
+                                    post.meetingPointLat!,
+                                    post.meetingPointLong!,
                                   ),
                                 ),
                               },
@@ -402,7 +408,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                   Row(
                     children: [
                       Text(
-                        'Favorites ${widget.post.favorites} · Views ${widget.post.views}',
+                        'Favorites ${post.favorites} · Views ${post.views}',
                         style: context.textTheme.bodyMedium!.copyWith(
                           color: Colors.grey,
                         ),

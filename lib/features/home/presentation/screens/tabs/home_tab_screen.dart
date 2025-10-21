@@ -5,21 +5,23 @@ import 'package:clozii/core/theme/context_extension.dart';
 // feature
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/presentation/provider/post_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
 
 //package
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeTabScreen extends StatefulWidget {
+class HomeTabScreen extends ConsumerStatefulWidget {
   const HomeTabScreen({super.key});
 
   @override
-  State<HomeTabScreen> createState() => _HomeTabScreenState();
+  ConsumerState<HomeTabScreen> createState() => _HomeTabScreenState();
 }
 
-class _HomeTabScreenState extends State<HomeTabScreen> {
+class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   List<Post> _posts = dummyPosts;
 
   // 새로고침
@@ -34,9 +36,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
 
   // 게시글 상세 화면으로 이동
   void _navigateToPostDetail(Post post) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
-    );
+    // Provider에 Post 설정
+    ref.read(postProvider.notifier).setPost(post);
+
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => PostDetailScreen()));
   }
 
   // 게시글 생성 모달 띄우기
