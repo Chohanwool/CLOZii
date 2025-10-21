@@ -112,8 +112,35 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResult<bool>> verifyCode(String phoneNumber, String code) {
-    // TODO: implement verifyCode
-    throw UnimplementedError();
+  Future<AuthResult<User>> verifyCode(
+    String verificationId,
+    String otpCode,
+  ) async {
+    try {
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otpCode,
+      );
+
+      var auth = FirebaseAuth.instance;
+
+      // 로그인 시도
+      UserCredential userCredential = await auth.signInWithCredential(
+        credential,
+      );
+
+      User? user = userCredential.user;
+
+      if (user != null) {
+        debugPrint('로그인 성공: ${user.phoneNumber}');
+        return AuthResult.success(user);
+      } else {
+        return AuthResult.failure(UnknownFailure('User is null'));
+      }
+    } catch (e) {
+      return AuthResult.failure(UnknownFailure(e.toString()));
+    }
+
+    // throw UnimplementedError();
   }
 }

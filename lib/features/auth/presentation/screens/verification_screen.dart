@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 
 // APIs
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +11,7 @@ import 'package:clozii/features/auth/presentation/widgets/verification/verificat
 
 // providers
 import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/providers/verification_provider.dart';
 
 class VerificationScreen extends ConsumerStatefulWidget {
   const VerificationScreen({super.key});
@@ -21,62 +21,31 @@ class VerificationScreen extends ConsumerStatefulWidget {
 }
 
 class _VerificationScreenState extends ConsumerState<VerificationScreen> {
-  /// 인증번호 유효 시간 - 타이머
-  Timer? _timer;
-  int _minutes = 1;
-  int _seconds = 0;
-
-  // int _failedAttemps = 0;
-
-  final TextEditingController _optController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _startTimer();
-  }
 
-  @override
-  void dispose() {
-    if (_timer != null) _timer!.cancel();
-
-    _optController.dispose();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    // 기존 타이머가 동작 중이면 취소
-    if (_timer?.isActive ?? false) {
-      _timer!.cancel();
-    }
-    // 초기값 1분
-    _minutes = 1;
-    _seconds = 0;
-
-    // 타이머 초기화 - Timer.periodic (일정 주기마다 특정 로직 수행)
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
-      setState(() {
-        if (!mounted) return; // 화면이 사라진 상태라면 아무것도 안 함
-
-        if (_seconds > 0) {
-          _seconds--;
-        } else {
-          _minutes--;
-          _seconds = 59;
-        }
-      });
-
-      // 시간이 다 되면 타이머 종료
-      if (_minutes == 0 && _seconds == 0) {
-        timer.cancel();
-      }
+    // 화면이 렌더링 된 후 타이머 시작
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(verificationProvider.notifier)
+          .startCooldownTimer(totalSeconds: 30);
     });
   }
 
   @override
+  void dispose() {
+    _otpController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final signUpState = ref.watch(signUpProvider);
     final signUpNotifier = ref.read(signUpProvider.notifier);
+    final vState = ref.watch(verificationProvider);
+    final vNotifier = ref.read(verificationProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -101,16 +70,11 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
               const SizedBox(height: 24.0),
 
               VerificationField(
-                minutes: _minutes,
-                seconds: _seconds,
+                minutes: vState.minutes,
+                seconds: vState.seconds,
                 onVerified: () {},
-                controller: _optController,
-                onChanged: (value) async {
-                  // optCode 6자리 입력 완료시 자동 호출
-                  if (value.length == 6) {
-                    debugPrint('code 확인 작업 호출');
-                  }
-                },
+                controller: _otpController,
+                onChanged: vNotifier.updateOtpCode,
               ),
 
               Align(
@@ -127,11 +91,31 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                       borderRadius: BorderRadiusGeometry.circular(4.0),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: vState.canResend
+                      ? () async {
+                          // attemptCount 증가
+                          vNotifier.updateAttemptCount();
+
+                          // 인증번호 재전송
+                          await signUpNotifier.sendVerificationCode();
+
+                          // 타이머 시작
+                          ref
+                              .read(verificationProvider.notifier)
+                              .startCooldownTimer(totalSeconds: 30);
+                        }
+                      : () {
+                          if (vState.attemptCount >= 3) {
+                            debugPrint('너무 많은 요청으로 실패!!');
+                          } else {
+                            debugPrint('전송 불가능!!');
+                            debugPrint('vState.canResend: ${vState.canResend}');
+                          }
+                        },
                   child: Text(
                     'Send code again',
                     style: context.textTheme.labelLarge!.copyWith(
-                      color: context.colors.scrim,
+                      color: context.colors.primary,
                     ),
                   ),
                 ),
