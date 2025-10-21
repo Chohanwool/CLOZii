@@ -1,12 +1,14 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-class PriceField extends StatefulWidget {
+class PriceField extends ConsumerStatefulWidget {
   const PriceField({
     super.key,
     required this.controller,
@@ -20,10 +22,10 @@ class PriceField extends StatefulWidget {
   final bool isForSale;
 
   @override
-  State<PriceField> createState() => _PriceFieldState();
+  ConsumerState<PriceField> createState() => _PriceFieldState();
 }
 
-class _PriceFieldState extends State<PriceField> {
+class _PriceFieldState extends ConsumerState<PriceField> {
   final priceFormatter = NumberFormat('#,###');
 
   // 가격 입력 필드 채워져 있는지 여부
@@ -43,21 +45,22 @@ class _PriceFieldState extends State<PriceField> {
   @override
   void didUpdateWidget(covariant PriceField oldWidget) {
     super.didUpdateWidget(oldWidget);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.isForSale == false) {
-        setState(() {
-          widget.controller.text = '0';
-          _isFilled = true; // 가격 필드가 0으로 채워져 있으므로, isFilled = true
-        });
-      }
-
-      if (widget.isForSale == true) {
-        setState(() {
-          widget.controller.clear();
-          _isFilled = false;
-        });
-      }
-    });
+    // 거래방식이 실제로 변경되었을 때만 값 초기화
+    if (oldWidget.isForSale != widget.isForSale) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (widget.isForSale == false) {
+          setState(() {
+            widget.controller.text = '0';
+            _isFilled = true; // 가격 필드가 0으로 채워져 있으므로, isFilled = true
+          });
+        } else {
+          setState(() {
+            widget.controller.clear();
+            _isFilled = false;
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -95,6 +98,8 @@ class _PriceFieldState extends State<PriceField> {
 
         if (value.isEmpty) return;
         widget.controller.text = priceFormatter.format(int.parse(value));
+
+        ref.read(postCreateProvider.notifier).setPrice(int.parse(value));
       },
 
       maxLength: 9,

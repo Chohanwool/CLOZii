@@ -1,25 +1,15 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/image_preview.dart';
+import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/post_create/selectors/image_selector.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/states/post_create_state.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/forms/post_create_form.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/go_to_phrase_modal.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/more_options_modal.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/fields/content_field.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/fields/title_field.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/fields/price_field.dart';
-import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/selectors/meeting_point_selector.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/selectors/trade_type_selector.dart';
-import 'package:clozii/features/post/data/dummy_go_to_phrases.dart';
-import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
-import 'package:clozii/features/post/data/dummy_posts.dart';
-import 'package:clozii/features/post/data/post.dart';
-import 'package:clozii/features/post/provider/meeting_point_provider.dart';
-import 'package:clozii/features/post/provider/selected_image_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
@@ -34,53 +24,138 @@ class PostCreateScreen extends ConsumerStatefulWidget {
 }
 
 class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
-  // 컨트롤러
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
-
-  // 선택된 자주 쓰는 문구
-  String? _selectedPhrase;
-
-  // 선택된 거래 타입
-  TradeType _selectedTransactionType = TradeType.sell;
-
-  // 선택된 거래 희망 장소
-  String? _detailAddress;
-
-  // Form 키 생성
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(goToPhrasesProvider.notifier).setInitial(dummyGoToPhrases);
+  Widget build(BuildContext context) {
+    final postCreateNotifier = ref.read(postCreateProvider.notifier);
+
+    // showGoToPhrases 감지 - 자주 쓰는 문구 모달 표시
+    ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
+      if (previous?.showGoToPhrases != next.showGoToPhrases &&
+          next.showGoToPhrases) {
+        _showGoToPhrasesModal();
+      }
+    });
+
+    // showAddPhraseModal 감지 - 문구 추가 모달 표시
+    ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
+      if (previous?.showAddPhraseModal != next.showAddPhraseModal &&
+          next.showAddPhraseModal) {
+        _showAddPhraseModal(next.currentPhraseForEdit);
+      }
+    });
+
+    // showMoreOptions 감지 - 더보기 옵션 모달 표시
+    ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
+      if (previous?.showMoreOptions != next.showMoreOptions &&
+          next.showMoreOptions) {
+        _showMoreOptionsModal(next.currentPhraseForEdit!);
+      }
+    });
+
+    // isAllValid 감지 - 모든 입력 값 검증 성공 감지
+    ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
+      if (previous?.isAllValid != next.isAllValid && next.isAllValid) {
+        Navigator.of(context).pop();
+      }
+    });
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            // "저장하지 않은 내역은 사라집니다" 안내 추가 예정
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.close),
+        ),
+        title: const Text('Sell My Items'),
+        actions: [TextButton(onPressed: () {}, child: const Text('Save'))],
+        surfaceTintColor: Colors.transparent,
+        shape: Border(bottom: BorderSide(color: AppColors.black12)),
+      ),
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusManager.instance.primaryFocus!.unfocus(),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: postCreateNotifier.formKey,
+              child: PostCreateForm(),
+            ),
+          ),
+        ),
+      ),
+
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0),
+        color: AppColors.white,
+        child: CustomButton(
+          text: 'Complete',
+
+          // 게시글 생성 완료 버튼
+          // TODO: DB와 연동되는 게시글 생성 로직 구현 필요
+          // 임시로 폼 검증 성공 시 더미 데이터에 새로운 게시글 저장 진행
+          onTap: () {
+            ref.read(postCreateProvider.notifier).checkAllFieldsValid();
+          },
+          height: 50.0,
+        ),
+      ),
+    );
+  }
+
+  // 자주 쓰는 문구 모달 표시
+  void _showGoToPhrasesModal() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.white,
+      builder: (context) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        height: 400.0,
+        child: GoToPhraseModal(
+          onAddButtonPressed: (currentPhrase) {
+            // currentPhrase는 GoToPhraseModal에서 null로 전달됨 (새 문구 추가)
+            ref
+                .read(postCreateProvider.notifier)
+                .showAddPhraseModal(currentPhrase);
+          },
+          onMoreOptionsPressed: (currentPhrase) {
+            ref
+                .read(postCreateProvider.notifier)
+                .showMoreOptions(currentPhrase);
+          },
+          onPhraseSelected: (String selectedPhrase) {
+            // 선택된 자주 쓰는 문구 저장
+            ref
+                .read(goToPhrasesProvider.notifier)
+                .setSelectedPhrase(selectedPhrase);
+            // 자주 쓰는 문구 모달 닫기
+            ref.read(postCreateProvider.notifier).hideGoToPhrases();
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+    ).then((_) {
+      // 모달이 닫힐 때 상태 초기화
+      ref.read(postCreateProvider.notifier).hideGoToPhrases();
     });
   }
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _contentController.dispose();
-    _priceController.dispose();
-    super.dispose();
-  }
-
-  // 자주 쓰는 문구 추가 모달 열기
+  // 문구 추가 모달 표시
   void _showAddPhraseModal(String? currentPhrase) async {
-    // 자주 쓰는 문구 모달 닫기
+    // AddPhraseModal 표시 전 GoToPhrasesModal 제거
     Navigator.of(context).pop();
 
-    // 추가한 자주 쓰는 문구 받아오기
     final newPhrase = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
       enableDrag: false,
       builder: (context) => Container(
-        // top padding ONLY! - bottom padding 은 모달 내부에서 처리
-        // 여기에서 bottom padding 을 추가하면 모달 내부에서 키보드가 뜰때 버튼이 키보드에 붙지 못함
         padding: const EdgeInsets.only(top: kToolbarHeight),
         color: AppColors.white,
         child: AddPhraseModal(phrase: currentPhrase),
@@ -92,338 +167,34 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
         ref
             .read(goToPhrasesProvider.notifier)
             .editPhrase(currentPhrase, newPhrase);
-      }
-
-      final goToPhrases = ref.watch(goToPhrasesProvider);
-      if (!goToPhrases.contains(newPhrase)) {
-        goToPhrases.add(newPhrase);
+      } else {
+        ref.read(goToPhrasesProvider.notifier).addPhrase(newPhrase);
       }
     }
 
-    // 자주 쓰는 문구 추가 후 모달 다시 열기 - 새로고침
-    _showGoToPhrases();
+    // 모달 상태 초기화
+    ref.read(postCreateProvider.notifier).hideAddPhraseModal();
+
+    // AddPhraseModal 제거 후 다시 GoToPhrasesModal 표시
+    ref.read(postCreateProvider.notifier).showGoToPhrases();
   }
 
-  void _showMoreOptions(String currentPhrase) {
+  // 더보기 옵션 모달 표시
+  void _showMoreOptionsModal(String currentPhrase) {
     showCupertinoModalPopup(
       context: context,
       builder: (BuildContext context) => MoreOptionsModal(
         currentPhrase: currentPhrase,
-        onAddPhraseModal: _showAddPhraseModal,
+        onEditButtonPressed: (currentPhrase) {
+          // MoreOptionsModal을 닫고 AddPhraseModal을 열기
+          ref
+              .read(postCreateProvider.notifier)
+              .showAddPhraseModal(currentPhrase);
+        },
       ),
-    );
-  }
-
-  // 자주 쓰는 문구 모달 열기
-  void _showGoToPhrases() {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.white,
-      builder: (context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        height: 400.0,
-        child: GoToPhraseModal(
-          onAddButtonPressed: _showAddPhraseModal,
-          onMoreOptionsPressed: _showMoreOptions,
-          onPhraseSelected: (String currentPhrase) {
-            // 선택된 자주 쓰는 문구 저장
-            setState(() {
-              _selectedPhrase = currentPhrase;
-            });
-
-            // 자주 쓰는 문구 모달 닫기
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // 선택된 사진 데이터 - Map<String, ImageData>
-    final selectedImageMap = ref.watch(selectedImageProvider);
-
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            // "저장하지 않은 내역은 사라집니다" 안내 추가 예정
-            ref.read(selectedImageProvider.notifier).clearSelection();
-            Navigator.pop(context);
-          },
-          icon: Icon(Icons.close),
-        ),
-        title: const Text('Sell My Items'),
-        actions: [TextButton(onPressed: () {}, child: const Text('Save'))],
-        surfaceTintColor: Colors.transparent,
-        shape: Border(bottom: BorderSide(color: AppColors.black12)),
-      ),
-      body: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10.0),
-
-                // 사진 선택 섹션 (ImageSelector + 선택된 사진 미리보기)
-                SizedBox(
-                  height: 100.0,
-                  child: ListView.builder(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemCount: selectedImageMap.length + 1,
-                    itemBuilder: (context, index) {
-                      // ImageSelector - 사진 선택 위젯
-                      if (index == 0) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: ImageSelector(),
-                        );
-                      }
-
-                      String assetId = selectedImageMap.keys.elementAt(
-                        index - 1,
-                      );
-
-                      return ImagePreview(assetId: assetId);
-                    },
-                  ),
-                ),
-
-                const SizedBox(height: 40.0),
-
-                // 제목 입력 필드
-                Text(
-                  'Title',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                PostTitleField(controller: _titleController),
-                const SizedBox(height: 40.0),
-
-                // 본문 입력 필드
-                Text(
-                  'Content',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                PostContentField(
-                  controller: _contentController,
-                  selectedPhrase: _selectedPhrase,
-                  onPhraseAdded: () {
-                    setState(() {
-                      _selectedPhrase = null; // 문구 추가 후 리셋
-                    });
-                  },
-                ),
-                const SizedBox(height: 10.0),
-
-                // 자주 쓰는 문구 버튼
-                CustomButton(
-                  text: 'My Go-To Phrases',
-                  onTap: _showGoToPhrases,
-                  width: 160.0,
-                  height: 40.0,
-                ),
-                const SizedBox(height: 40.0),
-
-                // 가격 / 판매 방법 선택
-                Text(
-                  'Price',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                TradeTypeSelector(
-                  onSelected: (type) {
-                    setState(() {
-                      _selectedTransactionType = type;
-                    });
-                  },
-                ),
-                const SizedBox(height: 16.0),
-                PriceField(
-                  controller: _priceController,
-                  isForSale: _selectedTransactionType == TradeType.sell,
-                ),
-                const SizedBox(height: 40.0),
-
-                // 거래 희망 장소 선택
-                Text(
-                  'Meeting Point',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 10.0),
-                MeetingPointSelector(
-                  onAddressSelected: (detailAddress) {
-                    setState(() {
-                      _detailAddress = detailAddress;
-                    });
-                  },
-                ),
-
-                const SizedBox(height: kBottomNavigationBarHeight * 2),
-              ],
-            ),
-          ),
-        ),
-      ),
-
-      bottomSheet: Container(
-        padding: const EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0),
-        color: AppColors.white,
-        child: CustomButton(
-          text: 'Complete',
-
-          // 게시글 생성 완료 버튼
-          // TODO: DB와 연동되는 게시글 생성 로직 구현 필요
-          // 임시로 폼 검증 성공 시 더미 데이터에 새로운 게시글 저장 진행
-          onTap: () {
-            if (_formKey.currentState!.validate()) {
-              debugPrint('폼 검증 성공! 데이터 저장 진행');
-              debugPrint(
-                'Complete: ${_titleController.text} | ${_contentController.text} | ${_selectedTransactionType.name} | ${_priceController.text} | ${_detailAddress ?? 'No address selected'}',
-              );
-
-              final price = int.parse(
-                _priceController.text.replaceAll(RegExp(r'[^0-9]'), ''),
-              );
-
-              final selectedImageOrigins = ref
-                  .read(selectedImageProvider.notifier)
-                  .getAllOrigins();
-
-              final selectedImageThumbnails = ref
-                  .read(selectedImageProvider.notifier)
-                  .getAllThumbnails();
-
-              final meetingPoint = ref
-                  .read(meetingPointProvider.notifier)
-                  .getMeetingPoint();
-
-              // TODO: 리포지토리에서 Firestore DB에 게시글 저장해야 함
-              // createPost() : FirebaseFirestore에 PostDraft 저장 후 Post 객체 반환
-              final postDraft = PostDraft(
-                title: _titleController.text,
-                content: _contentController.text,
-                tradeType: _selectedTransactionType,
-                price: price,
-                originImages: selectedImageOrigins,
-                thumbnailImages: selectedImageThumbnails,
-                detailAddress: _detailAddress,
-                meetingPoint: meetingPoint,
-              );
-
-              // createPost()에서 uploadImages()로 Firebase Storage에 Uint8List 이미지 업로드 후 URL 리스트 반환
-              final originImageUrls = postDraft.originImages
-                  .map(
-                    // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
-                    (image) => image != null
-                        ? 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS2cFWmgmh-xRsLXiuWYedhR7Xtwrc1Hz11iGSd9W2GTOUoW1oY_UQvmZedKYBEMHzrX3U&usqp=CAU'
-                        : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
-                  )
-                  .toList();
-
-              final thumbnailImageUrls = postDraft.thumbnailImages.isNotEmpty
-                  ? postDraft.thumbnailImages
-                        .map(
-                          // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
-                          (image) => image != null
-                              ? 'https://media.istockphoto.com/id/496603666/vector/flat-icon-check.jpg?s=612x612&w=0&k=20&c=BMYf-7moOtevP8t46IjHHbxJ4x4I0ZoFReIp9ApXBqU='
-                              : 'https://developers.elementor.com/docs/assets/img/elementor-placeholder-image.png',
-                        )
-                        .toList()
-                  : [
-                      'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg',
-                    ];
-
-              // createPost()에서 반환할때 Post 객체를 만들어서 반환 할 예정
-              // 반환된 객체는 화면에도 바로 보여줄 수 있고, 캐싱에도 쓸수 있고, 다른 메서드들에서도 필요하면 넣어줄 수 있음.
-              final post = Post(
-                id: postDraft.hashCode.toString(),
-                title: postDraft.title,
-                content: postDraft.content,
-                originImageUrls: originImageUrls,
-                thumbnailImageUrls: thumbnailImageUrls,
-                price: postDraft.price,
-                createdAt: DateTime.now(),
-                updatedAt: DateTime.now(),
-                tradeType: postDraft.tradeType,
-                detailAddress: postDraft.detailAddress,
-                meetingPoint: postDraft.meetingPoint,
-              );
-
-              dummyPosts.add(post);
-
-              // DB에 게시글 저장 후 SelectedImageNotifier 초기화
-              ref.read(selectedImageProvider.notifier).clearSelection();
-
-              Navigator.of(context).pop(true);
-            } else {
-              // TODO: 폼 검증 실패 시 에러 처리 필요
-              debugPrint('폼 검증 실패');
-            }
-          },
-          height: 50.0,
-        ),
-      ),
-    );
+    ).then((_) {
+      // 모달이 닫힐 때 상태 초기화
+      ref.read(postCreateProvider.notifier).hideMoreOptions();
+    });
   }
 }
-
-// 구현 예시 : PostDraft 를 리포지토리에서 받아 실제 Firebase에 저장하는 로직
-
-  // Future<Post> createPost(PostDraft draft) async {
-  //   // 1. 이미지 업로드 후 URL 리스트 생성
-  //   final imageUrls = await _uploadImages(draft.images);
-  //
-  //   // 2. Firestore에 게시글 저장
-  //   final docRef = await FirebaseFirestore.instance.collection('posts').add({
-  //     'title': draft.title,
-  //     'content': draft.content,
-  //     'price': draft.price,
-  //     'tradeType': draft.tradeType.name,
-  //     'imageUrls': imageUrls, // 업로드한 이미지 URL 저장
-  //     'createdAt': FieldValue.serverTimestamp(),
-  //     'updatedAt': FieldValue.serverTimestamp(),
-  //   });
-  //
-  //   // 3. 저장된 데이터 가져오기
-  //   final snapshot = await docRef.get();
-  //
-  //   // 4. Post 객체 반환
-  //   return Post.fromJson(snapshot.data()!..['id'] = docRef.id);
-  // }
-
-// _uploadImages 구현 예시 :
-
-  // Future<List<String>> _uploadImages(List<XFile> images) async {
-  //   List<String> urls = [];
-  //
-  //   for (var image in images) {
-  //     final fileName = DateTime.now().millisecondsSinceEpoch.toString();
-  //     final ref = FirebaseStorage.instance.ref().child('post_images/$fileName'); // Firebase Storage 루트 디렉토리에 이미지가 저장될 경로를 지정 (아직 이미지 파일 없음)
-  //
-  //     // 업로드
-  //     await ref.putFile(File(image.path)); // 이 부분이 실제로 파일을 업로드하는 부분!
-  //
-  //     // 다운로드 URL 획득
-  //     final url = await ref.getDownloadURL(); // 업로드한 이미지의 다운로드 URL 획득
-  //     urls.add(url);
-  //   }
-  //
-  //   // 이미지 URL 리스트 반환
-  //   return urls;
-  // }

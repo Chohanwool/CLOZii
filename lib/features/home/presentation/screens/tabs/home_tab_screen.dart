@@ -1,20 +1,28 @@
+// core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/features/post/data/dummy_posts.dart';
-import 'package:clozii/features/post/data/post.dart';
+
+// feature
+import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
+import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/presentation/provider/post_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
-import 'package:flutter/material.dart';
+import 'package:clozii/features/post/presentation/viewmodels/post_view_model.dart';
 
-class HomeTabScreen extends StatefulWidget {
+//package
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class HomeTabScreen extends ConsumerStatefulWidget {
   const HomeTabScreen({super.key});
 
   @override
-  State<HomeTabScreen> createState() => _HomeTabScreenState();
+  ConsumerState<HomeTabScreen> createState() => _HomeTabScreenState();
 }
 
-class _HomeTabScreenState extends State<HomeTabScreen> {
+class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   List<Post> _posts = dummyPosts;
 
   // 새로고침
@@ -30,7 +38,12 @@ class _HomeTabScreenState extends State<HomeTabScreen> {
   // 게시글 상세 화면으로 이동
   void _navigateToPostDetail(Post post) {
     Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => PostDetailScreen(post: post)),
+      MaterialPageRoute(
+        builder: (context) => ProviderScope(
+          overrides: [postProvider.overrideWith(() => PostViewModel(post))],
+          child: PostDetailScreen(),
+        ),
+      ),
     );
   }
 

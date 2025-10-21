@@ -1,5 +1,10 @@
+// core
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/features/post/provider/selected_image_provider.dart';
+
+// feature
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+
+// package
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,7 +17,7 @@ class FullScreenImageViewer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final originBytes = ref
-        .read(selectedImageProvider.notifier)
+        .read(postCreateProvider.notifier)
         .getOrigin(assetId);
 
     return Scaffold(

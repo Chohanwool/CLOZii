@@ -4,8 +4,8 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_selector.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/detail_address_modal.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/meeting_point_map.dart';
 
 // packages
 import 'package:flutter/material.dart';
@@ -68,7 +68,7 @@ class MeetingPointMapModal extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                MeetingPointSelector(),
+                MeetingPointMap(),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(

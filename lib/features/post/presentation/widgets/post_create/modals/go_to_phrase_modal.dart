@@ -3,7 +3,7 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
 // features
-import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
+import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';
@@ -33,7 +33,7 @@ class _GoToPhraseModalState extends State<GoToPhraseModal> {
         // Drag Handle
         Divider(
           thickness: 4.0,
-          color: AppColors.black12,
+          color: const Color.fromRGBO(0, 0, 0, 0.122),
           indent: 150.0,
           endIndent: 150.0,
         ),
@@ -66,7 +66,7 @@ class _GoToPhraseModalState extends State<GoToPhraseModal> {
         Expanded(
           child: Consumer(
             builder: (context, ref, child) {
-              final goToPhrases = ref.watch(goToPhrasesProvider);
+              final goToPhrases = ref.watch(goToPhrasesProvider).goToPhrases;
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -93,9 +93,11 @@ class _GoToPhraseModalState extends State<GoToPhraseModal> {
                                     dense: true,
 
                                     title: Text(goToPhrases[index]),
-                                    onTap: () => widget.onPhraseSelected(
-                                      goToPhrases[index],
-                                    ),
+                                    onTap: () {
+                                      widget.onPhraseSelected(
+                                        goToPhrases[index],
+                                      );
+                                    },
 
                                     // 더보기 버튼
                                     trailing: IconButton(

@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:clozii/features/post/data/image_data.dart';
+import 'package:clozii/features/post_old/data/image_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final selectedImageProvider =

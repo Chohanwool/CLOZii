@@ -1,8 +1,8 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/meeting_point_map_modal.dart';
 
 // features
-import 'package:clozii/features/post/presentation/widgets/post_create/modals/meeting_point_map_modal.dart';
 
 // packages
 import 'package:flutter/material.dart';

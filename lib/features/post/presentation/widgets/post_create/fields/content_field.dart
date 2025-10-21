@@ -1,54 +1,44 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PostContentField extends StatefulWidget {
-  const PostContentField({
-    super.key,
-    required this.controller,
-    required this.selectedPhrase,
-    this.onPhraseAdded,
-  });
+class ContentField extends ConsumerStatefulWidget {
+  const ContentField({super.key, required this.controller});
 
   final TextEditingController controller;
-  final String? selectedPhrase;
-  final VoidCallback? onPhraseAdded;
 
   @override
-  State<PostContentField> createState() => _PostContentFieldState();
+  ConsumerState<ContentField> createState() => _ContentFieldState();
 }
 
-class _PostContentFieldState extends State<PostContentField> {
-  @override
-  void didUpdateWidget(PostContentField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    // 선택된 문구가 null이 아니고 이전 문구와 다르면
-    if (widget.selectedPhrase != null &&
-        widget.selectedPhrase != oldWidget.selectedPhrase) {
-      // build()나 didUpdateWidget() 같은 빌드 중에 setState()를 호출하면 에러 발생 함
-      // addPostFrameCallback는 빌드가 모두 끝난 이후에 setState를 안전하게 호출할 수 있게 해줌
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // 텍스트가 비어있지 않고, 마지막으로 입력된게 줄바꿈이 아니면, '\n' 추가
-        if (widget.controller.text.isNotEmpty &&
-            !widget.controller.text.endsWith('\n')) {
-          // 자주 쓰는 문구 추가 시, 현재 내용에서 줄바꿈 한 뒤 추가
-          // 단, 마지막으로 입력된게 줄바꿈이면 추가하지 않음
-          widget.controller.text += '\n';
-        }
-
-        // 선택된 문구 추가
-        widget.controller.text += widget.selectedPhrase!;
-        // 문구가 추가된 이후, selectedPhrase를 null로 리셋 시키는 함수 호출
-        widget.onPhraseAdded?.call();
-      });
-    }
-  }
-
+class _ContentFieldState extends ConsumerState<ContentField> {
   @override
   Widget build(BuildContext context) {
+    // 선택된 자주 쓰는 문구
+    final selectedPhrase = ref.watch(goToPhrasesProvider).selectedPhrase;
+
+    if (selectedPhrase != null) {
+      WidgetsBinding.instance.addPostFrameCallback((callback) {
+        setState(() {
+          // 본문(content)이 비어 있지 않거나, 마지막 입력이 줄바꿈('\n')이 아니면
+          // 줄바꿈 추가 후 문구 추가
+          if (widget.controller.text.isNotEmpty &&
+              !widget.controller.text.endsWith('\n')) {
+            widget.controller.text += '\n';
+          }
+          widget.controller.text += selectedPhrase;
+
+          // 문구 추가 후, 선택된 문구 초기화 (null)
+          ref.read(goToPhrasesProvider.notifier).resetSelectedPhrase();
+        });
+      });
+    }
+
     return SizedBox(
       // 게시글 내용 입력 필드 높이 설정
       height: 200,
@@ -113,6 +103,11 @@ class _PostContentFieldState extends State<PostContentField> {
         // 여러 줄 입력에 최적화된 키보드 타입
         // 엔터키(줄바꿈)가 "완료" 대신 "줄바꿈"으로 동작
         keyboardType: TextInputType.multiline,
+
+        onChanged: (value) {
+          ref.read(postCreateProvider.notifier).setContent(value);
+        },
+
         decoration: InputDecoration(
           isDense: true,
 

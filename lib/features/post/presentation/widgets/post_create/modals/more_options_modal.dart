@@ -1,9 +1,9 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
 
 // features
-import 'package:clozii/features/post/provider/go_to_phrases_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
@@ -13,11 +13,11 @@ class MoreOptionsModal extends ConsumerWidget {
   const MoreOptionsModal({
     super.key,
     required this.currentPhrase,
-    required this.onAddPhraseModal,
+    required this.onEditButtonPressed,
   });
 
   final String currentPhrase;
-  final ValueChanged<String> onAddPhraseModal;
+  final ValueChanged<String> onEditButtonPressed;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,7 +34,7 @@ class MoreOptionsModal extends ConsumerWidget {
           onPressed: () {
             Navigator.pop(context);
             // 수정 로직
-            onAddPhraseModal(currentPhrase);
+            onEditButtonPressed(currentPhrase);
           },
         ),
         CupertinoActionSheetAction(

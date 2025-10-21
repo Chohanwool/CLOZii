@@ -1,20 +1,19 @@
 // core
 // package
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/features/post/provider/meeting_point_provider.dart';
+import 'package:clozii/features/post_old/provider/meeting_point_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MeetingPointSelector extends ConsumerStatefulWidget {
-  const MeetingPointSelector({super.key});
+class MeetingPointMap extends ConsumerStatefulWidget {
+  const MeetingPointMap({super.key});
 
   @override
-  ConsumerState<MeetingPointSelector> createState() =>
-      _MeetingPointSelectorState();
+  ConsumerState<MeetingPointMap> createState() => _MeetingPointSelectorState();
 }
 
-class _MeetingPointSelectorState extends ConsumerState<MeetingPointSelector> {
+class _MeetingPointSelectorState extends ConsumerState<MeetingPointMap> {
   late final GoogleMapController? _controller;
 
   static const CameraPosition kInitialPosition = CameraPosition(

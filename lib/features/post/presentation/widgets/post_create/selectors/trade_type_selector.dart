@@ -2,7 +2,7 @@
 import 'package:clozii/core/widgets/custom_choice_chips.dart';
 
 // features
-import 'package:clozii/features/post/data/post.dart';
+import 'package:clozii/features/post/core/enums/trade_type.dart';
 
 // packages
 import 'package:flutter/material.dart';
