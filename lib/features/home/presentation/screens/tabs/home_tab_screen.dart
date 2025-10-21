@@ -1,11 +1,15 @@
+// core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/features/post_old/data/dummy_posts.dart';
-import 'package:clozii/features/post_old/data/post.dart';
+
+// feature
+import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
+import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
-// import 'package:clozii/features/post_old/presentation/screens/post_create_screen.dart';
-import 'package:clozii/features/post_old/presentation/screens/post_detail_screen.dart';
+import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
+
+//package
 import 'package:flutter/material.dart';
 
 class HomeTabScreen extends StatefulWidget {
