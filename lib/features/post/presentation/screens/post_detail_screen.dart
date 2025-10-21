@@ -7,75 +7,59 @@ import 'package:clozii/core/widgets/custom_text_link.dart';
 
 // features
 import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/presentation/provider/post_detail_provider.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/chat_field.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class PostDetailScreen extends StatefulWidget {
+class PostDetailScreen extends ConsumerStatefulWidget {
   const PostDetailScreen({super.key, required this.post});
 
   final Post post;
 
   @override
-  State<PostDetailScreen> createState() => _PostDetailScreenState();
+  ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
 }
 
-class _PostDetailScreenState extends State<PostDetailScreen> {
-  // background 이미지 확장 여부
-  bool _isExpanded = true;
-
-  final ScrollController _controller = ScrollController(); // 스크롤 컨트롤러
-  double _stretchOffset = 0.0; // 스트레치 오프셋
+class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
+  // 아래의 스크롤 컨트롤러는 UI 조작용이므로, Screen 에 둔다.
+  // 비즈니스 로직과 관련된 컨트롤러의 경우 viewModel 에 둬야 한다. (예: 스크롤 끝에서 다음 데이터 로드, 특정 위치에서 ViewModel 호출 등)
+  late final ScrollController _controller; // 스크롤 컨트롤러
 
   @override
   void initState() {
     super.initState();
+    _controller = ScrollController();
+    _controller.addListener(_onScroll);
+  }
 
-    _controller.addListener(() {
-      setState(() {
-        // 300 - kToolbarHeight = 292
-        // 292(Height) 보다 적게 스크롤 한 경우 true, 그 이상일 경우 false
-        _isExpanded = _controller.offset < (300 - kToolbarHeight);
+  void _onScroll() {
+    // 300 - kToolbarHeight = 244
+    // 화면 최초 진입 : (스크롤 X) _controller.offset == 0
+    // 화면을 아래로 스크롤 하면 _controller.offset의 값은 증가함
+    // 스크롤 위치가 244를 초과하면 isExpanded = false
+    final isExpanded = _controller.offset < (300 - kToolbarHeight);
 
-        // 오버스크롤 시에만 stretch offset 계산 (음수 값)
-        // 스크롤 위치가 0인 경우 -> 아직 스크롤 하지 않은 상태
-        // 스크롤 위치가 0보다 큰 경우 -> 정상 스크롤 상태
-        // 스크롤 위치가 0보다 작은 경우 -> 오버스크롤 상태
-        _stretchOffset = _controller.offset < 0 ? _controller.offset : 0.0;
-      });
-    });
+    // stretchOffset: 화면을 위로 당길 때(오버스크롤 시) 발생하는 추가 스크롤 거리 값
+    // - _controller.offset 이 0보다 작을수록 더 많이 당겨진 상태를 의미함
+    // - 이 값을 이용해 배경 이미지를 위쪽으로 확대하여, 오버스크롤 시 상단에 공백이 생기지 않도록 처리함
+    final stretchOffset = _controller.offset < 0 ? _controller.offset : 0.0;
+
+    ref
+        .read(postDetailProvider.notifier)
+        .updateScrollState(isExpanded, stretchOffset);
   }
 
   @override
   Widget build(BuildContext context) {
+    final postDetailState = ref.watch(postDetailProvider);
+
     return Scaffold(
-      // 챗 박스
-      bottomSheet: Container(
-        height: 65,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: context.colors.shadow)),
-        ),
-        child: Row(
-          children: [
-            // ... 아이콘, TextField, Send 버튼
-            IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.favorite_border_outlined, size: 30.0),
-            ),
-            Expanded(child: ChatField()),
-            CustomButton(text: 'Send', onTap: () {}, width: 80.0, height: 45.0),
-          ],
-        ),
-      ),
-
-      // 챗 박스 하단 여백
-      bottomNavigationBar: Container(height: kToolbarHeight),
-
       // 본문 - body widgets
       // CustomScrollView: 스크롤 가능한 위젯
       body: CustomScrollView(
@@ -125,14 +109,14 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               // 상태바 아이콘 색상 설정
               // 앱바가 확장되어 있으면, 상태바 아이콘 색상을 밝게 설정
               // 앱바가 축소되면, 상태바 아이콘 색상을 어둡게 설정
-              systemOverlayStyle: _isExpanded
+              systemOverlayStyle: postDetailState.isExpanded
                   ? SystemUiOverlayStyle.light
                   : SystemUiOverlayStyle.dark,
 
               // 상단 앱바 아이콘(텍스트 등) 색상 설정
               // 앱바가 확장되어 있으면, 아이콘 색상을 밝게 설정
               // 앱바가 축소되면, 아이콘 색상을 어둡게 설정
-              foregroundColor: _isExpanded
+              foregroundColor: postDetailState.isExpanded
                   ? context.colors.onPrimary
                   : Colors.black,
 
@@ -185,7 +169,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         top:
                             -collapseExtent -
                             MediaQuery.of(context).padding.top +
-                            _stretchOffset,
+                            postDetailState.stretchOffset,
 
                         // (left, right = 0) == (width: double.infinity)
                         left: 0,
@@ -205,7 +189,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         height:
                             expandedHeight +
                             MediaQuery.of(context).padding.top -
-                            _stretchOffset,
+                            postDetailState.stretchOffset,
 
                         // PageView: 이미지 슬라이드 위젯
                         child: PageView(
@@ -226,7 +210,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             // _isExpanded = true 인 경우, 화면 상단에 약간 어두운 그라데이션을 적용함
-                            gradient: _isExpanded
+                            gradient: postDetailState.isExpanded
                                 ? LinearGradient(
                                     colors: [
                                       Colors.black38,
@@ -238,7 +222,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 : null,
 
                             // _isExpanded = false 인 경우, 화면 상단에 흰색 배경을 적용함
-                            color: !_isExpanded ? Colors.white : null,
+                            color: !postDetailState.isExpanded
+                                ? Colors.white
+                                : null,
                           ),
                         ),
                       ),
@@ -442,6 +428,29 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           ),
         ],
       ),
+
+      // 챗 박스
+      bottomSheet: Container(
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: context.colors.shadow)),
+        ),
+        child: Row(
+          children: [
+            // ... 아이콘, TextField, Send 버튼
+            IconButton(
+              onPressed: () {},
+              icon: Icon(Icons.favorite_border_outlined, size: 30.0),
+            ),
+            Expanded(child: ChatField()),
+            CustomButton(text: 'Send', onTap: () {}, width: 80.0, height: 45.0),
+          ],
+        ),
+      ),
+
+      // 챗 박스 하단 여백
+      bottomNavigationBar: Container(height: kToolbarHeight),
     );
   }
 }
