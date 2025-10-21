@@ -1,6 +1,6 @@
 // User entity for auth_sample
 class User {
-  final String id;
+  final String uid;
   final String name;
   final String phoneNumber;
   final DateTime? birthDate;
@@ -10,7 +10,7 @@ class User {
   final DateTime? updatedAt;
 
   const User({
-    required this.id,
+    required this.uid,
     required this.name,
     required this.phoneNumber,
     this.birthDate,
@@ -21,7 +21,7 @@ class User {
   });
 
   User copyWith({
-    String? id,
+    String? uid,
     String? name,
     String? phoneNumber,
     DateTime? birthDate,
@@ -31,7 +31,7 @@ class User {
     DateTime? updatedAt,
   }) {
     return User(
-      id: id ?? this.id,
+      uid: uid ?? this.uid,
       name: name ?? this.name,
       phoneNumber: phoneNumber ?? this.phoneNumber,
       birthDate: birthDate ?? this.birthDate,
@@ -45,14 +45,14 @@ class User {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is User && other.id == id;
+    return other is User && other.uid == uid;
   }
 
   @override
-  int get hashCode => id.hashCode;
+  int get hashCode => uid.hashCode;
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, phoneNumber: $phoneNumber, isVerified: $isVerified)';
+    return 'User(id: $uid, name: $name, phoneNumber: $phoneNumber, name: $name, birthDate: $birthDate, gender: $gender, createdAt: $createdAt, updatedAt: $updatedAt, isVerified: $isVerified)';
   }
 }

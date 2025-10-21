@@ -1,3 +1,5 @@
+import 'package:clozii/core/utils/show_loading_overlay.dart';
+import 'package:clozii/features/auth/presentation/states/verification_state.dart';
 import 'package:flutter/material.dart';
 
 // APIs
@@ -21,6 +23,7 @@ class VerificationScreen extends ConsumerStatefulWidget {
 }
 
 class _VerificationScreenState extends ConsumerState<VerificationScreen> {
+  OverlayEntry? _loadingOverlay;
   final TextEditingController _otpController = TextEditingController();
 
   @override
@@ -37,6 +40,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
 
   @override
   void dispose() {
+    _loadingOverlay?.remove();
     _otpController.dispose();
     super.dispose();
   }
@@ -46,6 +50,18 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
     final signUpNotifier = ref.read(signUpProvider.notifier);
     final vState = ref.watch(verificationProvider);
     final vNotifier = ref.read(verificationProvider.notifier);
+
+    /// 로딩 오버레이 추가/제거
+    ref.listen<VerificationState>(verificationProvider, (previous, next) {
+      if (previous?.isLoading != next.isLoading) {
+        if (next.isLoading) {
+          _loadingOverlay = showLoadingOverlay(context);
+        } else {
+          _loadingOverlay?.remove();
+          _loadingOverlay = null;
+        }
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(

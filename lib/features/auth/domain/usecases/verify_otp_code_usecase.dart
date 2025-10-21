@@ -2,11 +2,12 @@ import 'package:clozii/features/auth/core/errors/auth_failures.dart';
 import 'package:clozii/features/auth/domain/entities/auth_result.dart';
 import 'package:clozii/features/auth/domain/repositories/auth_repository.dart';
 import 'package:clozii/features/auth/domain/entities/user.dart';
+import 'package:flutter/foundation.dart';
 
-class SignUpUsecase {
+class VerifyOtpCodeUsecase {
   final AuthRepository _authRepository;
 
-  SignUpUsecase(this._authRepository);
+  VerifyOtpCodeUsecase(this._authRepository);
 
   Future<AuthResult<User>> call(
     String verificationId,
@@ -17,7 +18,7 @@ class SignUpUsecase {
     String gender,
   ) async {
     try {
-      // 1. OTP 검증 (Firebase 자동 로그인)
+      // 1. OTP 검증 (Firebase 연락처 자동 로그인 사용)
       final verifyResult = await _authRepository.verifyCode(
         verificationId,
         otpCode,
@@ -31,8 +32,7 @@ class SignUpUsecase {
 
       // 2. 회원가입 완료 (Firebase User → 도메인 User 변환)
       final domainUser = User(
-        id: firebaseUser.uid,
-
+        uid: firebaseUser.uid,
         phoneNumber: firebaseUser.phoneNumber!,
         name: name,
         birthDate: birthDate,
@@ -40,7 +40,11 @@ class SignUpUsecase {
         createdAt: DateTime.now(),
       );
 
-      // 3. 추가 정보를 Firestore에 저장 (선택사항)
+      debugPrint('====== verifyOtpCodeUsecase.call ======');
+      debugPrint(domainUser.toString());
+      debugPrint('====== verifyOtpCodeUsecase.call ======');
+
+      // TODO: 추가 정보를 Firestore에 저장
       // await _userRepository.saveUser(domainUser);
 
       return AuthResult.success(domainUser);
