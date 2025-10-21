@@ -31,7 +31,6 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   @override
   void dispose() {
     _controller.dispose();
-    ref.read(postProvider.notifier).clearPost();
     super.dispose();
   }
 

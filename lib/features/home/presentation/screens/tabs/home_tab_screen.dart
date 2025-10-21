@@ -9,6 +9,7 @@ import 'package:clozii/features/post/presentation/provider/post_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
+import 'package:clozii/features/post/presentation/viewmodels/post_view_model.dart';
 
 //package
 import 'package:flutter/material.dart';
@@ -36,12 +37,14 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
 
   // 게시글 상세 화면으로 이동
   void _navigateToPostDetail(Post post) {
-    // Provider에 Post 설정
-    ref.read(postProvider.notifier).setPost(post);
-
-    Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (context) => PostDetailScreen()));
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ProviderScope(
+          overrides: [postProvider.overrideWith(() => PostViewModel(post))],
+          child: PostDetailScreen(),
+        ),
+      ),
+    );
   }
 
   // 게시글 생성 모달 띄우기
