@@ -9,22 +9,34 @@ import 'package:clozii/features/post/presentation/widgets/post_create/meeting_po
 
 // packages
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MeetingPointMapModal extends StatelessWidget {
+class MeetingPointMapModal extends StatefulWidget {
   const MeetingPointMapModal({super.key});
+
+  @override
+  State<MeetingPointMapModal> createState() => _MeetingPointMapModalState();
+}
+
+class _MeetingPointMapModalState extends State<MeetingPointMapModal> {
+  LatLng? _currentLatLng;
+
+  void _onCameraIdle(LatLng currentLatLng) {
+    _currentLatLng = currentLatLng;
+  }
 
   void _showDetailAddressModal(BuildContext context) async {
     final detailAddress = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.white,
-      builder: (context) => DetailAddressModal(),
+      builder: (context) => DetailAddressModal(currentLatLng: _currentLatLng!),
     );
 
     if (detailAddress != null) {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (context.mounted) {
-          Navigator.of(context).pop(detailAddress);
+          Navigator.of(context).pop();
         }
       });
     }
@@ -68,7 +80,7 @@ class MeetingPointMapModal extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                MeetingPointMap(),
+                MeetingPointMap(onCameraIdle: _onCameraIdle),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(

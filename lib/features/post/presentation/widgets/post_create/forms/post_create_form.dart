@@ -108,13 +108,7 @@ class _PostCreateFormState extends ConsumerState<PostCreateForm> {
           ),
         ),
         const SizedBox(height: 10.0),
-        MeetingPointSelector(
-          onAddressSelected: (detailAddress) {
-            ref
-                .read(postCreateProvider.notifier)
-                .setDetailAddress(detailAddress);
-          },
-        ),
+        MeetingPointSelector(),
 
         const SizedBox(height: kBottomNavigationBarHeight * 2),
       ],

@@ -3,8 +3,9 @@ import 'dart:typed_data';
 import 'package:clozii/features/post/application/dto/post_draft.dart';
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
+import 'package:clozii/features/post/core/models/meeting_location.dart';
 import 'package:clozii/features/post/presentation/provider/create_post_use_case_provider.dart';
-import 'package:clozii/features/post/presentation/states/image_state.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
 import 'package:clozii/features/post/presentation/states/post_create_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,8 +26,7 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
         state.selectedImages.isNotEmpty ||
         (state.tradeType == TradeType.sell && state.price > 0) ||
         (state.tradeType == TradeType.share && state.price == 0) ||
-        state.meetingPoint != null ||
-        state.detailAddress != null;
+        state.meetingLocation != null;
   }
 
   // 제목 저장 - 매 입력마다 호출됨
@@ -49,23 +49,23 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     state = state.copyWith(price: price);
   }
 
-  // 상세 주소 저장
-  void setDetailAddress(String detailAddress) {
-    state = state.copyWith(detailAddress: detailAddress);
-  }
-
-  // 거래희망장소 좌표 저장
-  void setMeetingPoint(LatLng meetingPoint) {
-    state = state.copyWith(meetingPoint: meetingPoint);
+  // 거래희망장소 저장
+  void setMeetingLocation(String detailAddress, LatLng coordinate) {
+    state = state.copyWith(
+      meetingLocation: MeetingLocation(
+        coordinate: coordinate,
+        detailAddress: detailAddress,
+      ),
+    );
   }
 
   // 선택된 이미지 저장
-  void saveImages(Map<String, ImageState> images) {
+  void saveImages(Map<String, ImageData> images) {
     state = state.copyWith(selectedImages: images);
   }
 
   // 선택 취소 시 이전 상태로 복원
-  void undoChanges(Map<String, ImageState> previousImages) {
+  void undoChanges(Map<String, ImageData> previousImages) {
     state = state.copyWith(selectedImages: previousImages);
   }
 
@@ -105,11 +105,6 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
       final newImages = {...state.selectedImages}..remove(id);
       state = state.copyWith(selectedImages: newImages);
     }
-  }
-
-  // 거래희망 장소명, 좌표 초기화
-  void resetMeetingPoint() {
-    state = state.copyWith(meetingPoint: null, detailAddress: null);
   }
 
   /// 모달 트리거 함수
@@ -171,13 +166,13 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
         thumbnailImages: getAllThumbnails(),
         price: state.price,
         tradeType: state.tradeType,
-        meetingPoint: state.meetingPoint,
-        detailAddress: state.detailAddress,
+        meetingPoint: state.meetingLocation?.coordinate,
+        detailAddress: state.meetingLocation?.detailAddress,
       ),
     );
 
     debugPrint(
-      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.detailAddress} | ${state.meetingPoint} | ${state.selectedImages.length}',
+      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.meetingLocation?.coordinate} | ${state.meetingLocation?.detailAddress} | ${state.selectedImages.length}',
     );
 
     debugPrint(dummyPosts.length.toString());

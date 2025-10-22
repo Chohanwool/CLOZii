@@ -1,6 +1,5 @@
 // core
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // feature
 
@@ -10,7 +9,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MeetingPointMap extends ConsumerStatefulWidget {
-  const MeetingPointMap({super.key});
+  const MeetingPointMap({super.key, required this.onCameraIdle});
+
+  final ValueChanged<LatLng> onCameraIdle;
 
   @override
   ConsumerState<MeetingPointMap> createState() => _MeetingPointSelectorState();
@@ -54,21 +55,8 @@ class _MeetingPointSelectorState extends ConsumerState<MeetingPointMap> {
                 ScreenCoordinate(x: centerX, y: centerY - 135),
               );
 
-              setState(() {
-                ref
-                    .read(postCreateProvider.notifier)
-                    .setMeetingPoint(markerLatLng);
-              });
-
-              final meetingPoint = ref.read(postCreateProvider).meetingPoint;
-              debugPrint("설정된 거래희망장소 좌표: $meetingPoint");
+              widget.onCameraIdle(markerLatLng);
             },
-            // markers: {
-            //   Marker(
-            //     markerId: MarkerId('center_marker'),
-            //     position: centerLatLng,
-            //   ),
-            // },
           ),
 
           Center(

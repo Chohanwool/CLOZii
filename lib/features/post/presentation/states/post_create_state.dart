@@ -1,6 +1,6 @@
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/presentation/states/image_state.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/core/models/meeting_location.dart';
 
 class PostCreateState {
   static int get maxImageCount => 5;
@@ -10,9 +10,8 @@ class PostCreateState {
   final String content;
   final TradeType tradeType;
   final int price;
-  final String? detailAddress;
-  final LatLng? meetingPoint;
-  final Map<String, ImageState> selectedImages;
+  final MeetingLocation? meetingLocation;
+  final Map<String, ImageData> selectedImages;
 
   // 모든 필드 입력에 대한 검증 성공 여부
   final bool isAllValid;
@@ -28,8 +27,7 @@ class PostCreateState {
     this.content = '',
     this.tradeType = TradeType.sell,
     this.price = 0,
-    this.detailAddress,
-    this.meetingPoint,
+    this.meetingLocation,
     this.selectedImages = const {},
     this.isAllValid = false,
     this.showGoToPhrases = false,
@@ -43,9 +41,8 @@ class PostCreateState {
     String? content,
     TradeType? tradeType,
     int? price,
-    String? detailAddress,
-    LatLng? meetingPoint,
-    Map<String, ImageState>? selectedImages,
+    MeetingLocation? meetingLocation,
+    Map<String, ImageData>? selectedImages,
     bool? isAllValid,
     bool? showGoToPhrases,
     bool? showAddPhraseModal,
@@ -57,8 +54,7 @@ class PostCreateState {
       content: content ?? this.content,
       tradeType: tradeType ?? this.tradeType,
       price: price ?? this.price,
-      detailAddress: detailAddress ?? this.detailAddress,
-      meetingPoint: meetingPoint ?? this.meetingPoint,
+      meetingLocation: meetingLocation ?? this.meetingLocation,
       selectedImages: selectedImages ?? this.selectedImages,
       isAllValid: isAllValid ?? this.isAllValid,
       showGoToPhrases: showGoToPhrases ?? this.showGoToPhrases,
