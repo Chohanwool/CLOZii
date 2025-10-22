@@ -1,5 +1,6 @@
 // core
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // feature
 
@@ -18,61 +19,83 @@ class MeetingPointMap extends ConsumerStatefulWidget {
 }
 
 class _MeetingPointSelectorState extends ConsumerState<MeetingPointMap> {
-  late final GoogleMapController? _controller;
+  GoogleMapController? _controller;
+  late final CameraPosition initialPosition;
 
-  static const CameraPosition kInitialPosition = CameraPosition(
-    target: LatLng(14.2639, 121.0742),
+  static const CameraPosition defaultPosition = CameraPosition(
+    target: LatLng(14.264076669634353, 121.074357368052),
     zoom: 17.0,
   );
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 사용자가 이전에 설정한 거래희망장소 좌표가 있으면 그 좌표를 사용, 없으면 기본 좌표를 사용
+    final stateLatLng = ref
+        .read(postCreateProvider)
+        .meetingLocation
+        ?.coordinate;
+
+    initialPosition = stateLatLng != null
+        ? CameraPosition(target: stateLatLng, zoom: 17.0)
+        : defaultPosition;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // 키보드가 올라와도 UI가 움직이지 않도록 설정
       resizeToAvoidBottomInset: false,
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: kInitialPosition,
-            onMapCreated: (controller) {
-              _controller = controller;
-            },
-            onCameraIdle: () async {
-              if (_controller == null) return;
 
-              // 화면 크기 (픽셀 단위)
-              final screenWidth = MediaQuery.of(context).size.width;
-              final screenHeight = MediaQuery.of(context).size.height;
+      // LayoutBuilder를 사용하여 지도 영역의 실제 크기를 가져옴
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          // 지도 영역의 실제 크기
+          final mapWidth = constraints.maxWidth;
+          final mapHeight = constraints.maxHeight;
 
-              // 중앙 좌표
-              final centerX = (screenWidth / 2).round();
-              final centerY = (screenHeight / 2).round();
+          return Stack(
+            children: [
+              GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: initialPosition,
+                onMapCreated: (controller) {
+                  _controller = controller;
+                },
+                onCameraIdle: () async {
+                  if (_controller == null) return;
 
-              // 실제로 마커가 가리키는 좌표
-              // centerX, centerY 만으로는 아래의 마커가 가르키는 지점과 일치하지 않음 따라서 centerY에 135를 빼줌
-              LatLng markerLatLng = await _controller.getLatLng(
-                ScreenCoordinate(x: centerX, y: centerY - 135),
-              );
+                  // 지도 영역의 중앙 좌표
+                  final centerX = (mapWidth / 2).round();
+                  final centerY = (mapHeight / 2).round();
 
-              widget.onCameraIdle(markerLatLng);
-            },
-          ),
+                  // 지도 영역 중앙의 실제 위경도 좌표
+                  final markerLatLng = await _controller!.getLatLng(
+                    ScreenCoordinate(x: centerX, y: centerY),
+                  );
 
-          Center(
-            child: IgnorePointer(
-              ignoring: true,
-              child: Transform.translate(
-                offset: const Offset(0, -20), // 살짝 위/아래로 조정 가능
-                child: Icon(
-                  Icons.place,
-                  size: 60,
-                  color: context.colors.primary,
+                  widget.onCameraIdle(markerLatLng);
+                },
+              ),
+
+              Center(
+                child: IgnorePointer(
+                  ignoring: true,
+                  child: Transform.translate(
+                    // 살짝 위로 커스텀 마커를 올림 - 화면 중앙 좌표를 정확히 가르키기 위함
+                    offset: const Offset(0, -25),
+                    child: Icon(
+                      Icons.place,
+                      size: 60,
+                      color: context.colors.primary,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
