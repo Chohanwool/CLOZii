@@ -18,6 +18,17 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     return const PostCreateState();
   }
 
+  // 게시글 변경사항 유무 여부 체크
+  bool get canSave {
+    return state.title.trim().isNotEmpty ||
+        state.content.trim().isNotEmpty ||
+        state.selectedImages.isNotEmpty ||
+        (state.tradeType == TradeType.sell && state.price > 0) ||
+        (state.tradeType == TradeType.share && state.price == 0) ||
+        state.meetingPoint != null ||
+        state.detailAddress != null;
+  }
+
   // 제목 저장 - 매 입력마다 호출됨
   void setTitle(String title) {
     state = state.copyWith(title: title);
@@ -94,6 +105,11 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
       final newImages = {...state.selectedImages}..remove(id);
       state = state.copyWith(selectedImages: newImages);
     }
+  }
+
+  // 거래희망 장소명, 좌표 초기화
+  void resetMeetingPoint() {
+    state = state.copyWith(meetingPoint: null, detailAddress: null);
   }
 
   /// 모달 트리거 함수

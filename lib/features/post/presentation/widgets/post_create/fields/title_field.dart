@@ -86,9 +86,8 @@ class _PostTitleFieldState extends ConsumerState<PostTitleField> {
             ? IconButton(
                 style: IconButton.styleFrom(overlayColor: Colors.transparent),
                 onPressed: () {
-                  setState(() {
-                    widget.controller.clear();
-                  });
+                  widget.controller.clear();
+                  ref.read(postCreateProvider.notifier).setTitle('');
                 },
                 icon: Icon(Icons.cancel, color: context.colors.scrim),
               )

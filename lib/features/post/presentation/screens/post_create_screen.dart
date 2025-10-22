@@ -56,7 +56,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
     ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
       if (previous?.isAllValid != next.isAllValid && next.isAllValid) {
         Navigator.of(context).pop();
-        ref.read(postCreateProvider.notifier).resetState();
+        postCreateNotifier.resetState();
       }
     });
 
@@ -71,7 +71,23 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
           icon: Icon(Icons.close),
         ),
         title: const Text('Sell My Items'),
-        actions: [TextButton(onPressed: () {}, child: const Text('Save'))],
+        actions: [
+          // Save 버튼만 독립적으로 rebuild되도록 Consumer로 분리
+          Consumer(
+            builder: (context, ref, child) {
+              // state 변경 감지
+              // 제목, 본문, 사진 선택, 거래희망장소 선택, 가격 입력 감지
+              ref.watch(postCreateProvider);
+
+              return TextButton(
+                onPressed: ref.read(postCreateProvider.notifier).canSave
+                    ? () {}
+                    : null,
+                child: const Text('Save'),
+              );
+            },
+          ),
+        ],
         surfaceTintColor: Colors.transparent,
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
       ),

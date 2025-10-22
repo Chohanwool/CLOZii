@@ -92,14 +92,16 @@ class _PriceFieldState extends ConsumerState<PriceField> {
       },
 
       onChanged: (value) {
+        // 가격 저장 - 입력 값이 숫자가 아니면 0으로 초기화
+        final price = int.tryParse(value) ?? 0;
+        ref.read(postCreateProvider.notifier).setPrice(price);
+
         setState(() {
           _isFilled = value.isNotEmpty;
         });
 
         if (value.isEmpty) return;
         widget.controller.text = priceFormatter.format(int.parse(value));
-
-        ref.read(postCreateProvider.notifier).setPrice(int.parse(value));
       },
 
       maxLength: 9,
