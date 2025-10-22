@@ -24,6 +24,17 @@ class MeetingPointMapModal extends ConsumerStatefulWidget {
 class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
   LatLng? _currentLatLng;
   bool _showSavedAddress = true; // 저장된 주소 표시 여부
+  String? _initialDetailAddress; // 화면 진입 시점의 주소 스냅샷
+
+  @override
+  void initState() {
+    super.initState();
+    // 화면 진입 시점의 주소를 로컬 상태로 저장 (reactive하지 않음)
+    _initialDetailAddress = ref
+        .read(postCreateProvider)
+        .meetingLocation
+        ?.detailAddress;
+  }
 
   void _onCameraIdle(LatLng currentLatLng) {
     _currentLatLng = currentLatLng;
@@ -57,11 +68,6 @@ class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
 
   @override
   Widget build(BuildContext context) {
-    final detailAddress = ref
-        .read(postCreateProvider)
-        .meetingLocation
-        ?.detailAddress;
-
     return Scaffold(
       // 키보드가 올라와도 UI가 움직이지 않도록 설정
       resizeToAvoidBottomInset: false,
@@ -112,7 +118,7 @@ class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (detailAddress != null && _showSavedAddress)
+                        if (_initialDetailAddress != null && _showSavedAddress)
                           Container(
                             width: double.infinity,
                             height: 80.0,
@@ -129,7 +135,7 @@ class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
                             ),
                             child: Center(
                               child: Text(
-                                detailAddress,
+                                _initialDetailAddress!,
                                 style: context.textTheme.titleLarge!.copyWith(
                                   color: context.colors.onSecondaryContainer,
                                 ),
