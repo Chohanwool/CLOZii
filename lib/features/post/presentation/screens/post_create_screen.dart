@@ -56,6 +56,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
     ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
       if (previous?.isAllValid != next.isAllValid && next.isAllValid) {
         Navigator.of(context).pop();
+        ref.read(postCreateProvider.notifier).resetState();
       }
     });
 

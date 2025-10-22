@@ -168,4 +168,8 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
 
     state = state.copyWith(isAllValid: true);
   }
+
+  void resetState() {
+    state = const PostCreateState();
+  }
 }
