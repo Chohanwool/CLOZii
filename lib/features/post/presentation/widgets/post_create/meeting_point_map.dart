@@ -10,9 +10,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MeetingPointMap extends ConsumerStatefulWidget {
-  const MeetingPointMap({super.key, required this.onCameraIdle});
+  const MeetingPointMap({
+    super.key,
+    required this.onCameraIdle,
+    required this.onCameraMove,
+  });
 
   final ValueChanged<LatLng> onCameraIdle;
+  final VoidCallback onCameraMove;
 
   @override
   ConsumerState<MeetingPointMap> createState() => _MeetingPointSelectorState();
@@ -62,6 +67,9 @@ class _MeetingPointSelectorState extends ConsumerState<MeetingPointMap> {
                 initialCameraPosition: initialPosition,
                 onMapCreated: (controller) {
                   _controller = controller;
+                },
+                onCameraMove: (_) {
+                  widget.onCameraMove();
                 },
                 onCameraIdle: () async {
                   if (_controller == null) return;
