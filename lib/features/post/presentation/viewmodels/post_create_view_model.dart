@@ -20,7 +20,7 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
   }
 
   // 게시글 변경사항 유무 여부 체크
-  bool get canSave {
+  bool get hasChanges {
     return state.title.trim().isNotEmpty ||
         state.content.trim().isNotEmpty ||
         state.selectedImages.isNotEmpty ||

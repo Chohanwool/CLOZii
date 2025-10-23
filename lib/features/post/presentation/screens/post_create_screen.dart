@@ -80,7 +80,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               ref.watch(postCreateProvider);
 
               return TextButton(
-                onPressed: ref.read(postCreateProvider.notifier).canSave
+                onPressed: ref.read(postCreateProvider.notifier).hasChanges
                     ? () {}
                     : null,
                 child: const Text('Save'),
