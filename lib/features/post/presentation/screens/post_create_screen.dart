@@ -1,7 +1,7 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
 
 // features
 import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
@@ -10,6 +10,7 @@ import 'package:clozii/features/post/presentation/widgets/post_create/forms/post
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/go_to_phrase_modal.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/more_options_modal.dart';
+import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
@@ -64,9 +65,22 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            // "저장하지 않은 내역은 사라집니다" 안내 추가 예정
-            Navigator.pop(context);
+          onPressed: () async {
+            // 변경 사항이 존재할 경우 "저장하지 않은 내역은 사라집니다" 안내
+            if (postCreateNotifier.hasChanges) {
+              final result = await _showUnsavedChangesDialog(context);
+
+              // '예' 버튼 클릭 시 상태 초기화 및 화면 닫기
+              // '아니오' 버튼 클릭 시 아무 동작 안함
+              if (result != null && result) {
+                ref.read(postCreateProvider.notifier).resetState();
+                Navigator.of(context).pop();
+              }
+
+              // 변경사항이 없을경우, 그냥 화면 닫기
+            } else {
+              Navigator.of(context).pop();
+            }
           },
           icon: Icon(Icons.close),
         ),
@@ -122,6 +136,15 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
           height: 50.0,
         ),
       ),
+    );
+  }
+
+  // 저장하지 않은 내역이 존재할 시, 안내메시지 표시
+  Future<bool?> _showUnsavedChangesDialog(BuildContext context) async {
+    return showConfirmDialog(
+      context: context,
+      title: '안내',
+      messageBody: '저장하지 않은 내역은 사라집니다.나가시겠습니까?',
     );
   }
 
