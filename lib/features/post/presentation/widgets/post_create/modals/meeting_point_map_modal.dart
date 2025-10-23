@@ -130,15 +130,13 @@ class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
                                   offset: Offset(0, 10.0),
                                 ),
                               ],
-                              color: context.colors.secondaryContainer,
+                              color: AppColors.white70,
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             child: Center(
                               child: Text(
                                 _initialDetailAddress!,
-                                style: context.textTheme.titleLarge!.copyWith(
-                                  color: context.colors.onSecondaryContainer,
-                                ),
+                                style: context.textTheme.titleLarge,
                               ),
                             ),
                           ),
