@@ -5,6 +5,7 @@ import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
 import 'package:clozii/features/post/core/models/meeting_location.dart';
 import 'package:clozii/features/post/presentation/provider/create_post_use_case_provider.dart';
+import 'package:clozii/features/post/presentation/provider/post_draft_use_case_provider.dart';
 import 'package:clozii/features/post/core/models/image_data.dart';
 import 'package:clozii/features/post/presentation/states/post_create_state.dart';
 import 'package:flutter/material.dart';
@@ -150,6 +151,35 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     state = state.copyWith(showMoreOptions: false, currentPhraseForEdit: null);
   }
 
+  /// 임시저장 관련 메서드
+
+  // 임시저장
+  Future<void> saveTemp() async {
+    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
+    await postDraftUseCase.save(state);
+    debugPrint('임시저장 완료');
+  }
+
+  // 임시저장 불러오기
+  Future<void> loadTemp() async {
+    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
+    final draft = await postDraftUseCase.load();
+
+    if (draft != null) {
+      state = draft;
+      debugPrint('임시저장 불러오기 완료');
+    } else {
+      debugPrint('임시저장된 데이터 없음');
+    }
+  }
+
+  // 임시저장 삭제
+  Future<void> deleteTemp() async {
+    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
+    await postDraftUseCase.delete();
+    debugPrint('임시저장 삭제 완료');
+  }
+
   // 게시글 생성 전 검증 로직 및 게시글 생성 유즈 케이스 호출
   Future<void> checkAllFieldsValid() async {
     final isFormValid = formKey.currentState!.validate();
@@ -176,6 +206,9 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     );
 
     debugPrint(dummyPosts.length.toString());
+
+    // 게시글 생성 완료 후 임시저장 삭제
+    await deleteTemp();
 
     state = state.copyWith(isAllValid: true);
   }
