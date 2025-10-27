@@ -33,10 +33,10 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
 
   // 게시글 변경사항 유무 여부 체크
   bool get hasChanges {
-    return draftState == null ? !isStateEmpty : !_hasSameContentAs(draftState!);
+    return draftState == null ? !isEmpty : !_hasSameContentAs(draftState!);
   }
 
-  bool get isStateEmpty =>
+  bool get isEmpty =>
       state.title.trim().isEmpty &&
       state.content.trim().isEmpty &&
       state.selectedImages.isEmpty &&

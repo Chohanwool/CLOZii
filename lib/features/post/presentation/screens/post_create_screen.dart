@@ -70,7 +70,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
             // 변경 사항이 존재할 경우 "저장하지 않은 내역은 사라집니다" 안내
 
             // 게시글 생성 화면이 비어있을 경우, 화면 닫기
-            if (postCreateNotifier.isStateEmpty) {
+            if (postCreateNotifier.isEmpty) {
               Navigator.of(context).pop();
               return;
             }
@@ -112,8 +112,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               return TextButton(
                 onPressed:
                     // 게시글 생성 화면이 비어있지 않고, 변경 사항이 존재할 경우, 임시저장 저장 버튼 활성화
-                    !postCreateNotifier.isStateEmpty &&
-                        postCreateNotifier.hasChanges
+                    !postCreateNotifier.isEmpty && postCreateNotifier.hasChanges
                     ? () {
                         // 임시저장 저장 성공 스낵바 표시
                         showSnackBar(
