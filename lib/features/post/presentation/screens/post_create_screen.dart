@@ -170,8 +170,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
   Future<bool?> _showUnsavedChangesDialog(BuildContext context) async {
     return showConfirmDialog(
       context: context,
-      title: '안내',
-      messageBody: '저장하지 않은 내역은 사라집니다.나가시겠습니까?',
+      title: 'Notice',
+      messageBody: 'Unsaved changes will be lost. \nDo you want to leave?',
     );
   }
 
