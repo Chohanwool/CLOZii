@@ -28,18 +28,15 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
 
   // 게시글 변경사항 유무 여부 체크
   bool get hasChanges {
-    return draftState != null
-        ? !_hasSameContentAs(draftState!)
-        : isStateNotEmpty;
+    return draftState == null ? !isStateEmpty : !_hasSameContentAs(draftState!);
   }
 
-  bool get isStateNotEmpty =>
-      state.title.trim().isNotEmpty ||
-      state.content.trim().isNotEmpty ||
-      state.selectedImages.isNotEmpty ||
-      (state.tradeType == TradeType.sell && state.price > 0) ||
-      (state.tradeType == TradeType.share && state.price == 0) ||
-      state.meetingLocation != null;
+  bool get isStateEmpty =>
+      state.title.trim().isEmpty &&
+      state.content.trim().isEmpty &&
+      state.selectedImages.isEmpty &&
+      (state.tradeType == TradeType.sell && state.price == 0) &&
+      state.meetingLocation == null;
 
   // 임시저장 데이터와 현재 상태 비교
   bool _hasSameContentAs(PostCreateState other) {
