@@ -13,6 +13,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostCreateViewModel extends Notifier<PostCreateState> {
+  // FormKey를 ViewModel에서 직접 관리하는 것은 경미한 클린 아키텍처 위반 ⚠️
+  // 원칙적으로 ViewModel은 UI 요소(FormKey 등)를 알아서는 안 됨 ❌
+  // 하지만 "Form 검증"은 단순한 UI 로직이 아니라, 비즈니스 규칙에 가까움
+  //  (예: 제목이 비어 있는지, 가격이 0 이상인지 등)
+  // 따라서 전체 검증 로직을 ViewModel에 두는 편이 흐름이 명확하고 유지보수에도 유리함 ✅
   final formKey = GlobalKey<FormState>();
   PostCreateState? draftState;
 
