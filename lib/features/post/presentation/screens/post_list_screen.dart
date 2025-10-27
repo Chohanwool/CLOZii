@@ -25,6 +25,9 @@ class PostListScreen extends ConsumerStatefulWidget {
 }
 
 class _PostListScreenState extends ConsumerState<PostListScreen> {
+  // 현재는 더미 데이터 사용중이어서 ViewModel 필요 없음
+  // 하지만 실제 API 연결 시 ViewModel 필수!
+  // TODO: 실제 API 연결 + ViewModel 구현 - loadPosts(), refreshPosts() 등
   List<Post> _posts = dummyPosts;
 
   // 새로고침
@@ -49,6 +52,8 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
     );
   }
 
+  // Cross - feature 의존성있지만, 같은 feature 내이므로 허용 가능
+  // UX를 위해 게시글 생성 화면 진입 전 다이얼로그 표시 필요!
   // 게시글 생성 모달 띄우기
   void _showPostCreateModal() async {
     final draft = await ref.read(postCreateProvider.notifier).loadTemp();
