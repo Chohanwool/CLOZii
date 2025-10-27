@@ -8,8 +8,13 @@ import 'package:clozii/features/post/core/enums/trade_type.dart';
 import 'package:flutter/material.dart';
 
 class TradeTypeSelector extends StatefulWidget {
-  const TradeTypeSelector({super.key, required this.onSelected});
+  const TradeTypeSelector({
+    super.key,
+    required this.selected,
+    required this.onSelected,
+  });
 
+  final TradeType selected;
   final ValueChanged<TradeType> onSelected;
 
   @override
@@ -17,7 +22,13 @@ class TradeTypeSelector extends StatefulWidget {
 }
 
 class _TradeTypeSelectorState extends State<TradeTypeSelector> {
-  TradeType _selected = TradeType.sell;
+  late TradeType _selected;
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = widget.selected;
+  }
 
   @override
   Widget build(BuildContext context) {

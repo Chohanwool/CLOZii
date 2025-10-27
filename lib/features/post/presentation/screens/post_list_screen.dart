@@ -1,10 +1,12 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/show_confirm_dialog.dart';
 
 // feature
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 import 'package:clozii/features/post/presentation/provider/post_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
@@ -19,10 +21,10 @@ class PostListScreen extends ConsumerStatefulWidget {
   const PostListScreen({super.key});
 
   @override
-  ConsumerState<PostListScreen> createState() => _HomeTabScreenState();
+  ConsumerState<PostListScreen> createState() => _PostListScreenState();
 }
 
-class _HomeTabScreenState extends ConsumerState<PostListScreen> {
+class _PostListScreenState extends ConsumerState<PostListScreen> {
   List<Post> _posts = dummyPosts;
 
   // 새로고침
@@ -49,6 +51,26 @@ class _HomeTabScreenState extends ConsumerState<PostListScreen> {
 
   // 게시글 생성 모달 띄우기
   void _showPostCreateModal() async {
+    final draft = await ref.read(postCreateProvider.notifier).loadTemp();
+
+    // 임시저장 데이터가 있을 경우, 안내메시지 표시
+    if (draft != null && mounted) {
+      final result = await showConfirmDialog(
+        context: context,
+        title: 'Alert',
+        messageBody:
+            'There is an existing draft. Do you want to continue creating a new post?',
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Create New Post',
+      );
+
+      if (result != null && !result) {
+        ref.read(postCreateProvider.notifier).deleteTemp();
+        ref.read(postCreateProvider.notifier).resetState();
+      }
+    }
+
+    if (!mounted) return;
     final newPost = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,

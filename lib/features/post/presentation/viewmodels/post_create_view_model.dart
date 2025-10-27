@@ -14,20 +14,54 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostCreateViewModel extends Notifier<PostCreateState> {
   final formKey = GlobalKey<FormState>();
+  PostCreateState? draftState;
 
   @override
   PostCreateState build() {
     return const PostCreateState();
   }
 
+  // 임시저장 데이터가 있을 경우, 상태 초기화
+  void initState(PostCreateState draft) {
+    state = draft;
+  }
+
   // 게시글 변경사항 유무 여부 체크
   bool get hasChanges {
-    return state.title.trim().isNotEmpty ||
-        state.content.trim().isNotEmpty ||
-        state.selectedImages.isNotEmpty ||
-        (state.tradeType == TradeType.sell && state.price > 0) ||
-        (state.tradeType == TradeType.share && state.price == 0) ||
-        state.meetingLocation != null;
+    return draftState != null
+        ? !_hasSameContentAs(draftState!)
+        : isStateNotEmpty;
+  }
+
+  bool get isStateNotEmpty =>
+      state.title.trim().isNotEmpty ||
+      state.content.trim().isNotEmpty ||
+      state.selectedImages.isNotEmpty ||
+      (state.tradeType == TradeType.sell && state.price > 0) ||
+      (state.tradeType == TradeType.share && state.price == 0) ||
+      state.meetingLocation != null;
+
+  // 임시저장 데이터와 현재 상태 비교
+  bool _hasSameContentAs(PostCreateState other) {
+    return state.title == other.title &&
+        state.content == other.content &&
+        state.price == other.price &&
+        state.tradeType == other.tradeType &&
+        _hasSameImageKeys(state.selectedImages, other.selectedImages) &&
+        _hasSameMeetingLocation(state.meetingLocation, other.meetingLocation);
+  }
+
+  // 이미지 키 비교
+  bool _hasSameImageKeys(Map<String, ImageData> a, Map<String, ImageData> b) {
+    if (a.length != b.length) return false;
+    return a.keys.every((key) => b.containsKey(key));
+  }
+
+  // 거래희망장소 비교
+  bool _hasSameMeetingLocation(MeetingLocation? a, MeetingLocation? b) {
+    if (a == null && b == null) return true;
+    if (a == null || b == null) return false;
+    return a.coordinate == b.coordinate && a.detailAddress == b.detailAddress;
   }
 
   // 제목 저장 - 매 입력마다 호출됨
@@ -155,26 +189,37 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
 
   // 임시저장
   Future<void> saveTemp() async {
+    draftState = state;
+    state = state.copyWith(); // ← 리빌드 트리거
+
     final postDraftUseCase = ref.read(postDraftUseCaseProvider);
     await postDraftUseCase.save(state);
+
     debugPrint('임시저장 완료');
   }
 
   // 임시저장 불러오기
-  Future<void> loadTemp() async {
+  Future<PostCreateState?> loadTemp() async {
     final postDraftUseCase = ref.read(postDraftUseCaseProvider);
     final draft = await postDraftUseCase.load();
 
     if (draft != null) {
+      draftState = draft;
       state = draft;
-      debugPrint('임시저장 불러오기 완료');
+      debugPrint('임시저장 데이터 있음');
+
+      return draft;
     } else {
       debugPrint('임시저장된 데이터 없음');
+
+      return null;
     }
   }
 
   // 임시저장 삭제
   Future<void> deleteTemp() async {
+    draftState = null;
+
     final postDraftUseCase = ref.read(postDraftUseCaseProvider);
     await postDraftUseCase.delete();
     debugPrint('임시저장 삭제 완료');
@@ -214,6 +259,7 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
   }
 
   void resetState() {
+    debugPrint('상태 초기화');
     state = const PostCreateState();
   }
 }

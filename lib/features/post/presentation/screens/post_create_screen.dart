@@ -1,6 +1,7 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
+import 'package:clozii/core/utils/show_snack_bar.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 
 // features
@@ -56,7 +57,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
     // isAllValid 감지 - 모든 입력 값 검증 성공 감지
     ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
       if (previous?.isAllValid != next.isAllValid && next.isAllValid) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
         postCreateNotifier.resetState();
       }
     });
@@ -67,13 +68,28 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
         leading: IconButton(
           onPressed: () async {
             // 변경 사항이 존재할 경우 "저장하지 않은 내역은 사라집니다" 안내
+
+            // 게시글 생성 화면이 비어있을 경우, 화면 닫기
+            if (!postCreateNotifier.isStateNotEmpty) {
+              Navigator.of(context).pop();
+              return;
+            }
+
+            // 변경 사항이 존재할 경우,
             if (postCreateNotifier.hasChanges) {
+              // "저장하지 않은 내역은 사라집니다" 안내 모달 표시
               final result = await _showUnsavedChangesDialog(context);
 
-              // '예' 버튼 클릭 시 상태 초기화 및 화면 닫기
-              // '아니오' 버튼 클릭 시 아무 동작 안함
+              // "저장하지 않은 내역은 사라집니다" 안내에서 '예' 버튼 클릭 시
               if (result != null && result) {
-                ref.read(postCreateProvider.notifier).resetState();
+                // 임시저장 데이터가 없을 경우, 상태 초기화 (reset)
+                postCreateNotifier.draftState == null
+                    ? postCreateNotifier.resetState()
+                    // 임시저장 데이터가 있을 경우, 임시저장 데이터로 상태 초기화 (init)
+                    : postCreateNotifier.initState(
+                        postCreateNotifier.draftState!,
+                      );
+
                 Navigator.of(context).pop();
               }
 
@@ -94,8 +110,19 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               ref.watch(postCreateProvider);
 
               return TextButton(
-                onPressed: ref.read(postCreateProvider.notifier).hasChanges
-                    ? () {}
+                onPressed:
+                    // 게시글 생성 화면이 비어있지 않고, 변경 사항이 존재할 경우, 임시저장 저장 버튼 활성화
+                    postCreateNotifier.isStateNotEmpty &&
+                        postCreateNotifier.hasChanges
+                    ? () {
+                        // 임시저장 저장 성공 스낵바 표시
+                        showSnackBar(
+                          context: context,
+                          message: 'Successfully saved draft!',
+                        );
+                        // 임시저장 저장 진행
+                        postCreateNotifier.saveTemp();
+                      }
                     : null,
                 child: const Text('Save'),
               );
