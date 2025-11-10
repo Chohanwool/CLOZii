@@ -61,6 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
     Text('Shares'),
     Text('NearBy'),
     Text('Category'),
+    Text('Shoes'),
+    Text('Phone'),
   ];
 
   @override
