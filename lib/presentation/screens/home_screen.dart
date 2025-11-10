@@ -1,4 +1,5 @@
 // features
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/chat_tab_screen.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/map_tab_screen.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dart';
@@ -51,6 +52,25 @@ class _HomeScreenState extends State<HomeScreen> {
     '제주특별자치도',
   ];
 
+  final List<Widget> _filterButtons = [
+    Row(
+      children: [
+        Text('Price'),
+        const SizedBox(width: 4.0),
+        Icon(CupertinoIcons.chevron_down, size: 16.0),
+      ],
+    ),
+    Row(
+      children: [
+        Text('Shares'),
+        const SizedBox(width: 4.0),
+        Icon(Icons.favorite, size: 16.0),
+      ],
+    ),
+    Text('NearBy'),
+    Text('Category'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -80,6 +100,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             centerTitle: false,
+
+            elevation: 6.0, // 앱바 그림자 높이
+            scrolledUnderElevation: 6.0, // 스크롤 시에도 동일한 elevation 유지
+            shadowColor: Colors.black.withOpacity(0.4), // 앱바 그림자 색상
+
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: AppColors.borderLight),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16.0),
+                bottomRight: Radius.circular(16.0),
+              ),
+            ),
+
             actionsPadding: const EdgeInsets.only(right: 16.0),
             actions: [
               IconButton(
@@ -98,6 +131,52 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconSize: 28,
               ),
             ],
+
+            bottom: _currentIndex == 0
+                ? PreferredSize(
+                    preferredSize: Size.fromHeight(40),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            itemCount: _filterButtons.length,
+                            itemBuilder: (context, index) => GestureDetector(
+                              onTap: () {},
+                              child: Row(
+                                children: [
+                                  IntrinsicWidth(
+                                    child: Container(
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                        color: AppColors.gray100,
+                                        borderRadius: BorderRadius.circular(
+                                          8.0,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12.0,
+                                          ),
+                                          child: _filterButtons[index],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(width: 8),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : null,
           ),
           body: _screens[_currentIndex],
           bottomNavigationBar: CustomBottomNavigationBar(
