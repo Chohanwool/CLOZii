@@ -58,13 +58,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Icon(CupertinoIcons.chevron_down, size: 16.0),
       ],
     ),
-    Row(
-      children: [
-        Text('Shares'),
-        const SizedBox(width: 4.0),
-        Icon(Icons.favorite, size: 16.0),
-      ],
-    ),
+    Text('Shares'),
     Text('NearBy'),
     Text('Category'),
   ];
@@ -106,8 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
             shape: RoundedRectangleBorder(
               side: BorderSide(color: AppColors.borderLight),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(16.0),
-                bottomRight: Radius.circular(16.0),
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
               ),
             ),
 
@@ -132,46 +126,40 @@ class _HomeScreenState extends State<HomeScreen> {
 
             bottom: _currentIndex == 0
                 ? PreferredSize(
-                    preferredSize: Size.fromHeight(40),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 60,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: _filterButtons.length,
-                            itemBuilder: (context, index) => GestureDetector(
-                              onTap: () {},
-                              child: Row(
-                                children: [
-                                  IntrinsicWidth(
-                                    child: Container(
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.gray100,
-                                        borderRadius: BorderRadius.circular(
-                                          8.0,
-                                        ),
+                    preferredSize: const Size.fromHeight(60.0),
+                    child: SizedBox(
+                      height: 80.0,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        itemCount: _filterButtons.length,
+                        itemBuilder: (context, index) => GestureDetector(
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              IntrinsicWidth(
+                                child: Container(
+                                  height: 42.0,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.gray100,
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  child: Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0,
                                       ),
-                                      child: Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 12.0,
-                                          ),
-                                          child: _filterButtons[index],
-                                        ),
-                                      ),
+                                      child: _filterButtons[index],
                                     ),
                                   ),
-
-                                  const SizedBox(width: 8),
-                                ],
+                                ),
                               ),
-                            ),
+
+                              const SizedBox(width: 12.0),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   )
                 : null,
