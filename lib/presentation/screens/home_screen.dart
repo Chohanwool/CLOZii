@@ -69,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Scaffold(
           appBar: AppBar(
+            toolbarHeight: 50.0,
             surfaceTintColor: Colors.transparent,
             titleSpacing: 24.0,
             title: GestureDetector(
@@ -127,37 +128,50 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: _currentIndex == 0
                 ? PreferredSize(
                     preferredSize: const Size.fromHeight(60.0),
-                    child: SizedBox(
-                      height: 80.0,
-                      child: ListView.builder(
+                    child: Container(
+                      width: double.infinity,
+                      height: 60.0,
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        itemCount: _filterButtons.length,
-                        itemBuilder: (context, index) => GestureDetector(
-                          onTap: () {},
-                          child: Row(
-                            children: [
-                              IntrinsicWidth(
-                                child: Container(
-                                  height: 42.0,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.gray100,
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  child: Center(
-                                    child: Padding(
+                        physics: const BouncingScrollPhysics(),
+                        child: Row(
+                          children: List.generate(_filterButtons.length, (
+                            index,
+                          ) {
+                            return Row(
+                              children: [
+                                // 버튼 앞에 여백 추가
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 12.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      debugPrint('tapped $index');
+                                    },
+                                    child: Container(
+                                      height: 40.0,
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 16.0,
                                       ),
-                                      child: _filterButtons[index],
+                                      decoration: BoxDecoration(
+                                        color: AppColors.gray100,
+                                        borderRadius: BorderRadius.circular(
+                                          12.0,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: _filterButtons[index],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
 
-                              const SizedBox(width: 12.0),
-                            ],
-                          ),
+                                // 마지막 버튼 뒤에 여백 추가
+                                if (index == _filterButtons.length - 1)
+                                  const SizedBox(width: 12.0),
+                              ],
+                            );
+                          }),
                         ),
                       ),
                     ),
