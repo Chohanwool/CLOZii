@@ -35,7 +35,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // 검색 필드에 아무 것도 입력하지 않은 경우
+    // 검색 필드에 아무 것도 입력하지 않은 경우, 최근 검색어 목록을 표시
+    // 검색 필드에 검색어를 입력한 경우, 검색 결과를 표시
     Widget content = _searchQuery.isEmpty
         ? _buildRecentSearches()
         : _buildSearchResults();
