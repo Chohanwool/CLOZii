@@ -1,4 +1,5 @@
 // features
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/chat_tab_screen.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/map_tab_screen.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dart';
@@ -20,7 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  String _selectedRegion = '서울특별시';
+  String _selectedRegion = 'Sta.Rosa';
   bool _isDropdownOpen = false;
 
   // 각 탭에 해당하는 화면들
@@ -33,23 +34,36 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // 지역 목록
   final List<String> _regions = [
-    '서울특별시',
-    '부산광역시',
-    '대구광역시',
-    '인천광역시',
-    '광주광역시',
-    '대전광역시',
-    '울산광역시',
-    '세종특별자치시',
-    '경기도',
-    '강원도',
-    '충청북도',
-    '충청남도',
-    '전라북도',
-    '전라남도',
-    '경상북도',
-    '경상남도',
-    '제주특별자치도',
+    'Sta.Rosa',
+    'Calamba',
+    'Cabuyao',
+    'Tagaytay',
+    'Makati',
+    'Alabang',
+    'Binan',
+    'Quezon City',
+    'Mandaluyong',
+    'Parañaque',
+    'Pasay',
+    'Pasig',
+    'San Juan',
+    'Taguig',
+    'Valenzuela',
+  ];
+
+  final List<Widget> _filterButtons = [
+    Row(
+      children: [
+        Text('Price'),
+        const SizedBox(width: 4.0),
+        Icon(CupertinoIcons.chevron_down, size: 16.0),
+      ],
+    ),
+    Text('Shares'),
+    Text('NearBy'),
+    Text('Category'),
+    Text('Shoes'),
+    Text('Phone'),
   ];
 
   void _navigateToSearchScreen() {
@@ -64,6 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Scaffold(
           appBar: AppBar(
+            toolbarHeight: 50.0,
             surfaceTintColor: Colors.transparent,
             titleSpacing: 24.0,
             title: GestureDetector(
@@ -87,6 +102,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             centerTitle: false,
+
+            elevation: 6.0, // 앱바 그림자 높이
+            scrolledUnderElevation: 6.0, // 스크롤 시에도 동일한 elevation 유지
+            shadowColor: Colors.black.withOpacity(0.4), // 앱바 그림자 색상
+
+            shape: RoundedRectangleBorder(
+              side: BorderSide(color: AppColors.borderLight),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(12.0),
+                bottomRight: Radius.circular(12.0),
+              ),
+            ),
+
             actionsPadding: const EdgeInsets.only(right: 16.0),
             actions: [
               IconButton(
@@ -105,6 +133,59 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconSize: 28,
               ),
             ],
+
+            bottom: _currentIndex == 0
+                ? PreferredSize(
+                    preferredSize: const Size.fromHeight(60.0),
+                    child: Container(
+                      width: double.infinity,
+                      height: 60.0,
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        physics: const BouncingScrollPhysics(),
+                        child: Row(
+                          children: List.generate(_filterButtons.length, (
+                            index,
+                          ) {
+                            return Row(
+                              children: [
+                                // 버튼 앞에 여백 추가
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 12.0),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      debugPrint('tapped $index');
+                                    },
+                                    child: Container(
+                                      height: 40.0,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.gray100,
+                                        borderRadius: BorderRadius.circular(
+                                          12.0,
+                                        ),
+                                      ),
+                                      child: Center(
+                                        child: _filterButtons[index],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                // 마지막 버튼 뒤에 여백 추가
+                                if (index == _filterButtons.length - 1)
+                                  const SizedBox(width: 12.0),
+                              ],
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+                  )
+                : null,
           ),
           body: _screens[_currentIndex],
           bottomNavigationBar: CustomBottomNavigationBar(
