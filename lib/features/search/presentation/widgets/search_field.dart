@@ -3,9 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchField extends StatelessWidget {
-  const SearchField({super.key, required this.controller});
+  const SearchField({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+  });
 
   final TextEditingController controller;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +21,8 @@ class SearchField extends StatelessWidget {
       textCapitalization: TextCapitalization.none,
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.search,
+
+      onChanged: onChanged,
 
       decoration: InputDecoration(
         isDense: true,
