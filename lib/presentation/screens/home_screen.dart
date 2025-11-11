@@ -4,6 +4,7 @@ import 'package:clozii/features/home/presentation/screens/tabs/map_tab_screen.da
 import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dart';
 
 import 'package:clozii/features/post/presentation/screens/post_list_screen.dart';
+import 'package:clozii/features/search/presentation/screens/search_screen.dart';
 import 'package:clozii/presentation/widgets/custom_bottom_navigation_bar.dart';
 
 // packages
@@ -51,6 +52,12 @@ class _HomeScreenState extends State<HomeScreen> {
     '제주특별자치도',
   ];
 
+  void _navigateToSearchScreen() {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => const SearchScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -83,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
             actionsPadding: const EdgeInsets.only(right: 16.0),
             actions: [
               IconButton(
-                onPressed: () {},
+                onPressed: _navigateToSearchScreen,
                 icon: const Icon(Icons.search),
                 iconSize: 28,
               ),
