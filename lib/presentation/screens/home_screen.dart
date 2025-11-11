@@ -1,5 +1,6 @@
 // features
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/widgets/filter_bar.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/chat_tab_screen.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/map_tab_screen.dart';
 import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dart';
@@ -51,21 +52,6 @@ class _HomeScreenState extends State<HomeScreen> {
     'Valenzuela',
   ];
 
-  final List<Widget> _filterButtons = [
-    Row(
-      children: [
-        Text('Price'),
-        const SizedBox(width: 4.0),
-        Icon(CupertinoIcons.chevron_down, size: 16.0),
-      ],
-    ),
-    Text('Shares'),
-    Text('NearBy'),
-    Text('Category'),
-    Text('Shoes'),
-    Text('Phone'),
-  ];
-
   void _navigateToSearchScreen() {
     Navigator.of(
       context,
@@ -78,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Scaffold(
           appBar: AppBar(
-            toolbarHeight: 50.0,
+            toolbarHeight: 60.0,
             surfaceTintColor: Colors.transparent,
             titleSpacing: 24.0,
             title: GestureDetector(
@@ -137,53 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
             bottom: _currentIndex == 0
                 ? PreferredSize(
                     preferredSize: const Size.fromHeight(60.0),
-                    child: Container(
-                      width: double.infinity,
-                      height: 60.0,
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        physics: const BouncingScrollPhysics(),
-                        child: Row(
-                          children: List.generate(_filterButtons.length, (
-                            index,
-                          ) {
-                            return Row(
-                              children: [
-                                // 버튼 앞에 여백 추가
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 12.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      debugPrint('tapped $index');
-                                    },
-                                    child: Container(
-                                      height: 40.0,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.gray100,
-                                        borderRadius: BorderRadius.circular(
-                                          12.0,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: _filterButtons[index],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-
-                                // 마지막 버튼 뒤에 여백 추가
-                                if (index == _filterButtons.length - 1)
-                                  const SizedBox(width: 12.0),
-                              ],
-                            );
-                          }),
-                        ),
-                      ),
-                    ),
+                    child: FilterBar(),
                   )
                 : null,
           ),
