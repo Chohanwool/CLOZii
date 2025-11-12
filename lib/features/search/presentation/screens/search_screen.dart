@@ -265,15 +265,17 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return CustomScrollView(
       slivers: [
+        const SliverToBoxAdapter(child: SizedBox(height: 12.0)),
         SliverList(
           delegate: SliverChildBuilderDelegate((context, index) {
             return ListTile(
               dense: true,
-              contentPadding: EdgeInsets.only(left: 16.0, right: 8.0),
+              contentPadding: EdgeInsets.only(left: 16.0, right: 16.0),
               leading: index < recentSearches.length
                   ? Icon(CupertinoIcons.clock, size: 18.0)
                   : Icon(CupertinoIcons.search, size: 18.0),
               title: Text(items[index]),
+              trailing: Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
                 debugPrint('tapped ${items[index]}');
               },
