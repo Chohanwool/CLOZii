@@ -17,6 +17,20 @@ class _SearchScreenState extends State<SearchScreen> {
 
   String _searchQuery = '';
 
+  // 카테고리 아이콘 리스트
+  final List<Map<String, String>> _categoryIcons = [
+    {'icon': 'assets/images/icons/desktop.png', 'label': 'Desktop'},
+    {'icon': 'assets/images/icons/smartphone.png', 'label': 'Phone'},
+    {'icon': 'assets/images/icons/sneakers.png', 'label': 'Shoes'},
+    {'icon': 'assets/images/icons/basketball.png', 'label': 'Sports'},
+    {'icon': 'assets/images/icons/weight.png', 'label': 'Fitness'},
+    {'icon': 'assets/images/icons/sweater.png', 'label': 'Clothing'},
+    {'icon': 'assets/images/icons/car.png', 'label': 'Vehicle'},
+    {'icon': 'assets/images/icons/sofa.png', 'label': 'Furniture'},
+    {'icon': 'assets/images/icons/guitar.png', 'label': 'Music'},
+    {'icon': 'assets/images/icons/dog.png', 'label': 'Pet'},
+  ];
+
   final List<String> _recentSearches = [
     'Iphone',
     'Jordan',
@@ -97,26 +111,48 @@ class _SearchScreenState extends State<SearchScreen> {
           sliver: SliverGrid(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 5,
-              childAspectRatio: 1.0,
+              childAspectRatio: 0.8,
               mainAxisSpacing: 12.0,
               crossAxisSpacing: 12.0,
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(12.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.black.withOpacity(0.1),
-                      blurRadius: 10.0,
-                      offset: Offset(0, 5.0),
+              final category = _categoryIcons[index];
+              return GestureDetector(
+                onTap: () {
+                  debugPrint('tapped ${category['label']}');
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.black.withOpacity(0.1),
+                        blurRadius: 10.0,
+                        offset: Offset(0, 5.0),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset(
+                          category['icon']!,
+                          width: 24.0,
+                          height: 24.0,
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          category['label']!,
+                          style: context.textTheme.labelLarge,
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-                child: Center(child: Icon(CupertinoIcons.car, size: 24.0)),
               );
-            }, childCount: 10),
+            }, childCount: _categoryIcons.length),
           ),
         ),
 

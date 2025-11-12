@@ -76,6 +76,7 @@ flutter:
   assets:
     # images
     - assets/images/
+    - assets/images/icons/
 
     # lottie
     - assets/lottie/loading_airplane.json
