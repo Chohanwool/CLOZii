@@ -112,8 +112,8 @@ class _SearchScreenState extends State<SearchScreen> {
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 5,
               childAspectRatio: 0.8,
-              mainAxisSpacing: 12.0,
-              crossAxisSpacing: 12.0,
+              mainAxisSpacing: 8.0,
+              crossAxisSpacing: 6.0,
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
               final category = _categoryIcons[index];
