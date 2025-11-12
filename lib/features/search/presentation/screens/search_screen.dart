@@ -1,5 +1,6 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -188,8 +189,20 @@ class _SearchScreenState extends State<SearchScreen> {
                         style: context.textTheme.labelLarge,
                       ),
                       TextButton(
-                        onPressed: () {
-                          debugPrint('Clear All!');
+                        onPressed: () async {
+                          final result = await showConfirmDialog(
+                            context: context,
+                            title: 'Are you sure?',
+                            messageBody:
+                                'Once cleared, you will no longer be able to restore your search history.',
+                            confirmButtonText: 'Clear',
+                          );
+
+                          if (result == true) {
+                            setState(() {
+                              _recentSearches.clear();
+                            });
+                          }
                         },
                         child: Text(
                           'Clear All',
@@ -209,6 +222,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
+                  padding: EdgeInsets.zero, // ListView 기본 패딩 제거
                   itemCount: _recentSearches.length,
                   itemBuilder: (context, index) {
                     return ListTile(
