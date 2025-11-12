@@ -1,6 +1,5 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/core/widgets/filter_bar.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,6 +24,12 @@ class _SearchScreenState extends State<SearchScreen> {
     'Tablets',
     'Nike',
     'Adidas',
+    'PlayStation 5',
+    'Xbox Series X',
+    'Nintendo Switch',
+    'Starbucks Tumbler',
+    'Sneakers',
+    'Kimchi',
   ];
 
   @override
@@ -42,6 +47,7 @@ class _SearchScreenState extends State<SearchScreen> {
         : _buildSearchResults();
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         automaticallyImplyLeading: false, // 자동 뒤로 가기 버튼 제거
         surfaceTintColor: Colors.transparent,
@@ -70,19 +76,51 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
 
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0),
-          child: FilterBar(),
+          preferredSize: const Size.fromHeight(10.0),
+          // child: FilterBar(),
+          child: const SizedBox.shrink(),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(children: [const SizedBox(height: 12.0), content]),
-      ),
+      body: content,
     );
   }
 
   Widget _buildRecentSearches() {
     return Column(
       children: [
+        const SizedBox(height: 24.0),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: 10,
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(12.0),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.black.withOpacity(0.1),
+                      blurRadius: 10.0,
+                      offset: Offset(0, 5.0),
+                    ),
+                  ],
+                ),
+                child: Center(child: Icon(CupertinoIcons.car, size: 24.0)),
+              );
+            },
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              childAspectRatio: 1.0,
+              mainAxisSpacing: 12.0,
+              crossAxisSpacing: 12.0,
+            ),
+          ),
+        ),
+
+        // 헤더 고정
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
@@ -104,32 +142,33 @@ class _SearchScreenState extends State<SearchScreen> {
             ],
           ),
         ),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: _recentSearches.length,
-          itemBuilder: (context, index) {
-            return ListTile(
-              dense: true,
-              contentPadding: EdgeInsets.only(left: 16.0, right: 8.0),
+        // 리스트만 스크롤
+        Expanded(
+          child: ListView.builder(
+            itemCount: _recentSearches.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                dense: true,
+                contentPadding: EdgeInsets.only(left: 16.0, right: 8.0),
 
-              leading: Icon(CupertinoIcons.clock, size: 18.0),
-              title: Text(_recentSearches[index]),
-              trailing: IconButton(
-                onPressed: () {
-                  debugPrint('delete this search record!');
-                  setState(() {
-                    _recentSearches.removeAt(index);
-                  });
+                leading: Icon(CupertinoIcons.clock, size: 18.0),
+                title: Text(_recentSearches[index]),
+                trailing: IconButton(
+                  onPressed: () {
+                    debugPrint('delete this search record!');
+                    setState(() {
+                      _recentSearches.removeAt(index);
+                    });
+                  },
+                  icon: Icon(CupertinoIcons.xmark, size: 18.0),
+                ),
+
+                onTap: () {
+                  debugPrint('tapped ${_recentSearches[index]}');
                 },
-                icon: Icon(CupertinoIcons.xmark, size: 18.0),
-              ),
-
-              onTap: () {
-                debugPrint('tapped ${_recentSearches[index]}');
-              },
-            );
-          },
+              );
+            },
+          ),
         ),
       ],
     );
