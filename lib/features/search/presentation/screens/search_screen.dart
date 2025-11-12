@@ -158,53 +158,88 @@ class _SearchScreenState extends State<SearchScreen> {
 
         const SliverToBoxAdapter(child: SizedBox(height: 24.0)),
 
-        // Recent Searches 헤더
         SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(16.0),
+                topRight: Radius.circular(16.0),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20.0,
+                  offset: const Offset(0, -5.0),
+                ),
+              ],
+            ),
+            child: Column(
               children: [
-                Text('Recent Searches', style: context.textTheme.labelLarge),
-                TextButton(
-                  onPressed: () {
-                    debugPrint('Clear All! - show confirmation dialog');
-                  },
-                  child: Text(
-                    'Clear All',
-                    style: context.textTheme.labelLarge?.copyWith(
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.w500,
-                    ),
+                // 헤더
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
                   ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Recent Searches',
+                        style: context.textTheme.labelLarge,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          debugPrint('Clear All!');
+                        },
+                        child: Text(
+                          'Clear All',
+                          style: context.textTheme.labelLarge?.copyWith(
+                            color: AppColors.textSecondary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Divider(height: 1.0),
+
+                // 리스트
+                ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _recentSearches.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      dense: true,
+                      contentPadding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 8.0,
+                      ),
+                      leading: const Icon(CupertinoIcons.clock, size: 18.0),
+                      title: Text(_recentSearches[index]),
+                      trailing: IconButton(
+                        onPressed: () {
+                          debugPrint('delete this search record!');
+                          setState(() {
+                            _recentSearches.removeAt(index);
+                          });
+                        },
+                        icon: const Icon(CupertinoIcons.xmark, size: 18.0),
+                      ),
+                      onTap: () {
+                        debugPrint('tapped ${_recentSearches[index]}');
+                      },
+                    );
+                  },
                 ),
               ],
             ),
           ),
-        ),
-
-        // Recent Searches 리스트
-        SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            return ListTile(
-              dense: true,
-              contentPadding: EdgeInsets.only(left: 16.0, right: 8.0),
-              leading: Icon(CupertinoIcons.clock, size: 18.0),
-              title: Text(_recentSearches[index]),
-              trailing: IconButton(
-                onPressed: () {
-                  debugPrint('delete this search record!');
-                  setState(() {
-                    _recentSearches.removeAt(index);
-                  });
-                },
-                icon: Icon(CupertinoIcons.xmark, size: 18.0),
-              ),
-              onTap: () {
-                debugPrint('tapped ${_recentSearches[index]}');
-              },
-            );
-          }, childCount: _recentSearches.length),
         ),
       ],
     );
