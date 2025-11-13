@@ -18,107 +18,116 @@ class PostListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          onTap: () => onTap(post),
-          title: Row(
-            children: [
-              Material(
-                borderRadius: BorderRadius.circular(12.0),
-                clipBehavior: Clip.hardEdge,
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3.5,
-                  height: MediaQuery.of(context).size.width / 3.5,
-                  decoration: const BoxDecoration(color: Colors.black26),
-                  child: Image.network(
-                    post.thumbnailImageUrls[0],
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16.0),
-              Expanded(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.width / 4,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        post.title,
-                        overflow: TextOverflow.ellipsis,
-                        style: context.textTheme.titleSmall,
-                      ),
-                      Text(
-                        'address · ${showUploadedTime(post.createdAt)} ago',
-                        style: context.textTheme.bodyLarge!.copyWith(
-                          color: Colors.black45,
-                        ),
-                      ),
-                      post.price != 0
-                          ? Text(
-                              '\u20B1 ${formatPrice(post.price)}', //₱
-                              style: context.textTheme.bodyLarge!.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
-                            )
-                          : Row(
-                              children: [
-                                Text(
-                                  'SHARES',
-                                  style: context.textTheme.bodyLarge!.copyWith(
-                                    color: context.colors.primary,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                                const SizedBox(width: 4.0),
-                                Icon(
-                                  Icons.favorite,
-                                  size: 16,
-                                  color: context.colors.primary,
-                                ),
-                              ],
-                            ),
-                      Spacer(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(
-                            Icons.favorite_outline,
-                            size: 16,
-                            color: Colors.black26,
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            '10',
-                            style: context.textTheme.bodyMedium!.copyWith(
-                              color: Colors.black38,
-                            ),
-                          ),
-                          const SizedBox(width: 10.0),
-                          Icon(
-                            CupertinoIcons.bubble_left,
-                            size: 16,
-                            color: Colors.black26,
-                          ),
-                          const SizedBox(width: 2),
-                          Text(
-                            '10',
-                            style: context.textTheme.bodyMedium!.copyWith(
-                              color: Colors.black38,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 10.0,
+            offset: Offset(0, 5.0),
           ),
+        ],
+      ),
+      child: ListTile(
+        onTap: () => onTap(post),
+        title: Row(
+          children: [
+            Material(
+              borderRadius: BorderRadius.circular(12.0),
+              clipBehavior: Clip.hardEdge,
+              child: Container(
+                width: MediaQuery.of(context).size.width / 4,
+                height: MediaQuery.of(context).size.width / 4,
+                decoration: const BoxDecoration(color: Colors.black26),
+                child: Image.network(
+                  post.thumbnailImageUrls[0],
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            const SizedBox(width: 16.0),
+            Expanded(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.width / 4,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.title,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textTheme.titleSmall,
+                    ),
+                    Text(
+                      '${showUploadedTime(post.createdAt)} ago',
+                      style: context.textTheme.bodyLarge!.copyWith(
+                        color: Colors.black45,
+                      ),
+                    ),
+                    post.price != 0
+                        ? Text(
+                            '\u20B1 ${formatPrice(post.price)}', //₱
+                            style: context.textTheme.bodyLarge!.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                        : Row(
+                            children: [
+                              Text(
+                                'SHARES',
+                                style: context.textTheme.bodyLarge!.copyWith(
+                                  color: context.colors.primary,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(width: 4.0),
+                              Icon(
+                                Icons.favorite,
+                                size: 16,
+                                color: context.colors.primary,
+                              ),
+                            ],
+                          ),
+                    Spacer(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Icon(
+                          Icons.favorite_outline,
+                          size: 16,
+                          color: Colors.black26,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          '10',
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: Colors.black38,
+                          ),
+                        ),
+                        const SizedBox(width: 10.0),
+                        Icon(
+                          CupertinoIcons.bubble_left,
+                          size: 16,
+                          color: Colors.black26,
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          '10',
+                          style: context.textTheme.bodyMedium!.copyWith(
+                            color: Colors.black38,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        Divider(height: 8.0),
-      ],
+      ),
     );
   }
 }
