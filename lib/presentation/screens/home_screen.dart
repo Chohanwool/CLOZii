@@ -89,9 +89,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             centerTitle: false,
 
-            elevation: 6.0, // 앱바 그림자 높이
-            scrolledUnderElevation: 6.0, // 스크롤 시에도 동일한 elevation 유지
-            shadowColor: Colors.black.withOpacity(0.4), // 앱바 그림자 색상
+            elevation: 10.0, // 앱바 그림자 높이
+            scrolledUnderElevation: 10.0, // 스크롤 시에도 동일한 elevation 유지
+            shadowColor: Colors.black.withOpacity(0.2), // 앱바 그림자 색상
 
             shape: RoundedRectangleBorder(
               side: BorderSide(color: AppColors.borderLight),
