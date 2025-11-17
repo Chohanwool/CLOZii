@@ -1,7 +1,8 @@
 // core
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
+import 'package:clozii/core/widgets/card_container.dart';
 import 'package:clozii/core/widgets/custom_text_link.dart';
 
 // feature
@@ -22,112 +23,221 @@ class PostDetailBody extends StatelessWidget {
     // 본문 내용
     return SliverToBoxAdapter(
       // 본문 패딩 설정
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 20.0,
-          left: 16.0,
-          right: 16.0,
-          bottom: 65.0 + kToolbarHeight,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 사용자 정보, 매너 온도 표시(예시) - CLOZii 만의 포인트 시스템 필요
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('사용자 정보', style: context.textTheme.titleLarge),
-                Text('매너 온도', style: context.textTheme.titleLarge),
-              ],
-            ),
-            const SizedBox(height: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 10),
 
-            // 구분선
-            Divider(indent: 20, endIndent: 20),
-            const SizedBox(height: 10),
-
-            // 제목
-            Text(post.title, style: context.textTheme.titleLarge),
-            const SizedBox(height: 10),
-
-            // 가격 또는 나눔 표시
-            // Post 객체의 price 필드에 저장된 가격이 있다면 가격을 표시하고,
-            // 없다면(null), 나눔 표시
-            post.price != 0
-                ? Text(
-                    '\u20B1 ${formatPrice(post.price)}', //₱
-                    style: context.textTheme.titleLarge!.copyWith(
-                      fontWeight: FontWeight.w600,
+          // 사용자 정보
+          CardContainer(
+            padding: const EdgeInsets.all(16.0),
+            child: SizedBox(
+              width: double.infinity,
+              child: Row(
+                children: [
+                  Container(
+                    width: 60,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.backgroundSecondary,
                     ),
-                  )
-                : Row(
+                    child: Icon(Icons.person, size: 36, color: Colors.grey),
+                  ),
+
+                  const SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'SHARES',
-                        style: context.textTheme.titleLarge!.copyWith(
-                          color: context.colors.primary,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      const SizedBox(width: 4.0),
-                      Icon(
-                        Icons.favorite,
-                        size: 16,
-                        color: context.colors.primary,
-                      ),
+                      Text('Kiko Junior', style: context.textTheme.titleLarge),
+                      Text('Clozii', style: context.textTheme.bodyMedium),
                     ],
                   ),
-            const SizedBox(height: 10.0),
-
-            // 카테고리(링크 텍스트), 업로드 시간 표시
-            // 카테고리 탭 시, 관련된 상품들만 필터링 된 페이지로 이동
-            Row(
-              children: [
-                CustomTextLink(
-                  linkText: 'Category',
-                  linkTextStyle: context.textTheme.bodyLarge!.copyWith(
-                    color: context.colors.scrim,
-                    decoration: TextDecoration.underline,
-                    decorationColor: context.colors.scrim,
-                  ),
-                  onTap: () {},
-                ),
-                Text(' · '),
-                Text(
-                  '${showUploadedTime(post.createdAt)} ago',
-                  style: context.textTheme.bodyLarge!.copyWith(
-                    color: context.colors.scrim,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
-            const SizedBox(height: 24.0),
+          ),
+          const SizedBox(height: 10),
 
-            // 게시글 내용
-            Text(post.content, style: context.textTheme.bodyLarge),
-
-            const SizedBox(height: 24.0),
-
-            // 거래 희망 장소
-            if (post.detailAddress != null &&
-                post.meetingPointLat != null &&
-                post.meetingPointLong != null)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Meeting Point :', style: context.textTheme.titleSmall),
-
-                  // 사용자가 입력한 장소명 (예: 광교 고등학교 앞)
-                  Row(
-                    children: [
-                      CustomTextLink(
-                        linkText: post.detailAddress!,
-                        onTap: () {},
+          // 게시글 정보
+          CardContainer(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // 제목
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 나눔 태그
+                    if (post.price == 0)
+                      Container(
+                        margin: const EdgeInsets.only(top: 6.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        decoration: BoxDecoration(
+                          color: context.colors.primary,
+                          borderRadius: BorderRadius.circular(4.0),
+                        ),
+                        child: Text(
+                          'Share',
+                          style: context.textTheme.labelLarge!.copyWith(
+                            color: context.colors.onPrimary,
+                          ),
+                        ),
                       ),
 
-                      const SizedBox(width: 10.0),
+                    // 나눔 태그 뒤 여백
+                    if (post.price == 0) const SizedBox(width: 10.0),
 
-                      Icon(CupertinoIcons.right_chevron, size: 16.0),
+                    // 제목
+                    Expanded(
+                      child: Text(
+                        post.title,
+                        style: context.textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 24.0,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10),
+
+                // 카테고리
+                //   - 카테고리 탭 시, 관련된 상품들만 필터링 된 페이지로 이동
+                Row(
+                  children: [
+                    // 카테고리 아이콘
+                    Icon(
+                      CupertinoIcons.square_list,
+                      size: 16,
+                      color: AppColors.textSecondary,
+                    ),
+                    const SizedBox(width: 10.0),
+
+                    // 카테고리 링크
+                    CustomTextLink(
+                      linkText: 'Phones',
+                      linkTextStyle: context.textTheme.bodyLarge!.copyWith(
+                        color: AppColors.textSecondary,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.textSecondary,
+                      ),
+                      onTap: () {},
+                    ),
+                  ],
+                ),
+
+                // 업로드 시간
+                Row(
+                  children: [
+                    // 업로드 시간 아이콘
+                    Icon(
+                      CupertinoIcons.time,
+                      size: 16,
+                      color: AppColors.textSecondary,
+                    ),
+                    const SizedBox(width: 10.0),
+
+                    // 업로드 시간 텍스트
+                    Text(
+                      '${showUploadedTime(post.createdAt)} ago',
+                      style: context.textTheme.bodyLarge!.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // 게시글 컨테이너
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 24.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.surfaceVariant,
+                    // border: Border.all(
+                    //   color: context.colors.onSecondaryContainer,
+                    // ),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+
+                  // 게시글 내용
+                  child: Text(post.content, style: context.textTheme.bodyLarge),
+                ),
+
+                const SizedBox(height: 20.0),
+
+                // 즐겨찾기 수 / 조회수 / 채팅 수
+                Row(
+                  children: [
+                    // TODO: 채팅 수 표시
+                    Text(
+                      'Likes ${post.favorites}   ·   Views ${post.views}   ·   Chats 0',
+                      style: context.textTheme.bodyMedium,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 10.0),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // 거래 희망 장소 카드
+          if (post.detailAddress != null &&
+              post.meetingPointLat != null &&
+              post.meetingPointLong != null)
+            CardContainer(
+              padding: const EdgeInsets.all(16.0),
+
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          // 거래희망장소 아이콘
+                          Icon(
+                            CupertinoIcons.map_pin_ellipse,
+                            size: 16,
+                            color: AppColors.primary,
+                          ),
+                          const SizedBox(width: 4.0),
+
+                          // 거래희망장소 텍스트
+                          Text(
+                            'Meeting Point',
+                            style: context.textTheme.bodyLarge!.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      Row(
+                        children: [
+                          // 거래희망장소 링크
+                          CustomTextLink(
+                            linkText: post.detailAddress!,
+                            onTap: () {},
+                          ),
+                          const SizedBox(width: 10.0),
+
+                          // 거래희망장소 링크 뒤 아이콘 ( > )
+                          Icon(CupertinoIcons.right_chevron, size: 16.0),
+                        ],
+                      ),
                     ],
                   ),
 
@@ -137,10 +247,15 @@ class PostDetailBody extends StatelessWidget {
                   Material(
                     clipBehavior: Clip.hardEdge,
                     borderRadius: BorderRadiusGeometry.circular(16.0),
+
                     child: Container(
                       width: double.infinity,
                       height: 150.0,
-                      color: Colors.grey,
+                      decoration: BoxDecoration(
+                        color: AppColors.surfaceVariant,
+                        borderRadius: BorderRadius.circular(16.0),
+                        border: Border.all(color: AppColors.border),
+                      ),
 
                       // 구글 맵스
                       child: GoogleMap(
@@ -160,41 +275,40 @@ class PostDetailBody extends StatelessWidget {
                             ),
                           ),
                         },
+
+                        // 내 위치 버튼 비활성화
                         myLocationButtonEnabled: false,
+                        // 줌 제스처 비활성화
+                        zoomGesturesEnabled: false,
+                        // 스크롤 제스처 비활성화
+                        scrollGesturesEnabled: false,
+                        // 회전 제스처 비활성화
+                        rotateGesturesEnabled: false,
+                        // 기울임 제스처 비활성화
+                        tiltGesturesEnabled: false,
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 20.0),
+
+                  // 신고 링크 링크
+                  CustomTextLink(
+                    linkText: 'Report this post',
+                    linkTextStyle: context.textTheme.bodyMedium!.copyWith(
+                      color: AppColors.textSecondary,
+                      decoration: TextDecoration.underline,
+                      decorationColor: AppColors.textSecondary,
+                    ),
+                    onTap: () {},
+                  ),
+
+                  // 페이지 하단 여백 - 없으면 네비게이션 바 때문에 다른 UI 가 가려질 수 있음
+                  const SizedBox(height: 20.0),
                 ],
               ),
-
-            const SizedBox(height: 20.0),
-
-            // 관심수, 조회수 표시
-            Row(
-              children: [
-                Text(
-                  'Favorites ${post.favorites} · Views ${post.views}',
-                  style: context.textTheme.bodyMedium!.copyWith(
-                    color: Colors.grey,
-                  ),
-                ),
-              ],
             ),
-
-            const SizedBox(height: 20.0),
-
-            // 신고 링크
-            CustomTextLink(
-              linkText: 'Report this post',
-              linkTextStyle: context.textTheme.bodyMedium!.copyWith(
-                color: Colors.grey,
-                decoration: TextDecoration.underline,
-                decorationColor: Colors.grey,
-              ),
-              onTap: () {},
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

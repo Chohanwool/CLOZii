@@ -13,15 +13,15 @@ ColorScheme buildCloziiLightScheme() {
     primaryContainer: const Color(0xFFFFD6D0), // 살짝 연한 컨테이너
     onPrimaryContainer: const Color(0xFF5B1A1A),
 
-    secondary: AppColors.secondary,
-    onSecondary: Colors.black,
-    secondaryContainer: const Color(0xFFFFE9E5),
+    secondary: const Color.fromARGB(255, 255, 230, 226),
+    onSecondary: const Color(0xFF4A2020), // 어두운 갈색/빨강 - 더 나은 대비
+    secondaryContainer: const Color.fromARGB(255, 255, 244, 244),
     onSecondaryContainer: const Color(0xFF4A2020),
 
-    tertiary: const Color(0xFF607EBC), // 포인트(링크/배지 등)
+    tertiary: const Color.fromARGB(255, 116, 255, 121), // 포인트(링크/배지 등)
     onTertiary: Colors.white,
-    tertiaryContainer: const Color(0xFFD7E3FF),
-    onTertiaryContainer: const Color(0xFF142A50),
+    tertiaryContainer: const Color.fromARGB(255, 176, 251, 199),
+    onTertiaryContainer: const Color.fromARGB(255, 20, 80, 63),
 
     surface: Colors.white,
     onSurface: Colors.black87,

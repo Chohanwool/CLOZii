@@ -1,7 +1,10 @@
 // features
+import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/theme/context_extension.dart';
+import 'package:clozii/core/utils/number_format.dart';
+import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/features/post/presentation/provider/post_detail_provider.dart';
 import 'package:clozii/features/post/presentation/provider/post_provider.dart';
-import 'package:clozii/features/post/presentation/widgets/post_detail/chat_box.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_app_bar.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_body.dart';
 
@@ -55,6 +58,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     }
 
     return Scaffold(
+      backgroundColor: AppColors.backgroundSecondary,
       // CustomScrollView: 스크롤 가능한 위젯
       body: CustomScrollView(
         controller: _controller,
@@ -73,11 +77,63 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         ],
       ),
 
-      // 챗 박스
-      bottomSheet: ChatBox(),
+      // 네비게이션 바 - 좋아요 버튼, 가격 표시, 채팅 버튼
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          border: Border(top: BorderSide(color: context.colors.shadow)),
+        ),
+        child: IntrinsicHeight(
+          child: Row(
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.favorite_border_outlined,
+                  size: 28.0,
+                  color: AppColors.primary,
+                ),
+              ),
 
-      // 챗 박스 하단 여백
-      bottomNavigationBar: Container(height: kToolbarHeight),
+              const SizedBox(width: 12.0),
+
+              const VerticalDivider(
+                indent: 8.0,
+                endIndent: 8.0,
+                color: AppColors.borderDark,
+                thickness: 1,
+                width: 1,
+              ),
+
+              const SizedBox(width: 12.0),
+
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    post.price != 0
+                        ? '\u20B1 ${formatPrice(post.price)}'
+                        : 'Sharing',
+                    style: context.textTheme.titleLarge,
+                  ),
+                  Text(
+                    'Price negotiable',
+                  ), // "Price negotiable" / "Price fixed"
+                ],
+              ),
+
+              Spacer(),
+              Expanded(
+                child: CustomButton(text: 'Chat', onTap: () {}),
+              ),
+
+              const SizedBox(width: 12.0),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
