@@ -7,6 +7,7 @@ import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dar
 
 import 'package:clozii/features/post/presentation/screens/post_list_screen.dart';
 import 'package:clozii/features/search/presentation/screens/search_screen.dart';
+import 'package:clozii/features/search/presentation/screens/search_screen_simple.dart';
 import 'package:clozii/presentation/widgets/custom_bottom_navigation_bar.dart';
 
 // packages
@@ -56,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (context) => const SearchScreen()));
+    // ).push(MaterialPageRoute(builder: (context) => const SearchScreenSimple()));
   }
 
   @override
@@ -89,8 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             centerTitle: false,
 
-            elevation: 10.0, // 앱바 그림자 높이
-            scrolledUnderElevation: 10.0, // 스크롤 시에도 동일한 elevation 유지
+            elevation: 6.0, // 앱바 그림자 높이
+            scrolledUnderElevation: 6.0, // 스크롤 시에도 동일한 elevation 유지
             shadowColor: Colors.black.withOpacity(0.2), // 앱바 그림자 색상
 
             shape: RoundedRectangleBorder(
