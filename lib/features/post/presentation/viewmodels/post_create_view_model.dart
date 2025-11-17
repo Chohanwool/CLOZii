@@ -3,19 +3,67 @@ import 'dart:typed_data';
 import 'package:clozii/features/post/application/dto/post_draft.dart';
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
+import 'package:clozii/features/post/core/models/meeting_location.dart';
 import 'package:clozii/features/post/presentation/provider/create_post_use_case_provider.dart';
-import 'package:clozii/features/post/presentation/states/image_state.dart';
+import 'package:clozii/features/post/presentation/provider/post_draft_use_case_provider.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
 import 'package:clozii/features/post/presentation/states/post_create_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PostCreateViewModel extends Notifier<PostCreateState> {
+  // FormKey를 ViewModel에서 직접 관리하는 것은 경미한 클린 아키텍처 위반 ⚠️
+  // 원칙적으로 ViewModel은 UI 요소(FormKey 등)를 알아서는 안 됨 ❌
+  // 하지만 "Form 검증"은 단순한 UI 로직이 아니라, 비즈니스 규칙에 가까움
+  //  (예: 제목이 비어 있는지, 가격이 0 이상인지 등)
+  // 따라서 전체 검증 로직을 ViewModel에 두는 편이 흐름이 명확하고 유지보수에도 유리함 ✅
   final formKey = GlobalKey<FormState>();
+  PostCreateState? draftState;
 
   @override
   PostCreateState build() {
     return const PostCreateState();
+  }
+
+  // 임시저장 데이터가 있을 경우, 상태 초기화
+  void initState(PostCreateState draft) {
+    state = draft;
+  }
+
+  // 게시글 변경사항 유무 여부 체크
+  bool get hasChanges {
+    return draftState == null ? !isEmpty : !_hasSameContentAs(draftState!);
+  }
+
+  bool get isEmpty =>
+      state.title.trim().isEmpty &&
+      state.content.trim().isEmpty &&
+      state.selectedImages.isEmpty &&
+      (state.tradeType == TradeType.sell && state.price == 0) &&
+      state.meetingLocation == null;
+
+  // 임시저장 데이터와 현재 상태 비교
+  bool _hasSameContentAs(PostCreateState other) {
+    return state.title == other.title &&
+        state.content == other.content &&
+        state.price == other.price &&
+        state.tradeType == other.tradeType &&
+        _hasSameImageKeys(state.selectedImages, other.selectedImages) &&
+        _hasSameMeetingLocation(state.meetingLocation, other.meetingLocation);
+  }
+
+  // 이미지 키 비교
+  bool _hasSameImageKeys(Map<String, ImageData> a, Map<String, ImageData> b) {
+    if (a.length != b.length) return false;
+    return a.keys.every((key) => b.containsKey(key));
+  }
+
+  // 거래희망장소 비교
+  bool _hasSameMeetingLocation(MeetingLocation? a, MeetingLocation? b) {
+    if (a == null && b == null) return true;
+    if (a == null || b == null) return false;
+    return a.coordinate == b.coordinate && a.detailAddress == b.detailAddress;
   }
 
   // 제목 저장 - 매 입력마다 호출됨
@@ -38,23 +86,23 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     state = state.copyWith(price: price);
   }
 
-  // 상세 주소 저장
-  void setDetailAddress(String detailAddress) {
-    state = state.copyWith(detailAddress: detailAddress);
-  }
-
-  // 거래희망장소 좌표 저장
-  void setMeetingPoint(LatLng meetingPoint) {
-    state = state.copyWith(meetingPoint: meetingPoint);
+  // 거래희망장소 저장
+  void setMeetingLocation(String detailAddress, LatLng coordinate) {
+    state = state.copyWith(
+      meetingLocation: MeetingLocation(
+        coordinate: coordinate,
+        detailAddress: detailAddress,
+      ),
+    );
   }
 
   // 선택된 이미지 저장
-  void saveImages(Map<String, ImageState> images) {
+  void saveImages(Map<String, ImageData> images) {
     state = state.copyWith(selectedImages: images);
   }
 
   // 선택 취소 시 이전 상태로 복원
-  void undoChanges(Map<String, ImageState> previousImages) {
+  void undoChanges(Map<String, ImageData> previousImages) {
     state = state.copyWith(selectedImages: previousImages);
   }
 
@@ -139,6 +187,46 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     state = state.copyWith(showMoreOptions: false, currentPhraseForEdit: null);
   }
 
+  /// 임시저장 관련 메서드
+
+  // 임시저장
+  Future<void> saveTemp() async {
+    draftState = state;
+    state = state.copyWith(); // ← 리빌드 트리거
+
+    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
+    await postDraftUseCase.save(state);
+
+    debugPrint('임시저장 완료');
+  }
+
+  // 임시저장 불러오기
+  Future<PostCreateState?> loadTemp() async {
+    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
+    final draft = await postDraftUseCase.load();
+
+    if (draft != null) {
+      draftState = draft;
+      state = draft;
+      debugPrint('임시저장 데이터 있음');
+
+      return draft;
+    } else {
+      debugPrint('임시저장된 데이터 없음');
+
+      return null;
+    }
+  }
+
+  // 임시저장 삭제
+  Future<void> deleteTemp() async {
+    draftState = null;
+
+    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
+    await postDraftUseCase.delete();
+    debugPrint('임시저장 삭제 완료');
+  }
+
   // 게시글 생성 전 검증 로직 및 게시글 생성 유즈 케이스 호출
   Future<void> checkAllFieldsValid() async {
     final isFormValid = formKey.currentState!.validate();
@@ -155,17 +243,25 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
         thumbnailImages: getAllThumbnails(),
         price: state.price,
         tradeType: state.tradeType,
-        meetingPoint: state.meetingPoint,
-        detailAddress: state.detailAddress,
+        meetingPoint: state.meetingLocation?.coordinate,
+        detailAddress: state.meetingLocation?.detailAddress,
       ),
     );
 
     debugPrint(
-      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.detailAddress} | ${state.meetingPoint} | ${state.selectedImages.length}',
+      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.meetingLocation?.coordinate} | ${state.meetingLocation?.detailAddress} | ${state.selectedImages.length}',
     );
 
     debugPrint(dummyPosts.length.toString());
 
+    // 게시글 생성 완료 후 임시저장 삭제
+    await deleteTemp();
+
     state = state.copyWith(isAllValid: true);
+  }
+
+  void resetState() {
+    debugPrint('상태 초기화');
+    state = const PostCreateState();
   }
 }

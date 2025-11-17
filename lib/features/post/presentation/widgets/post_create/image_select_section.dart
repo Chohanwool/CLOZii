@@ -1,4 +1,4 @@
-import 'package:clozii/features/post/presentation/states/image_state.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/image_preview.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/selectors/image_selector.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class ImageSelectSection extends StatelessWidget {
   const ImageSelectSection({super.key, required this.selectedImages});
 
-  final Map<String, ImageState> selectedImages;
+  final Map<String, ImageData> selectedImages;
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/detail_address_modal.dart';
@@ -9,22 +10,57 @@ import 'package:clozii/features/post/presentation/widgets/post_create/meeting_po
 
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MeetingPointMapModal extends StatelessWidget {
+class MeetingPointMapModal extends ConsumerStatefulWidget {
   const MeetingPointMapModal({super.key});
+
+  @override
+  ConsumerState<MeetingPointMapModal> createState() =>
+      _MeetingPointMapModalState();
+}
+
+class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
+  LatLng? _currentLatLng;
+  bool _showSavedAddress = true; // 저장된 주소 표시 여부
+  String? _initialDetailAddress; // 화면 진입 시점의 주소 스냅샷
+
+  @override
+  void initState() {
+    super.initState();
+    // 화면 진입 시점의 주소를 로컬 상태로 저장 (reactive하지 않음)
+    _initialDetailAddress = ref
+        .read(postCreateProvider)
+        .meetingLocation
+        ?.detailAddress;
+  }
+
+  void _onCameraIdle(LatLng currentLatLng) {
+    _currentLatLng = currentLatLng;
+  }
+
+  void _onCameraMove() {
+    // 지도가 움직이면 저장된 주소 숨김
+    if (_showSavedAddress) {
+      setState(() {
+        _showSavedAddress = false;
+      });
+    }
+  }
 
   void _showDetailAddressModal(BuildContext context) async {
     final detailAddress = await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.white,
-      builder: (context) => DetailAddressModal(),
+      builder: (context) => DetailAddressModal(currentLatLng: _currentLatLng!),
     );
 
     if (detailAddress != null) {
       Future.delayed(const Duration(milliseconds: 500), () {
         if (context.mounted) {
-          Navigator.of(context).pop(detailAddress);
+          Navigator.of(context).pop();
         }
       });
     }
@@ -68,7 +104,10 @@ class MeetingPointMapModal extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                MeetingPointMap(),
+                MeetingPointMap(
+                  onCameraIdle: _onCameraIdle,
+                  onCameraMove: _onCameraMove,
+                ),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -76,10 +115,38 @@ class MeetingPointMapModal extends StatelessWidget {
                       horizontal: 16.0,
                       vertical: 48.0,
                     ),
-                    child: CustomButton(
-                      text: 'Save',
-                      onTap: () => _showDetailAddressModal(context),
-                      height: 50.0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (_initialDetailAddress != null && _showSavedAddress)
+                          Container(
+                            width: double.infinity,
+                            height: 80.0,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.gray200,
+                                  blurRadius: 10.0,
+                                  offset: Offset(0, 10.0),
+                                ),
+                              ],
+                              color: AppColors.white70,
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _initialDetailAddress!,
+                                style: context.textTheme.titleLarge,
+                              ),
+                            ),
+                          ),
+                        const SizedBox(height: 16.0),
+                        CustomButton(
+                          text: 'Save',
+                          onTap: () => _showDetailAddressModal(context),
+                          height: 50.0,
+                        ),
+                      ],
                     ),
                   ),
                 ),

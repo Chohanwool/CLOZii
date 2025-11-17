@@ -1,26 +1,19 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/meeting_point_map_modal.dart';
 
 // features
 
 // packages
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MeetingPointSelector extends StatefulWidget {
-  const MeetingPointSelector({super.key, required this.onAddressSelected});
+class MeetingPointSelector extends ConsumerWidget {
+  const MeetingPointSelector({super.key});
 
-  final ValueChanged<String> onAddressSelected;
-
-  @override
-  State<MeetingPointSelector> createState() => _MeetingPointSelectorState();
-}
-
-class _MeetingPointSelectorState extends State<MeetingPointSelector> {
-  String _detailAddress = '';
-
-  void _showMap() async {
-    final detailAddress = await showModalBottomSheet(
+  void _showMap(BuildContext context) async {
+    showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       isDismissible: false,
@@ -31,22 +24,16 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
         child: MeetingPointMapModal(),
       ),
     );
-
-    if (detailAddress != null && context.mounted) {
-      setState(() {
-        _detailAddress = detailAddress;
-      });
-
-      widget.onAddressSelected(detailAddress);
-    }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final meetingLocation = ref.read(postCreateProvider).meetingLocation;
+
     return TextField(
       readOnly: true,
       onTap: () {
-        _showMap();
+        _showMap(context);
       },
       decoration: InputDecoration(
         isDense: true,
@@ -59,13 +46,13 @@ class _MeetingPointSelectorState extends State<MeetingPointSelector> {
           ],
         ),
 
-        helper: _detailAddress.isNotEmpty
+        helper: meetingLocation != null
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.check, color: AppColors.success, size: 18.0),
                   SizedBox(width: 8.0),
-                  Expanded(child: Text(_detailAddress)),
+                  Expanded(child: Text(meetingLocation.detailAddress)),
                 ],
               )
             : null,

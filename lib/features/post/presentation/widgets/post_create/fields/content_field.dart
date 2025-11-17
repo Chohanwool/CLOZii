@@ -34,6 +34,10 @@ class _ContentFieldState extends ConsumerState<ContentField> {
           widget.controller.text += selectedPhrase;
 
           // 문구 추가 후, 선택된 문구 초기화 (null)
+          ref
+              .read(postCreateProvider.notifier)
+              .setContent(widget.controller.text);
+
           ref.read(goToPhrasesProvider.notifier).resetSelectedPhrase();
         });
       });

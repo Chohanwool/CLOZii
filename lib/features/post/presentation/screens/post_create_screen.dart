@@ -1,7 +1,8 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/utils/show_confirm_dialog.dart';
+import 'package:clozii/core/utils/show_snack_bar.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
 
 // features
 import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
@@ -10,6 +11,7 @@ import 'package:clozii/features/post/presentation/widgets/post_create/forms/post
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/add_phrase_modal.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/go_to_phrase_modal.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/more_options_modal.dart';
+import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';
@@ -55,7 +57,8 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
     // isAllValid 감지 - 모든 입력 값 검증 성공 감지
     ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
       if (previous?.isAllValid != next.isAllValid && next.isAllValid) {
-        Navigator.of(context).pop();
+        Navigator.of(context).pop(true);
+        postCreateNotifier.resetState();
       }
     });
 
@@ -63,14 +66,68 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () {
-            // "저장하지 않은 내역은 사라집니다" 안내 추가 예정
-            Navigator.pop(context);
+          onPressed: () async {
+            // 변경 사항이 존재할 경우 "저장하지 않은 내역은 사라집니다" 안내
+
+            // 게시글 생성 화면이 비어있을 경우, 화면 닫기
+            if (postCreateNotifier.isEmpty) {
+              Navigator.of(context).pop();
+              return;
+            }
+
+            // 변경 사항이 존재할 경우,
+            if (postCreateNotifier.hasChanges) {
+              // "저장하지 않은 내역은 사라집니다" 안내 모달 표시
+              final result = await _showUnsavedChangesDialog(context);
+
+              // "저장하지 않은 내역은 사라집니다" 안내에서 '예' 버튼 클릭 시
+              if (result != null && result) {
+                // 임시저장 데이터가 없을 경우, 상태 초기화 (reset)
+                postCreateNotifier.draftState == null
+                    ? postCreateNotifier.resetState()
+                    // 임시저장 데이터가 있을 경우, 임시저장 데이터로 상태 초기화 (init)
+                    : postCreateNotifier.initState(
+                        postCreateNotifier.draftState!,
+                      );
+
+                Navigator.of(context).pop();
+              }
+
+              // 변경사항이 없을경우, 그냥 화면 닫기
+            } else {
+              Navigator.of(context).pop();
+            }
           },
           icon: Icon(Icons.close),
         ),
         title: const Text('Sell My Items'),
-        actions: [TextButton(onPressed: () {}, child: const Text('Save'))],
+        actions: [
+          // Save 버튼만 독립적으로 rebuild되도록 Consumer로 분리
+          Consumer(
+            builder: (context, ref, child) {
+              // state 변경 감지
+              // 제목, 본문, 사진 선택, 거래희망장소 선택, 가격 입력 감지
+              ref.watch(postCreateProvider);
+
+              return TextButton(
+                onPressed:
+                    // 게시글 생성 화면이 비어있지 않고, 변경 사항이 존재할 경우, 임시저장 저장 버튼 활성화
+                    !postCreateNotifier.isEmpty && postCreateNotifier.hasChanges
+                    ? () {
+                        // 임시저장 저장 성공 스낵바 표시
+                        showSnackBar(
+                          context: context,
+                          message: 'Successfully saved draft!',
+                        );
+                        // 임시저장 저장 진행
+                        postCreateNotifier.saveTemp();
+                      }
+                    : null,
+                child: const Text('Save'),
+              );
+            },
+          ),
+        ],
         surfaceTintColor: Colors.transparent,
         shape: Border(bottom: BorderSide(color: AppColors.black12)),
       ),
@@ -105,6 +162,15 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
           height: 50.0,
         ),
       ),
+    );
+  }
+
+  // 저장하지 않은 내역이 존재할 시, 안내메시지 표시
+  Future<bool?> _showUnsavedChangesDialog(BuildContext context) async {
+    return showConfirmDialog(
+      context: context,
+      title: 'Notice',
+      messageBody: 'Unsaved changes will be lost. \nDo you want to leave?',
     );
   }
 

@@ -15,9 +15,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PostCreateForm extends ConsumerStatefulWidget {
   const PostCreateForm({super.key});
 
-  // final Map<String, ImageState> selectedImages;
-  // final VoidCallback showGoToPhrases;
-
   @override
   ConsumerState<PostCreateForm> createState() => _PostCreateFormState();
 }
@@ -26,6 +23,14 @@ class _PostCreateFormState extends ConsumerState<PostCreateForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController.text = ref.read(postCreateProvider).title;
+    _contentController.text = ref.read(postCreateProvider).content;
+    _priceController.text = ref.read(postCreateProvider).price.toString();
+  }
 
   @override
   void dispose() {
@@ -92,6 +97,7 @@ class _PostCreateFormState extends ConsumerState<PostCreateForm> {
           onSelected: (type) {
             ref.read(postCreateProvider.notifier).setTradeType(type);
           },
+          selected: postCreateState.tradeType,
         ),
         const SizedBox(height: 16.0),
         PriceField(
@@ -108,13 +114,7 @@ class _PostCreateFormState extends ConsumerState<PostCreateForm> {
           ),
         ),
         const SizedBox(height: 10.0),
-        MeetingPointSelector(
-          onAddressSelected: (detailAddress) {
-            ref
-                .read(postCreateProvider.notifier)
-                .setDetailAddress(detailAddress);
-          },
-        ),
+        MeetingPointSelector(),
 
         const SizedBox(height: kBottomNavigationBarHeight * 2),
       ],

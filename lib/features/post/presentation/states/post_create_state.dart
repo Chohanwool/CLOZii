@@ -1,18 +1,32 @@
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/presentation/states/image_state.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/core/models/meeting_location.dart';
+import 'package:hive/hive.dart';
 
+part 'post_create_state.g.dart';
+
+@HiveType(typeId: 3)
 class PostCreateState {
   static int get maxImageCount => 5;
 
   // 사용자 입력 데이터
+  @HiveField(0)
   final String title;
+
+  @HiveField(1)
   final String content;
+
+  @HiveField(2)
   final TradeType tradeType;
+
+  @HiveField(3)
   final int price;
-  final String? detailAddress;
-  final LatLng? meetingPoint;
-  final Map<String, ImageState> selectedImages;
+
+  @HiveField(4)
+  final MeetingLocation? meetingLocation;
+
+  @HiveField(5)
+  final Map<String, ImageData> selectedImages;
 
   // 모든 필드 입력에 대한 검증 성공 여부
   final bool isAllValid;
@@ -28,8 +42,7 @@ class PostCreateState {
     this.content = '',
     this.tradeType = TradeType.sell,
     this.price = 0,
-    this.detailAddress,
-    this.meetingPoint,
+    this.meetingLocation,
     this.selectedImages = const {},
     this.isAllValid = false,
     this.showGoToPhrases = false,
@@ -43,9 +56,8 @@ class PostCreateState {
     String? content,
     TradeType? tradeType,
     int? price,
-    String? detailAddress,
-    LatLng? meetingPoint,
-    Map<String, ImageState>? selectedImages,
+    MeetingLocation? meetingLocation,
+    Map<String, ImageData>? selectedImages,
     bool? isAllValid,
     bool? showGoToPhrases,
     bool? showAddPhraseModal,
@@ -57,8 +69,7 @@ class PostCreateState {
       content: content ?? this.content,
       tradeType: tradeType ?? this.tradeType,
       price: price ?? this.price,
-      detailAddress: detailAddress ?? this.detailAddress,
-      meetingPoint: meetingPoint ?? this.meetingPoint,
+      meetingLocation: meetingLocation ?? this.meetingLocation,
       selectedImages: selectedImages ?? this.selectedImages,
       isAllValid: isAllValid ?? this.isAllValid,
       showGoToPhrases: showGoToPhrases ?? this.showGoToPhrases,

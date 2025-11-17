@@ -1,6 +1,7 @@
 // core
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/keyboard_aware_button.dart';
+import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/fields/detail_address_field.dart';
@@ -8,15 +9,19 @@ import 'package:clozii/features/post/presentation/widgets/post_create/fields/det
 // packages
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DetailAddressModal extends StatefulWidget {
-  const DetailAddressModal({super.key});
+class DetailAddressModal extends ConsumerStatefulWidget {
+  const DetailAddressModal({super.key, required this.currentLatLng});
+
+  final LatLng currentLatLng;
 
   @override
-  State<DetailAddressModal> createState() => _DetailAddressModalState();
+  ConsumerState<DetailAddressModal> createState() => _DetailAddressModalState();
 }
 
-class _DetailAddressModalState extends State<DetailAddressModal> {
+class _DetailAddressModalState extends ConsumerState<DetailAddressModal> {
   final TextEditingController _controller = TextEditingController();
 
   bool _isButtonEnabled = false;
@@ -71,7 +76,16 @@ class _DetailAddressModalState extends State<DetailAddressModal> {
             KeyboardAwareButton(
               text: 'Save Meeting Point',
               onTap: _isButtonEnabled
-                  ? () => Navigator.of(context).pop(_controller.text.trim())
+                  ? () {
+                      ref
+                          .read(postCreateProvider.notifier)
+                          .setMeetingLocation(
+                            _controller.text.trim(),
+                            widget.currentLatLng,
+                          );
+
+                      Navigator.of(context).pop(_controller.text.trim());
+                    }
                   : null,
             ),
             if (!isKeyboardVisible) const SizedBox(height: 32.0),
