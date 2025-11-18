@@ -122,10 +122,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _User():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -184,10 +181,7 @@ return $default(_that.uid,_that.name,_that.phoneNumber,_that.birthDate,_that.gen
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String phoneNumber,  DateTime? birthDate,  String? gender,  bool isVerified,  DateTime createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _User():
-return $default(_that.uid,_that.name,_that.phoneNumber,_that.birthDate,_that.gender,_that.isVerified,_that.createdAt,_that.updatedAt);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.uid,_that.name,_that.phoneNumber,_that.birthDate,_that.gender,_that.isVerified,_that.createdAt,_that.updatedAt);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

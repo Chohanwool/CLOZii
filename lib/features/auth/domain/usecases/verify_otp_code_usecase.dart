@@ -4,10 +4,11 @@ import 'package:clozii/features/auth/domain/repositories/auth_repository.dart';
 import 'package:clozii/features/auth/domain/entities/user.dart';
 import 'package:flutter/foundation.dart';
 
-class VerifyOtpCodeUsecase {
+/// UseCase
+class VerifyOtpCode {
   final AuthRepository _authRepository;
 
-  VerifyOtpCodeUsecase(this._authRepository);
+  VerifyOtpCode(this._authRepository);
 
   Future<AuthResult<User>> call(
     String verificationId,

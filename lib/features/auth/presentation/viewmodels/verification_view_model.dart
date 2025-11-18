@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/rendering.dart';
 
 // providers
 import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
-import 'package:clozii/features/auth/presentation/providers/verify_otp_code_usecase_provider.dart';
+
+// useCase
+import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
 // states
 import 'package:clozii/features/auth/presentation/states/verification_state.dart';
@@ -93,7 +95,7 @@ class VerificationViewModel extends Notifier<VerificationState> {
       final signUp = ref.read(signUpProvider);
 
       // UseCase 호출
-      final signUpUsecase = ref.read(verifyOtpCodeUsecaseProvider);
+      final signUpUsecase = ref.read(verifyOtpCodeProvider);
 
       // 결과 처리
       final result = await signUpUsecase(

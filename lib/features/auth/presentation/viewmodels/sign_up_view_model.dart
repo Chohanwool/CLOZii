@@ -7,7 +7,7 @@ import 'package:clozii/features/auth/core/enum/auth_step.dart';
 import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
 
 // usecases
-import 'package:clozii/features/auth/presentation/providers/send_verification_usecase_provider.dart';
+import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
 // APIs
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -242,7 +242,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
       state = state.copyWith(isLoading: true, showTermsAndAgree: false);
 
       // 유스케이스 읽어오기
-      final sendVerificationUsecase = ref.read(sendVerificationUsecaseProvider);
+      final sendVerificationUsecase = ref.read(sendVerificationProvider);
       final result = await sendVerificationUsecase(state.formattedPhoneNumber);
 
       debugPrint('------------------');
