@@ -26,32 +26,42 @@ class PostDetailBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const SizedBox(height: 10),
-
           // 사용자 정보
           CardContainer(
+            topLeftRadius: 0,
+            topRightRadius: 0,
             padding: const EdgeInsets.all(16.0),
             child: SizedBox(
               width: double.infinity,
               child: Row(
                 children: [
                   Container(
-                    width: 60,
-                    height: 60,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.backgroundSecondary,
                     ),
-                    child: Icon(Icons.person, size: 36, color: Colors.grey),
+                    child: Icon(Icons.person, size: 24, color: Colors.grey),
                   ),
 
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Kiko Junior', style: context.textTheme.titleLarge),
-                      Text('Clozii', style: context.textTheme.bodyMedium),
+                      Text('Kiko Junior', style: context.textTheme.titleSmall),
+                      Text(
+                        'Sta. Rosa, Laguna',
+                        style: context.textTheme.bodySmall,
+                      ),
                     ],
+                  ),
+
+                  Spacer(),
+                  Icon(
+                    CupertinoIcons.chevron_right,
+                    size: 16,
+                    color: AppColors.textSecondary,
                   ),
                 ],
               ),
