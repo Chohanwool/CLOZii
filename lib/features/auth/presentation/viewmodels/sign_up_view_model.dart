@@ -17,6 +17,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
   final formKey = GlobalKey<FormState>();
 
   //TODO: 나중에 signUpUseCase 읽어와야함
+
   late FocusNode phoneNumberFocusNode;
   late FocusNode nameFocusNode;
   late FocusNode birthDateFocusNode;
@@ -55,8 +56,6 @@ class SignUpViewModel extends Notifier<SignUpState> {
         nameFocusNode.requestFocus();
       });
     }
-
-    // debugPrint(state.toString());
   }
 
   // 이름 필드 입력시 호출
@@ -120,14 +119,17 @@ class SignUpViewModel extends Notifier<SignUpState> {
     // 상태 값만 변경하여 위젯에서 사용할 수 있도록 함
     state = state.copyWith(isLoading: false, showTermsAndAgree: true);
 
-    debugPrint('SignUpState: ${state.toString()}');
+    // debugPrint('SignUpState: ${state.toString()}');
   }
 
   // 약관 동의 모달 닫기
   void setShowTermsAndAgreeToFalse() {
     // 모든 이용약관 초기 값으로 변경후, 모달 종료를 위해 상태 변경
     state = state.copyWith(
+      // 이용약관 flag 닫기
       showTermsAndAgree: false,
+
+      // 이용약관 bool 값 초기 값으로
       isAllAgreed: false,
       isTermAgreed: false,
       isPrivacyPolicyAgreed: false,
@@ -139,6 +141,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     );
   }
 
+  // 모든 약관 동의 토글
   void toggleAllAgreement() {
     final newAgreementState = !state.isAllAgreed;
     state = state.copyWith(
@@ -152,6 +155,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     );
   }
 
+  // 약관 선택 동의 토글
   void updateIndividualAgreement({
     bool? isTermAgreed,
     bool? isPrivacyPolicyAgreed,
@@ -188,6 +192,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
     state = state.copyWith(isAgeVerified: value);
   }
 
+  // 이용약관 동의 제출
   Future<bool> submitTermsAndCondition() async {
     // 필수 항목 검증
     if (!state.isTermAgreed) {
@@ -225,6 +230,13 @@ class SignUpViewModel extends Notifier<SignUpState> {
 
   // Firebase 연락처 인증 로직 호출
   Future<void> sendVerificationCode() async {
+    // state = state.copyWith(
+    //   isLoading: false,
+    //   isSuccess: true,
+    //   verificationId: '임시성공처리',
+    //   showTermsAndAgree: false,
+    // );
+
     try {
       // 로딩 오버레이
       state = state.copyWith(isLoading: true, showTermsAndAgree: false);
@@ -235,6 +247,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
 
       debugPrint('------------------');
       debugPrint(result.data);
+      debugPrint('------------------');
 
       if (result.isSuccess) {
         debugPrint('✅ VERIFICATION CODE SENT SUCCESSFULLY');
@@ -252,6 +265,7 @@ class SignUpViewModel extends Notifier<SignUpState> {
           isLoading: false,
           errorMessage:
               result.failure?.message ?? 'Failed to send verification code',
+          showTermsAndAgree: false,
         );
       }
     } catch (e) {
@@ -259,7 +273,26 @@ class SignUpViewModel extends Notifier<SignUpState> {
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'An unexpected error occurred',
+        showTermsAndAgree: false,
       );
     }
+  }
+
+  // 인증화면에서 뒤로가기로 넘어올 때 상태 값 초기 값으로 변경
+  void resetAgreements() {
+    state = state.copyWith(
+      isAllAgreed: false,
+      isTermAgreed: false,
+      isPrivacyPolicyAgreed: false,
+      isLocationPolicyAgreed: false,
+      isMarketingAgreed: false,
+      isThirdPartyAgreed: false,
+      isPushAgreed: false,
+      isAgeVerified: false,
+
+      // sign_up_screen에서 모든 과정 통과 후 verification_screen으로 이동시에 감지를 위한 plag
+      isSuccess: false,
+      showTermsAndAgree: false,
+    );
   }
 }

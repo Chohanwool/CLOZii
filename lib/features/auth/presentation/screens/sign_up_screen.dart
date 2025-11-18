@@ -109,6 +109,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        title: const Text('Sign up'),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

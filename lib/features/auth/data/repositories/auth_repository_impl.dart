@@ -38,11 +38,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<AuthResult<String>> sendVerificationCode(String phoneNumber) async {
-    debugPrint('연락처 정보: $phoneNumber');
-
     var auth = FirebaseAuth.instance;
 
     try {
+      /// Futute를 수동으로 제어하기 위해 Completer 사용
+      /// - 보통의 경우, Future는 비동기 함수가 끝나면 자동으로 완료되지만,
+      ///   Completer를 통해 **언제 Future를 완료시킬지** 결정할 수 있음
+      ///
+      /// - completer.complete(value) => Future를 성공으로 완료시킴
+      /// - completer.completeError(error) => Future를 실패로 완료시킴
       final Completer<String> completer = Completer<String>();
 
       await auth.verifyPhoneNumber(
@@ -90,7 +94,6 @@ class AuthRepositoryImpl implements AuthRepository {
 
       final verificationId = await completer.future;
       return AuthResult.success(verificationId);
-      //
     } on FirebaseAuthException catch (e) {
       debugPrint('FirebaseAuthException: ${e.message}');
       return AuthResult.failure(
@@ -112,8 +115,38 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResult<bool>> verifyCode(String phoneNumber, String code) {
-    // TODO: implement verifyCode
-    throw UnimplementedError();
+  Future<AuthResult<User>> verifyCode(
+    String verificationId,
+    String otpCode,
+  ) async {
+    try {
+      /// 인증코드 입력 값과 실제 발송된 값과 비교
+      /// - 실제 값은 파이어베이스 서버 전송으로 확인 불가,
+      ///   비교 결과만 확인 가능
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: otpCode,
+      );
+
+      var auth = FirebaseAuth.instance;
+
+      // 로그인 시도(현재 단계에서는 무조건 최초 로그인이므로 회원가입)
+      UserCredential userCredential = await auth.signInWithCredential(
+        credential,
+      );
+
+      User? user = userCredential.user;
+
+      if (user != null) {
+        debugPrint("======= AuthRepoImpl.verifyCode =======");
+        debugPrint('회원가입 성공: ${user.toString()}');
+        debugPrint("======= AuthRepoImpl.verifyCode =======");
+        return AuthResult.success(user);
+      } else {
+        return AuthResult.failure(UnknownFailure('User is null'));
+      }
+    } catch (e) {
+      return AuthResult.failure(UnknownFailure(e.toString()));
+    }
   }
 }

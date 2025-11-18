@@ -25,6 +25,6 @@ abstract class AuthRepository {
   // 인증번호 재전송
   Future<AuthResult<bool>> resendVerificationCode(String phoneNumber);
 
-  // 인증번호 검증
-  Future<AuthResult<bool>> verifyCode(String phoneNumber, String code);
+  // 인증번호 검증 및 회원가입
+  Future<AuthResult<User>> verifyCode(String verificationId, String otpCode);
 }

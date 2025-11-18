@@ -259,35 +259,25 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
                   ),
 
                   // 18세 이상 라디오 버튼
-                  Row(
-                    children: [
-                      Radio<bool>(
-                        value: true,
-                        groupValue:
-                            signUpState.isAgeVerified, // 모든 라디오 버튼이 공유하는 필드
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        onChanged: (value) {
-                          signUpNotifier.updateAgeVerified(value!);
-                        },
-                      ),
-                      const Text('I am 18 years old or above'),
-                    ],
+                  RadioListTile<bool>(
+                    value: true, // 또는 false
+                    groupValue: signUpState.isAgeVerified,
+                    onChanged: (v) => signUpNotifier.updateAgeVerified(v!),
+                    title: const Text(
+                      'I am 18 years old or above',
+                    ), // 또는 'I am under 18 years old'
+                    activeColor: Theme.of(context).colorScheme.primary,
                   ),
 
                   // 18세 미만 라디오 버튼
-                  Row(
-                    children: [
-                      Radio<bool>(
-                        value: false,
-                        groupValue:
-                            signUpState.isAgeVerified, // 모든 라디오 버튼이 공유하는 필드
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        onChanged: (value) {
-                          signUpNotifier.updateAgeVerified(value!);
-                        },
-                      ),
-                      const Text('I am under 18 years old'),
-                    ],
+                  RadioListTile<bool>(
+                    value: false, // 또는 false
+                    groupValue: signUpState.isAgeVerified,
+                    onChanged: (v) => signUpNotifier.updateAgeVerified(v!),
+                    title: const Text(
+                      'I am under 18 years old',
+                    ), // 또는 'I am under 18 years old'
+                    activeColor: Theme.of(context).colorScheme.primary,
                   ),
 
                   const SizedBox(height: 12.0),
@@ -312,7 +302,6 @@ class _TermsAndConditionsState extends ConsumerState<TermsAndConditions> {
 
                       // 성공 시 모달 닫음
                       Navigator.of(context).pop(true);
-                      
                     },
                   ),
                 ],
