@@ -1,33 +1,26 @@
-// lib/features/auth/presentation/states/verification_state.dart
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'verification_state.freezed.dart';
+
 const int maxAttemptCount = 3;
 
-class VerificationState {
-  final String otpCode; // 6자리 입력
-  final bool isSubmitting; // 제출 로딩
-  final bool isLoading; //
-  final int cooldownTimer;
-  final int minutes;
-  final int seconds;
-  final int resendCooldown; // 재전송 쿨다운(초)
-  final int attemptCount; // 시도 횟수
-  final bool isLocked; // 잠금 여부
-  final bool autoFillAvailable; // 자동완성 가능 여부
+@freezed
+class VerificationState with _$VerificationState {
+  const VerificationState._();
 
-  final String? errorMessage; // 에러 메시지
-
-  const VerificationState({
-    this.otpCode = '',
-    this.isSubmitting = false,
-    this.isLoading = false,
-    this.cooldownTimer = 0,
-    this.minutes = 0,
-    this.seconds = 0,
-    this.resendCooldown = 0,
-    this.attemptCount = 1,
-    this.isLocked = false,
-    this.autoFillAvailable = false,
-    this.errorMessage,
-  });
+  const factory VerificationState({
+    @Default('') String otpCode, // 6자리 입력
+    @Default(false) bool isSubmitting, // 제출 로딩
+    @Default(false) bool isLoading,
+    @Default(0) int cooldownTimer,
+    @Default(0) int minutes,
+    @Default(0) int seconds,
+    @Default(0) int resendCooldown, // 재전송 쿨다운(초)
+    @Default(1) int attemptCount, // 시도 횟수
+    @Default(false) bool isLocked, // 잠금 여부
+    @Default(false) bool autoFillAvailable, // 자동완성 가능 여부
+    String? errorMessage, // 에러 메시지
+  }) = _VerificationState;
 
   bool get isCodeValid => otpCode.length == 6;
   int get remainingSeconds => minutes * 60 + seconds;
@@ -39,32 +32,4 @@ class VerificationState {
   // 재전송 가능 여부
   bool get canResend =>
       remainingSeconds == 0 && !isSubmitting && attemptCount < maxAttemptCount;
-
-  VerificationState copyWith({
-    String? otpCode,
-    bool? isSubmitting,
-    bool? isLoading,
-    int? cooldownTimer,
-    int? minutes,
-    int? seconds,
-    int? resendCooldown,
-    int? attemptCount,
-    bool? isLocked,
-    bool? autoFillAvailable,
-    String? errorMessage,
-  }) {
-    return VerificationState(
-      otpCode: otpCode ?? this.otpCode,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isLoading: isLoading ?? this.isLoading,
-      cooldownTimer: cooldownTimer ?? this.cooldownTimer,
-      minutes: minutes ?? this.minutes,
-      seconds: seconds ?? this.seconds,
-      resendCooldown: resendCooldown ?? this.resendCooldown,
-      attemptCount: attemptCount ?? this.attemptCount,
-      isLocked: isLocked ?? this.isLocked,
-      autoFillAvailable: autoFillAvailable ?? this.autoFillAvailable,
-      errorMessage: errorMessage ?? this.errorMessage,
-    );
-  }
 }
