@@ -179,10 +179,6 @@ class SignUp extends _$SignUp {
   // 성별 필드 값 선택시 호출
   void updateGender(String? gender) {
     state = state.copyWith(gender: gender, errorMessage: null);
-
-    if (state.isGenderValid && state.currentStep == AuthStep.gender) {
-      // TODO: 약관 표시 후 인증 화면으로 이동
-    }
   }
 
   // 모든 필드 유효성 검증 및 검증 후 약관 동의 모달 노출
