@@ -38,13 +38,18 @@ dependencies:
   mask_text_input_formatter: ^2.9.0
   shared_preferences: ^2.5.3
   flutter_keyboard_visibility: ^6.0.0
-  firebase_core: ^4.1.0
-  firebase_auth: ^6.0.2
   image_picker: ^1.2.0
-  flutter_riverpod: ^3.0.0
   photo_manager: ^3.7.1
   google_maps_flutter: ^2.13.1
   path_provider: ^2.1.1
+  
+  # Firebase
+  firebase_core: ^4.1.0
+  firebase_auth: ^6.0.2
+
+  # riverpod 패키지
+  flutter_riverpod: ^3.0.3
+  riverpod_annotation: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -56,6 +61,12 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
+
+  # Riverpod 관련 패키지
+  riverpod_generator: ^3.0.3
+  build_runner: ^2.7.1
+  custom_lint: ^0.8.0
+  riverpod_lint: ^3.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
