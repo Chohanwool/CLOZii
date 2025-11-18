@@ -47,7 +47,6 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     final post = ref.watch(postProvider);
     final postDetailState = ref.watch(postDetailProvider);
 
-    debugPrint(post.toString());
     if (post == null) {
       return Scaffold(
         body: Center(
