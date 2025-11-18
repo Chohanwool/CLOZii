@@ -45,8 +45,12 @@ class VerifyOtpCode {
       debugPrint(domainUser.toString());
       debugPrint('====== verifyOtpCodeUsecase.call ======');
 
-      // TODO: 추가 정보를 Firestore에 저장
-      // await _userRepository.saveUser(domainUser);
+      // 3. Firestore에 사용자 정보 저장
+      final saveResult = await _authRepository.saveUserToFirestore(domainUser);
+
+      if (!saveResult.isSuccess) {
+        return AuthResult.failure(saveResult.failure!);
+      }
 
       return AuthResult.success(domainUser);
     } catch (e) {

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:clozii/features/auth/core/errors/auth_failures.dart';
 import 'package:clozii/features/auth/domain/entities/auth_result.dart';
+import 'package:clozii/features/auth/domain/entities/user.dart' as domain;
 import 'package:clozii/features/auth/domain/repositories/auth_repository.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
 
@@ -146,6 +148,30 @@ class AuthRepositoryImpl implements AuthRepository {
         return AuthResult.failure(UnknownFailure('User is null'));
       }
     } catch (e) {
+      return AuthResult.failure(UnknownFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<AuthResult<void>> saveUserToFirestore(domain.User user) async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      // User 엔티티를 JSON으로 변환하여 Firestore에 저장
+      await firestore.collection('users').doc(user.uid).set(user.toJson());
+
+      debugPrint('====== AuthRepoImpl.saveUserToFirestore ======');
+      debugPrint('사용자 정보 저장 성공: ${user.uid}');
+      debugPrint('====== AuthRepoImpl.saveUserToFirestore ======');
+
+      return AuthResult.success(null);
+    } on FirebaseException catch (e) {
+      debugPrint('FirebaseException: ${e.message}');
+      return AuthResult.failure(
+        UnknownFailure('Firestore error: ${e.message}'),
+      );
+    } catch (e) {
+      debugPrint('UnknownError: $e');
       return AuthResult.failure(UnknownFailure(e.toString()));
     }
   }

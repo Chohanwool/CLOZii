@@ -1,4 +1,5 @@
 import 'package:clozii/features/auth/domain/entities/auth_result.dart';
+import 'package:clozii/features/auth/domain/entities/user.dart' as domain;
 import 'package:firebase_auth/firebase_auth.dart';
 
 abstract class AuthRepository {
@@ -27,4 +28,7 @@ abstract class AuthRepository {
 
   // 인증번호 검증 및 회원가입
   Future<AuthResult<User>> verifyCode(String verificationId, String otpCode);
+
+  // Firestore에 사용자 정보 저장
+  Future<AuthResult<void>> saveUserToFirestore(domain.User user);
 }
