@@ -1,10 +1,5 @@
 // core
-import 'package:clozii/core/data/adapters/lat_lng_adapters.dart';
 import 'package:clozii/core/theme/theme.dart';
-import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/image_data.dart';
-import 'package:clozii/features/post/core/models/meeting_location.dart';
-import 'package:clozii/features/post/presentation/states/post_create_state.dart';
 
 // APIs
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,7 +15,6 @@ import 'package:clozii/features/onBoarding/presentation/screens/onboarding_scree
 
 // packages
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,14 +23,8 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // initialize Hive
-  await Hive.initFlutter();
 
   // register adapters
-  Hive.registerAdapter(ImageDataAdapter());
-  Hive.registerAdapter(MeetingLocationAdapter());
-  Hive.registerAdapter(LatLngAdapter());
-  Hive.registerAdapter(PostCreateStateAdapter());
-  Hive.registerAdapter(TradeTypeAdapter());
 
   runApp(const ProviderScope(child: CLOZii()));
 }
@@ -57,8 +45,8 @@ class CLOZii extends StatelessWidget {
           if (snapshot.hasData) {
             return HomeScreen();
           } else {
-            // return HomeScreen();
-            return OnBoardingScreen();
+            return HomeScreen();
+            // return OnBoardingScreen();
           }
         },
       ),

@@ -1,17 +1,34 @@
 // SelectedImageProvider 가 Map<String, ImageData> 형태의 상태를 관리함
+import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:hive/hive.dart';
-
-part 'image_data.g.dart'; // 자동 생성될 파일
-
-@HiveType(typeId: 0)
 class ImageData {
-  @HiveField(0)
   Uint8List? originBytes;
-
-  @HiveField(1)
   Uint8List? thumbnailBytes;
 
   ImageData({this.originBytes, this.thumbnailBytes});
+
+  // JSON 직렬화
+  Map<String, dynamic> toJson() {
+    return {
+      'originBytes': originBytes != null
+          ? base64Encode(originBytes!)
+          : null,
+      'thumbnailBytes': thumbnailBytes != null
+          ? base64Encode(thumbnailBytes!)
+          : null,
+    };
+  }
+
+  // JSON 역직렬화
+  factory ImageData.fromJson(Map<String, dynamic> json) {
+    return ImageData(
+      originBytes: json['originBytes'] != null
+          ? base64Decode(json['originBytes'] as String)
+          : null,
+      thumbnailBytes: json['thumbnailBytes'] != null
+          ? base64Decode(json['thumbnailBytes'] as String)
+          : null,
+    );
+  }
 }
