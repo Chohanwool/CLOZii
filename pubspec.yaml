@@ -47,7 +47,6 @@ dependencies:
   path_provider: ^2.1.1
 
 dev_dependencies:
-  analyzer: ^6.0.0
   flutter_test:
     sdk: flutter
 
