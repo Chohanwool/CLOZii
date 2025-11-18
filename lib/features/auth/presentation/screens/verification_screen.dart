@@ -1,5 +1,4 @@
 import 'package:clozii/core/utils/show_loading_overlay.dart';
-import 'package:clozii/features/auth/presentation/states/verification_state.dart';
 import 'package:flutter/material.dart';
 
 // APIs
@@ -12,8 +11,8 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/features/auth/presentation/widgets/verification/verification_field.dart';
 
 // providers
-import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
-import 'package:clozii/features/auth/presentation/providers/verification_provider.dart';
+import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/verification/verification_provider.dart';
 
 class VerificationScreen extends ConsumerStatefulWidget {
   const VerificationScreen({super.key});

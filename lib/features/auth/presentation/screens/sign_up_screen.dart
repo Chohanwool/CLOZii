@@ -9,9 +9,8 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 
 // providers/states
-import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
-import 'package:clozii/features/auth/presentation/states/sign_up_state.dart';
 
 // widgets
 import 'package:clozii/features/auth/presentation/widgets/forms/sign_up_form.dart';

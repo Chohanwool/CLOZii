@@ -10,7 +10,7 @@ import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // providers
-import 'package:clozii/features/auth/presentation/providers/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
 
 enum Age { youth, adult }
 
