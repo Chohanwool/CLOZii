@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
 import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
+// parts
 part 'verification_provider.freezed.dart';
 part 'verification_provider.g.dart';
 

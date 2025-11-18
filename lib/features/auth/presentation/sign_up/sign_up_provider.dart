@@ -1,5 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
+
+import 'dart:async';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +12,7 @@ import 'package:clozii/features/auth/auth_constants.dart';
 // providers
 import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
+// parts
 part 'sign_up_provider.freezed.dart';
 part 'sign_up_provider.g.dart';
 

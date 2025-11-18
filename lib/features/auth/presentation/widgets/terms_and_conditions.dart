@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // core
@@ -8,6 +7,7 @@ import 'package:clozii/features/auth/core/enum/agreement_type.dart';
 
 // Libraries
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/cupertino.dart';
 
 // providers
 import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
