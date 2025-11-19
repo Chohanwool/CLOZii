@@ -41,7 +41,7 @@ final class VerificationProvider
   }
 }
 
-String _$verificationHash() => r'7b620a3988daf9c3feacfce5b46de4971dffd2c8';
+String _$verificationHash() => r'63734e7dc32e65ddaa0c4214c8efd12f0d88169c';
 
 abstract class _$Verification extends $Notifier<VerificationState> {
   VerificationState build();

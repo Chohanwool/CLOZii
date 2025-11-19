@@ -40,3 +40,7 @@ class MaxAttemptsReachedFailure extends AuthFailure {
 class UnknownFailure extends AuthFailure {
   const UnknownFailure(super.message, [super.code]);
 }
+
+class FirestoreSaveFailure extends AuthFailure {
+  const FirestoreSaveFailure(super.message, [super.code]);
+}

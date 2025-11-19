@@ -168,11 +168,13 @@ class AuthRepositoryImpl implements AuthRepository {
     } on FirebaseException catch (e) {
       debugPrint('FirebaseException: ${e.message}');
       return AuthResult.failure(
-        UnknownFailure('Firestore error: ${e.message}'),
+        FirestoreSaveFailure('사용자 정보 저장 실패: ${e.message}'),
       );
     } catch (e) {
       debugPrint('UnknownError: $e');
-      return AuthResult.failure(UnknownFailure(e.toString()));
+      return AuthResult.failure(
+        FirestoreSaveFailure('사용자 정보 저장 중 오류 발생: $e'),
+      );
     }
   }
 }

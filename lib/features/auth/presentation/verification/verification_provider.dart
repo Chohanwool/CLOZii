@@ -7,6 +7,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
 import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
+// failures
+import 'package:clozii/features/auth/core/errors/auth_failures.dart';
+
 // parts
 part 'verification_provider.freezed.dart';
 part 'verification_provider.g.dart';
@@ -166,9 +169,8 @@ class Verification extends _$Verification {
         debugPrint(result.toString());
         debugPrint('====== verificationViewModel._verifyOtp ======');
       } else {
-        // Firestore 저장 실패 등 심각한 오류 체크
-        final isCritical =
-            result.failure?.message.contains('Firestore') ?? false;
+        // Firestore 저장 실패 등 심각한 오류 체크 (타입 기반)
+        final isCritical = result.failure is FirestoreSaveFailure;
 
         state = state.copyWith(
           isLoading: false,
