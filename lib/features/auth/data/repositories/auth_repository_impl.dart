@@ -21,18 +21,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResult<User>> signIn(String phoneNumber) {
-    // TODO: implement signIn
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<AuthResult<User>> signOut() {
-    // TODO: implement signOut
-    throw UnimplementedError();
-  }
-
-  @override
   Future<AuthResult<bool>> isPhoneRegistered(String phoneNumber) {
     // TODO: implement isPhoneRegistered
     throw UnimplementedError();
@@ -111,12 +99,6 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResult<bool>> resendVerificationCode(String phoneNumber) {
-    // TODO: implement resendVerificationCode
-    throw UnimplementedError();
-  }
-
-  @override
   Future<AuthResult<User>> verifyCode(
     String verificationId,
     String otpCode,
@@ -172,9 +154,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
     } catch (e) {
       debugPrint('UnknownError: $e');
-      return AuthResult.failure(
-        FirestoreSaveFailure('사용자 정보 저장 중 오류 발생: $e'),
-      );
+      return AuthResult.failure(FirestoreSaveFailure('사용자 정보 저장 중 오류 발생: $e'));
     }
   }
 
@@ -188,17 +168,13 @@ class AuthRepositoryImpl implements AuthRepository {
 
       if (!docSnapshot.exists) {
         debugPrint('사용자 정보가 존재하지 않음: $uid');
-        return AuthResult.failure(
-          AuthenticationFailure('사용자 정보를 찾을 수 없습니다.'),
-        );
+        return AuthResult.failure(AuthenticationFailure('사용자 정보를 찾을 수 없습니다.'));
       }
 
       // JSON 데이터를 도메인 User 엔티티로 변환
       final userData = docSnapshot.data();
       if (userData == null) {
-        return AuthResult.failure(
-          AuthenticationFailure('사용자 데이터가 비어있습니다.'),
-        );
+        return AuthResult.failure(AuthenticationFailure('사용자 데이터가 비어있습니다.'));
       }
 
       final user = domain.User.fromJson(userData);
@@ -215,9 +191,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
     } catch (e) {
       debugPrint('UnknownError: $e');
-      return AuthResult.failure(
-        AuthenticationFailure('사용자 정보 조회 중 오류 발생: $e'),
-      );
+      return AuthResult.failure(AuthenticationFailure('사용자 정보 조회 중 오류 발생: $e'));
     }
   }
 }
