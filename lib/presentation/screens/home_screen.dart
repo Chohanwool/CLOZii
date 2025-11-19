@@ -7,7 +7,6 @@ import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dar
 
 import 'package:clozii/features/post/presentation/screens/post_list_screen.dart';
 import 'package:clozii/features/search/presentation/screens/search_screen.dart';
-import 'package:clozii/features/search/presentation/screens/search_screen_simple.dart';
 import 'package:clozii/presentation/widgets/custom_bottom_navigation_bar.dart';
 
 // packages
