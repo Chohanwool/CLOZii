@@ -7,7 +7,7 @@ import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/core/utils/show_loading_overlay.dart';
 
 // providers
-import 'package:clozii/features/auth/presentation/sign_in/sign_in_provider.dart';
+import 'package:clozii/features/auth/presentation/providers/sign_in/sign_in_provider.dart';
 
 // widgets
 import 'package:clozii/features/auth/presentation/widgets/forms/fields/phone_number_field.dart';

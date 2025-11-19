@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:clozii/features/auth/core/enum/auth_step.dart';
 
 // states
-import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/providers/sign_up/sign_up_provider.dart';
 
 // widgets
 import 'package:clozii/features/auth/presentation/widgets/forms/fields/gender_dropdown_field.dart';

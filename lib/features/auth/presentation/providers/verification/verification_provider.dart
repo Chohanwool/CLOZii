@@ -4,8 +4,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 // providers
-import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
-import 'package:clozii/features/auth/presentation/sign_in/sign_in_provider.dart';
+import 'package:clozii/features/auth/presentation/providers/sign_up/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/providers/sign_in/sign_in_provider.dart';
 import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
 // failures
