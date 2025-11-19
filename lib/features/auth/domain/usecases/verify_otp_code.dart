@@ -48,7 +48,14 @@ class VerifyOtpCode {
       // 3. Firestore에 사용자 정보 저장
       final saveResult = await _authRepository.saveUserToFirestore(domainUser);
 
+      // Firestore 저장 실패 시 생성된 Firebase Auth 사용자 삭제 (롤백)
       if (!saveResult.isSuccess) {
+        try {
+          debugPrint('====== Firebase Auth 사용자 롤백 완료 ======');
+          await firebaseUser.delete();
+        } catch (deleteError) {
+          debugPrint('====== Firebase Auth 사용자 삭제 실패: $deleteError ======');
+        }
         return AuthResult.failure(saveResult.failure!);
       }
 

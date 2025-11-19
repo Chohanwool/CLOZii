@@ -370,4 +370,9 @@ class SignUp extends _$SignUp {
       showTermsAndAgree: false,
     );
   }
+
+  // 회원가입 전체 상태 초기화 (심각한 오류 발생 시)
+  void resetAll() {
+    state = const SignUpState();
+  }
 }

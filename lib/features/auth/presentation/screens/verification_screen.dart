@@ -61,6 +61,31 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
         }
       }
 
+      // 심각한 오류 발생 시 오류 모달 표시 후 회원가입 처음으로 이동
+      if (next.hasCriticalError && previous?.hasCriticalError == false) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: const Text('오류'),
+            content: Text(next.errorMessage ?? '예기치 않은 오류가 발생했습니다.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  // 다이얼로그 닫기
+                  Navigator.of(context).pop();
+                  // 회원가입 상태 초기화
+                  signUpNotifier.resetAll();
+                  // 회원가입 첫 화면으로 이동 (현재 스택 모두 제거)
+                  Navigator.of(context).popUntil((route) => route.isFirst);
+                },
+                child: const Text('확인'),
+              ),
+            ],
+          ),
+        );
+      }
+
       // 인증 성공 시 홈 화면으로 이동
       // - 회원가입 완료
       if (next.isSuccess && previous?.isSuccess == false) {

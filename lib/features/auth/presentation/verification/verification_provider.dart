@@ -37,6 +37,7 @@ sealed class VerificationState with _$VerificationState {
     @Default(false) bool isLocked, // 잠금 여부
     @Default(false) bool autoFillAvailable, // 자동완성 가능 여부
     @Default(false) bool isSuccess, // 인증 성공 여부
+    @Default(false) bool hasCriticalError, // 심각한 오류 발생 (Firestore 저장 실패 등)
     String? errorMessage, // 에러 메시지
   }) = _VerificationState;
 
@@ -165,14 +166,23 @@ class Verification extends _$Verification {
         debugPrint(result.toString());
         debugPrint('====== verificationViewModel._verifyOtp ======');
       } else {
+        // Firestore 저장 실패 등 심각한 오류 체크
+        final isCritical =
+            result.failure?.message.contains('Firestore') ?? false;
+
         state = state.copyWith(
           isLoading: false,
           isSubmitting: false,
-          errorMessage: result.failure?.message ?? '인증 실패',
+          hasCriticalError: isCritical,
+          errorMessage: isCritical
+              ? '예기치 않은 서비스 오류가 발생했습니다.\n처음부터 다시 시도해주세요.'
+              : result.failure?.message ?? '인증 실패',
         );
 
-        // 인증번호 시도 횟수 증가
-        updateAttemptCount();
+        // 일반 인증 실패인 경우만 시도 횟수 증가
+        if (!isCritical) {
+          updateAttemptCount();
+        }
       }
     } catch (e) {
       state = state.copyWith(
