@@ -154,8 +154,10 @@ class Verification extends _$Verification {
     try {
       // mode에 따라 다른 UseCase 호출
       if (state.mode == VerificationMode.signUp) {
+        // 회원가입
         await _verifySignUpOtp();
       } else {
+        // 로그인
         await _verifySignInOtp();
       }
     } catch (e) {
