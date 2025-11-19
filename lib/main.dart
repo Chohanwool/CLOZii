@@ -22,10 +22,6 @@ void main() async {
   // initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // initialize Hive
-
-  // register adapters
-
   runApp(const ProviderScope(child: CLOZii()));
 }
 
