@@ -45,7 +45,6 @@ class CLOZii extends StatelessWidget {
           if (snapshot.hasData) {
             return HomeScreen();
           } else {
-            // return HomeScreen();
             return OnBoardingScreen();
           }
         },

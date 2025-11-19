@@ -1,4 +1,5 @@
 // import 'package:clozii/auth_sample/presentation/screens/sign_up_screen.dart';
+import 'package:clozii/features/auth/presentation/screens/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 
 // core
@@ -30,9 +31,11 @@ class OnBoardingScreen extends StatelessWidget {
 
   // 로그인 화면으로 이동
   void navigateToLogin(BuildContext context) {
-    // Navigator.of(context).push(
-    //   MaterialPageRoute(builder: (BuildContext context) => const LoginScreen()),
-    // );
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (BuildContext context) => const SignInScreen(),
+      ),
+    );
   }
 
   @override
