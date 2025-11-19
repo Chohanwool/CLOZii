@@ -177,4 +177,47 @@ class AuthRepositoryImpl implements AuthRepository {
       );
     }
   }
+
+  @override
+  Future<AuthResult<domain.User>> getUserFromFirestore(String uid) async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      // Firestore에서 사용자 정보 조회
+      final docSnapshot = await firestore.collection('users').doc(uid).get();
+
+      if (!docSnapshot.exists) {
+        debugPrint('사용자 정보가 존재하지 않음: $uid');
+        return AuthResult.failure(
+          AuthenticationFailure('사용자 정보를 찾을 수 없습니다.'),
+        );
+      }
+
+      // JSON 데이터를 도메인 User 엔티티로 변환
+      final userData = docSnapshot.data();
+      if (userData == null) {
+        return AuthResult.failure(
+          AuthenticationFailure('사용자 데이터가 비어있습니다.'),
+        );
+      }
+
+      final user = domain.User.fromJson(userData);
+
+      debugPrint('====== AuthRepoImpl.getUserFromFirestore ======');
+      debugPrint('사용자 정보 조회 성공: ${user.uid}');
+      debugPrint('====== AuthRepoImpl.getUserFromFirestore ======');
+
+      return AuthResult.success(user);
+    } on FirebaseException catch (e) {
+      debugPrint('FirebaseException: ${e.message}');
+      return AuthResult.failure(
+        AuthenticationFailure('사용자 정보 조회 실패: ${e.message}'),
+      );
+    } catch (e) {
+      debugPrint('UnknownError: $e');
+      return AuthResult.failure(
+        AuthenticationFailure('사용자 정보 조회 중 오류 발생: $e'),
+      );
+    }
+  }
 }

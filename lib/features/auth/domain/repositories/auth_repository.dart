@@ -31,4 +31,7 @@ abstract class AuthRepository {
 
   // Firestore에 사용자 정보 저장
   Future<AuthResult<void>> saveUserToFirestore(domain.User user);
+
+  // Firestore에서 사용자 정보 조회
+  Future<AuthResult<domain.User>> getUserFromFirestore(String uid);
 }

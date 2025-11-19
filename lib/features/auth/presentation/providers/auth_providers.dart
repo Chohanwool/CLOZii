@@ -5,6 +5,7 @@ import 'package:clozii/features/auth/data/repositories/auth_repository_impl.dart
 
 import 'package:clozii/features/auth/domain/usecases/send_verification.dart';
 import 'package:clozii/features/auth/domain/usecases/verify_otp_code.dart';
+import 'package:clozii/features/auth/domain/usecases/verify_sign_in_otp.dart';
 
 part 'auth_providers.g.dart';
 
@@ -12,6 +13,7 @@ part 'auth_providers.g.dart';
 /// - authRepository -> authRepositoryProvider
 /// - sendVerification -> sendVerificationProvider
 /// - verifyOtpCode -> verifyOtpCodeProvider
+/// - verifySignInOtp -> verifySignInOtpProvider
 
 @riverpod
 AuthRepository authRepository(Ref ref) {
@@ -26,4 +28,9 @@ SendVerification sendVerification(Ref ref) {
 @riverpod
 VerifyOtpCode verifyOtpCode(Ref ref) {
   return VerifyOtpCode(ref.read(authRepositoryProvider));
+}
+
+@riverpod
+VerifySignInOtp verifySignInOtp(Ref ref) {
+  return VerifySignInOtp(ref.read(authRepositoryProvider));
 }

@@ -12,6 +12,7 @@ part of 'auth_providers.dart';
 /// - authRepository -> authRepositoryProvider
 /// - sendVerification -> sendVerificationProvider
 /// - verifyOtpCode -> verifyOtpCodeProvider
+/// - verifySignInOtp -> verifySignInOtpProvider
 
 @ProviderFor(authRepository)
 const authRepositoryProvider = AuthRepositoryProvider._();
@@ -20,6 +21,7 @@ const authRepositoryProvider = AuthRepositoryProvider._();
 /// - authRepository -> authRepositoryProvider
 /// - sendVerification -> sendVerificationProvider
 /// - verifyOtpCode -> verifyOtpCodeProvider
+/// - verifySignInOtp -> verifySignInOtpProvider
 
 final class AuthRepositoryProvider
     extends $FunctionalProvider<AuthRepository, AuthRepository, AuthRepository>
@@ -28,6 +30,7 @@ final class AuthRepositoryProvider
   /// - authRepository -> authRepositoryProvider
   /// - sendVerification -> sendVerificationProvider
   /// - verifyOtpCode -> verifyOtpCodeProvider
+  /// - verifySignInOtp -> verifySignInOtpProvider
   const AuthRepositoryProvider._()
     : super(
         from: null,
@@ -149,3 +152,45 @@ final class VerifyOtpCodeProvider
 }
 
 String _$verifyOtpCodeHash() => r'3bb4701e05c770f5c0b91c74d8e16cb6bdfce18a';
+
+@ProviderFor(verifySignInOtp)
+const verifySignInOtpProvider = VerifySignInOtpProvider._();
+
+final class VerifySignInOtpProvider
+    extends
+        $FunctionalProvider<VerifySignInOtp, VerifySignInOtp, VerifySignInOtp>
+    with $Provider<VerifySignInOtp> {
+  const VerifySignInOtpProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'verifySignInOtpProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$verifySignInOtpHash();
+
+  @$internal
+  @override
+  $ProviderElement<VerifySignInOtp> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  VerifySignInOtp create(Ref ref) {
+    return verifySignInOtp(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(VerifySignInOtp value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<VerifySignInOtp>(value),
+    );
+  }
+}
+
+String _$verifySignInOtpHash() => r'ab20240f08b693cde3b14b4cde63a47417e1ca35';
