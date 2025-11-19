@@ -36,6 +36,7 @@ sealed class VerificationState with _$VerificationState {
     @Default(1) int attemptCount, // 시도 횟수
     @Default(false) bool isLocked, // 잠금 여부
     @Default(false) bool autoFillAvailable, // 자동완성 가능 여부
+    @Default(false) bool isSuccess, // 인증 성공 여부
     String? errorMessage, // 에러 메시지
   }) = _VerificationState;
 
@@ -157,6 +158,7 @@ class Verification extends _$Verification {
         state = state.copyWith(
           isLoading: false,
           isSubmitting: false,
+          isSuccess: true,
           errorMessage: null,
         );
         debugPrint('====== verificationViewModel._verifyOtp ======');

@@ -40,7 +40,7 @@ final class SignUpProvider extends $NotifierProvider<SignUp, SignUpState> {
   }
 }
 
-String _$signUpHash() => r'84993112215c6cf895ddaa99959e72522721de00';
+String _$signUpHash() => r'7104f4485543a1a607db65632fa69a12f19c8b12';
 
 abstract class _$SignUp extends $Notifier<SignUpState> {
   SignUpState build();

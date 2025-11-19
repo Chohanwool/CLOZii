@@ -60,6 +60,14 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
           _loadingOverlay = null;
         }
       }
+
+      // 인증 성공 시 홈 화면으로 이동
+      // - 회원가입 완료
+      if (next.isSuccess && previous?.isSuccess == false) {
+        // 모든 스택 제거하고 홈 화면으로 이동
+        // FirebaseAuth의 authStateChanges()가 자동으로 감지하여 HomeScreen을 표시함
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      }
     });
 
     return Scaffold(

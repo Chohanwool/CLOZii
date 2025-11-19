@@ -20,6 +20,7 @@ mixin _$VerificationState {
  int get attemptCount;// 시도 횟수
  bool get isLocked;// 잠금 여부
  bool get autoFillAvailable;// 자동완성 가능 여부
+ bool get isSuccess;// 인증 성공 여부
  String? get errorMessage;
 /// Create a copy of VerificationState
 /// with the given fields replaced by the non-null parameter values.
@@ -31,16 +32,16 @@ $VerificationStateCopyWith<VerificationState> get copyWith => _$VerificationStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerificationState&&(identical(other.otpCode, otpCode) || other.otpCode == otpCode)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.cooldownTimer, cooldownTimer) || other.cooldownTimer == cooldownTimer)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.seconds, seconds) || other.seconds == seconds)&&(identical(other.resendCooldown, resendCooldown) || other.resendCooldown == resendCooldown)&&(identical(other.attemptCount, attemptCount) || other.attemptCount == attemptCount)&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked)&&(identical(other.autoFillAvailable, autoFillAvailable) || other.autoFillAvailable == autoFillAvailable)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerificationState&&(identical(other.otpCode, otpCode) || other.otpCode == otpCode)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.cooldownTimer, cooldownTimer) || other.cooldownTimer == cooldownTimer)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.seconds, seconds) || other.seconds == seconds)&&(identical(other.resendCooldown, resendCooldown) || other.resendCooldown == resendCooldown)&&(identical(other.attemptCount, attemptCount) || other.attemptCount == attemptCount)&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked)&&(identical(other.autoFillAvailable, autoFillAvailable) || other.autoFillAvailable == autoFillAvailable)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,otpCode,isSubmitting,isLoading,cooldownTimer,minutes,seconds,resendCooldown,attemptCount,isLocked,autoFillAvailable,errorMessage);
+int get hashCode => Object.hash(runtimeType,otpCode,isSubmitting,isLoading,cooldownTimer,minutes,seconds,resendCooldown,attemptCount,isLocked,autoFillAvailable,isSuccess,errorMessage);
 
 @override
 String toString() {
-  return 'VerificationState(otpCode: $otpCode, isSubmitting: $isSubmitting, isLoading: $isLoading, cooldownTimer: $cooldownTimer, minutes: $minutes, seconds: $seconds, resendCooldown: $resendCooldown, attemptCount: $attemptCount, isLocked: $isLocked, autoFillAvailable: $autoFillAvailable, errorMessage: $errorMessage)';
+  return 'VerificationState(otpCode: $otpCode, isSubmitting: $isSubmitting, isLoading: $isLoading, cooldownTimer: $cooldownTimer, minutes: $minutes, seconds: $seconds, resendCooldown: $resendCooldown, attemptCount: $attemptCount, isLocked: $isLocked, autoFillAvailable: $autoFillAvailable, isSuccess: $isSuccess, errorMessage: $errorMessage)';
 }
 
 
@@ -51,7 +52,7 @@ abstract mixin class $VerificationStateCopyWith<$Res>  {
   factory $VerificationStateCopyWith(VerificationState value, $Res Function(VerificationState) _then) = _$VerificationStateCopyWithImpl;
 @useResult
 $Res call({
- String otpCode, bool isSubmitting, bool isLoading, int cooldownTimer, int minutes, int seconds, int resendCooldown, int attemptCount, bool isLocked, bool autoFillAvailable, String? errorMessage
+ String otpCode, bool isSubmitting, bool isLoading, int cooldownTimer, int minutes, int seconds, int resendCooldown, int attemptCount, bool isLocked, bool autoFillAvailable, bool isSuccess, String? errorMessage
 });
 
 
@@ -68,7 +69,7 @@ class _$VerificationStateCopyWithImpl<$Res>
 
 /// Create a copy of VerificationState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? otpCode = null,Object? isSubmitting = null,Object? isLoading = null,Object? cooldownTimer = null,Object? minutes = null,Object? seconds = null,Object? resendCooldown = null,Object? attemptCount = null,Object? isLocked = null,Object? autoFillAvailable = null,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? otpCode = null,Object? isSubmitting = null,Object? isLoading = null,Object? cooldownTimer = null,Object? minutes = null,Object? seconds = null,Object? resendCooldown = null,Object? attemptCount = null,Object? isLocked = null,Object? autoFillAvailable = null,Object? isSuccess = null,Object? errorMessage = freezed,}) {
   return _then(_self.copyWith(
 otpCode: null == otpCode ? _self.otpCode : otpCode // ignore: cast_nullable_to_non_nullable
 as String,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
@@ -80,6 +81,7 @@ as int,resendCooldown: null == resendCooldown ? _self.resendCooldown : resendCoo
 as int,attemptCount: null == attemptCount ? _self.attemptCount : attemptCount // ignore: cast_nullable_to_non_nullable
 as int,isLocked: null == isLocked ? _self.isLocked : isLocked // ignore: cast_nullable_to_non_nullable
 as bool,autoFillAvailable: null == autoFillAvailable ? _self.autoFillAvailable : autoFillAvailable // ignore: cast_nullable_to_non_nullable
+as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -163,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String otpCode,  bool isSubmitting,  bool isLoading,  int cooldownTimer,  int minutes,  int seconds,  int resendCooldown,  int attemptCount,  bool isLocked,  bool autoFillAvailable,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String otpCode,  bool isSubmitting,  bool isLoading,  int cooldownTimer,  int minutes,  int seconds,  int resendCooldown,  int attemptCount,  bool isLocked,  bool autoFillAvailable,  bool isSuccess,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VerificationState() when $default != null:
-return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownTimer,_that.minutes,_that.seconds,_that.resendCooldown,_that.attemptCount,_that.isLocked,_that.autoFillAvailable,_that.errorMessage);case _:
+return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownTimer,_that.minutes,_that.seconds,_that.resendCooldown,_that.attemptCount,_that.isLocked,_that.autoFillAvailable,_that.isSuccess,_that.errorMessage);case _:
   return orElse();
 
 }
@@ -184,10 +186,10 @@ return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownT
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String otpCode,  bool isSubmitting,  bool isLoading,  int cooldownTimer,  int minutes,  int seconds,  int resendCooldown,  int attemptCount,  bool isLocked,  bool autoFillAvailable,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String otpCode,  bool isSubmitting,  bool isLoading,  int cooldownTimer,  int minutes,  int seconds,  int resendCooldown,  int attemptCount,  bool isLocked,  bool autoFillAvailable,  bool isSuccess,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _VerificationState():
-return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownTimer,_that.minutes,_that.seconds,_that.resendCooldown,_that.attemptCount,_that.isLocked,_that.autoFillAvailable,_that.errorMessage);}
+return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownTimer,_that.minutes,_that.seconds,_that.resendCooldown,_that.attemptCount,_that.isLocked,_that.autoFillAvailable,_that.isSuccess,_that.errorMessage);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -201,10 +203,10 @@ return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownT
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String otpCode,  bool isSubmitting,  bool isLoading,  int cooldownTimer,  int minutes,  int seconds,  int resendCooldown,  int attemptCount,  bool isLocked,  bool autoFillAvailable,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String otpCode,  bool isSubmitting,  bool isLoading,  int cooldownTimer,  int minutes,  int seconds,  int resendCooldown,  int attemptCount,  bool isLocked,  bool autoFillAvailable,  bool isSuccess,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _VerificationState() when $default != null:
-return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownTimer,_that.minutes,_that.seconds,_that.resendCooldown,_that.attemptCount,_that.isLocked,_that.autoFillAvailable,_that.errorMessage);case _:
+return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownTimer,_that.minutes,_that.seconds,_that.resendCooldown,_that.attemptCount,_that.isLocked,_that.autoFillAvailable,_that.isSuccess,_that.errorMessage);case _:
   return null;
 
 }
@@ -216,7 +218,7 @@ return $default(_that.otpCode,_that.isSubmitting,_that.isLoading,_that.cooldownT
 
 
 class _VerificationState extends VerificationState {
-  const _VerificationState({this.otpCode = '', this.isSubmitting = false, this.isLoading = false, this.cooldownTimer = 0, this.minutes = 0, this.seconds = 0, this.resendCooldown = 0, this.attemptCount = 1, this.isLocked = false, this.autoFillAvailable = false, this.errorMessage}): super._();
+  const _VerificationState({this.otpCode = '', this.isSubmitting = false, this.isLoading = false, this.cooldownTimer = 0, this.minutes = 0, this.seconds = 0, this.resendCooldown = 0, this.attemptCount = 1, this.isLocked = false, this.autoFillAvailable = false, this.isSuccess = false, this.errorMessage}): super._();
   
 
 @override@JsonKey() final  String otpCode;
@@ -235,6 +237,8 @@ class _VerificationState extends VerificationState {
 // 잠금 여부
 @override@JsonKey() final  bool autoFillAvailable;
 // 자동완성 가능 여부
+@override@JsonKey() final  bool isSuccess;
+// 인증 성공 여부
 @override final  String? errorMessage;
 
 /// Create a copy of VerificationState
@@ -247,16 +251,16 @@ _$VerificationStateCopyWith<_VerificationState> get copyWith => __$VerificationS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerificationState&&(identical(other.otpCode, otpCode) || other.otpCode == otpCode)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.cooldownTimer, cooldownTimer) || other.cooldownTimer == cooldownTimer)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.seconds, seconds) || other.seconds == seconds)&&(identical(other.resendCooldown, resendCooldown) || other.resendCooldown == resendCooldown)&&(identical(other.attemptCount, attemptCount) || other.attemptCount == attemptCount)&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked)&&(identical(other.autoFillAvailable, autoFillAvailable) || other.autoFillAvailable == autoFillAvailable)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerificationState&&(identical(other.otpCode, otpCode) || other.otpCode == otpCode)&&(identical(other.isSubmitting, isSubmitting) || other.isSubmitting == isSubmitting)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.cooldownTimer, cooldownTimer) || other.cooldownTimer == cooldownTimer)&&(identical(other.minutes, minutes) || other.minutes == minutes)&&(identical(other.seconds, seconds) || other.seconds == seconds)&&(identical(other.resendCooldown, resendCooldown) || other.resendCooldown == resendCooldown)&&(identical(other.attemptCount, attemptCount) || other.attemptCount == attemptCount)&&(identical(other.isLocked, isLocked) || other.isLocked == isLocked)&&(identical(other.autoFillAvailable, autoFillAvailable) || other.autoFillAvailable == autoFillAvailable)&&(identical(other.isSuccess, isSuccess) || other.isSuccess == isSuccess)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,otpCode,isSubmitting,isLoading,cooldownTimer,minutes,seconds,resendCooldown,attemptCount,isLocked,autoFillAvailable,errorMessage);
+int get hashCode => Object.hash(runtimeType,otpCode,isSubmitting,isLoading,cooldownTimer,minutes,seconds,resendCooldown,attemptCount,isLocked,autoFillAvailable,isSuccess,errorMessage);
 
 @override
 String toString() {
-  return 'VerificationState(otpCode: $otpCode, isSubmitting: $isSubmitting, isLoading: $isLoading, cooldownTimer: $cooldownTimer, minutes: $minutes, seconds: $seconds, resendCooldown: $resendCooldown, attemptCount: $attemptCount, isLocked: $isLocked, autoFillAvailable: $autoFillAvailable, errorMessage: $errorMessage)';
+  return 'VerificationState(otpCode: $otpCode, isSubmitting: $isSubmitting, isLoading: $isLoading, cooldownTimer: $cooldownTimer, minutes: $minutes, seconds: $seconds, resendCooldown: $resendCooldown, attemptCount: $attemptCount, isLocked: $isLocked, autoFillAvailable: $autoFillAvailable, isSuccess: $isSuccess, errorMessage: $errorMessage)';
 }
 
 
@@ -267,7 +271,7 @@ abstract mixin class _$VerificationStateCopyWith<$Res> implements $VerificationS
   factory _$VerificationStateCopyWith(_VerificationState value, $Res Function(_VerificationState) _then) = __$VerificationStateCopyWithImpl;
 @override @useResult
 $Res call({
- String otpCode, bool isSubmitting, bool isLoading, int cooldownTimer, int minutes, int seconds, int resendCooldown, int attemptCount, bool isLocked, bool autoFillAvailable, String? errorMessage
+ String otpCode, bool isSubmitting, bool isLoading, int cooldownTimer, int minutes, int seconds, int resendCooldown, int attemptCount, bool isLocked, bool autoFillAvailable, bool isSuccess, String? errorMessage
 });
 
 
@@ -284,7 +288,7 @@ class __$VerificationStateCopyWithImpl<$Res>
 
 /// Create a copy of VerificationState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? otpCode = null,Object? isSubmitting = null,Object? isLoading = null,Object? cooldownTimer = null,Object? minutes = null,Object? seconds = null,Object? resendCooldown = null,Object? attemptCount = null,Object? isLocked = null,Object? autoFillAvailable = null,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? otpCode = null,Object? isSubmitting = null,Object? isLoading = null,Object? cooldownTimer = null,Object? minutes = null,Object? seconds = null,Object? resendCooldown = null,Object? attemptCount = null,Object? isLocked = null,Object? autoFillAvailable = null,Object? isSuccess = null,Object? errorMessage = freezed,}) {
   return _then(_VerificationState(
 otpCode: null == otpCode ? _self.otpCode : otpCode // ignore: cast_nullable_to_non_nullable
 as String,isSubmitting: null == isSubmitting ? _self.isSubmitting : isSubmitting // ignore: cast_nullable_to_non_nullable
@@ -296,6 +300,7 @@ as int,resendCooldown: null == resendCooldown ? _self.resendCooldown : resendCoo
 as int,attemptCount: null == attemptCount ? _self.attemptCount : attemptCount // ignore: cast_nullable_to_non_nullable
 as int,isLocked: null == isLocked ? _self.isLocked : isLocked // ignore: cast_nullable_to_non_nullable
 as bool,autoFillAvailable: null == autoFillAvailable ? _self.autoFillAvailable : autoFillAvailable // ignore: cast_nullable_to_non_nullable
+as bool,isSuccess: null == isSuccess ? _self.isSuccess : isSuccess // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
