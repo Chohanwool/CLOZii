@@ -5,10 +5,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 // providers
 import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/sign_in/sign_in_provider.dart';
 import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
 // failures
 import 'package:clozii/features/auth/core/errors/auth_failures.dart';
+
+// enum
+import 'package:clozii/features/auth/core/enum/verification_mode.dart';
 
 // parts
 part 'verification_provider.freezed.dart';
@@ -41,6 +45,7 @@ sealed class VerificationState with _$VerificationState {
     @Default(false) bool autoFillAvailable, // 자동완성 가능 여부
     @Default(false) bool isSuccess, // 인증 성공 여부
     @Default(false) bool hasCriticalError, // 심각한 오류 발생 (Firestore 저장 실패 등)
+    @Default(VerificationMode.signUp) VerificationMode mode, // 회원가입/로그인 구분
     String? errorMessage, // 에러 메시지
   }) = _VerificationState;
 
@@ -111,6 +116,11 @@ class Verification extends _$Verification {
     }
   }
 
+  /// 인증 모드 설정
+  void setMode(VerificationMode mode) {
+    state = state.copyWith(mode: mode);
+  }
+
   /// OTP 입력
   void updateOtpCode(newValue) {
     state = state.copyWith(otpCode: newValue);
@@ -142,55 +152,101 @@ class Verification extends _$Verification {
     );
 
     try {
-      // 회원가입 Form 정보 읽어오기
-      final signUp = ref.read(signUpProvider);
-
-      // UseCase 호출
-      final signUpUsecase = ref.read(verifyOtpCodeProvider);
-
-      // 결과 처리
-      final result = await signUpUsecase(
-        signUp.verificationId!,
-        state.otpCode,
-        signUp.name,
-        signUp.phoneNumber,
-        DateTime.parse(signUp.birthDate!),
-        signUp.gender!,
-      );
-
-      if (result.isSuccess) {
-        state = state.copyWith(
-          isLoading: false,
-          isSubmitting: false,
-          isSuccess: true,
-          errorMessage: null,
-        );
-        debugPrint('====== verificationViewModel._verifyOtp ======');
-        debugPrint(result.toString());
-        debugPrint('====== verificationViewModel._verifyOtp ======');
+      // mode에 따라 다른 UseCase 호출
+      if (state.mode == VerificationMode.signUp) {
+        await _verifySignUpOtp();
       } else {
-        // Firestore 저장 실패 등 심각한 오류 체크 (타입 기반)
-        final isCritical = result.failure is FirestoreSaveFailure;
-
-        state = state.copyWith(
-          isLoading: false,
-          isSubmitting: false,
-          hasCriticalError: isCritical,
-          errorMessage: isCritical
-              ? '예기치 않은 서비스 오류가 발생했습니다.\n처음부터 다시 시도해주세요.'
-              : result.failure?.message ?? '인증 실패',
-        );
-
-        // 일반 인증 실패인 경우만 시도 횟수 증가
-        if (!isCritical) {
-          updateAttemptCount();
-        }
+        await _verifySignInOtp();
       }
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         isSubmitting: false,
         errorMessage: '예상치 못한 오류가 발생했습니다',
+      );
+
+      // 인증번호 시도 횟수 증가
+      updateAttemptCount();
+    }
+  }
+
+  /// 회원가입용 OTP 검증
+  Future<void> _verifySignUpOtp() async {
+    // 회원가입 Form 정보 읽어오기
+    final signUp = ref.read(signUpProvider);
+
+    // UseCase 호출
+    final signUpUsecase = ref.read(verifyOtpCodeProvider);
+
+    // 결과 처리
+    final result = await signUpUsecase(
+      signUp.verificationId!,
+      state.otpCode,
+      signUp.name,
+      signUp.phoneNumber,
+      DateTime.parse(signUp.birthDate!),
+      signUp.gender!,
+    );
+
+    if (result.isSuccess) {
+      state = state.copyWith(
+        isLoading: false,
+        isSubmitting: false,
+        isSuccess: true,
+        errorMessage: null,
+      );
+      debugPrint('====== verificationViewModel._verifySignUpOtp ======');
+      debugPrint(result.toString());
+      debugPrint('====== verificationViewModel._verifySignUpOtp ======');
+    } else {
+      // Firestore 저장 실패 등 심각한 오류 체크 (타입 기반)
+      final isCritical = result.failure is FirestoreSaveFailure;
+
+      state = state.copyWith(
+        isLoading: false,
+        isSubmitting: false,
+        hasCriticalError: isCritical,
+        errorMessage: isCritical
+            ? '예기치 않은 서비스 오류가 발생했습니다.\n처음부터 다시 시도해주세요.'
+            : result.failure?.message ?? '인증 실패',
+      );
+
+      // 일반 인증 실패인 경우만 시도 횟수 증가
+      if (!isCritical) {
+        updateAttemptCount();
+      }
+    }
+  }
+
+  /// 로그인용 OTP 검증
+  Future<void> _verifySignInOtp() async {
+    // 로그인 Form 정보 읽어오기
+    final signIn = ref.read(signInProvider);
+
+    // UseCase 호출
+    final signInUsecase = ref.read(verifySignInOtpProvider);
+
+    // 결과 처리
+    final result = await signInUsecase(
+      signIn.verificationId!,
+      state.otpCode,
+    );
+
+    if (result.isSuccess) {
+      state = state.copyWith(
+        isLoading: false,
+        isSubmitting: false,
+        isSuccess: true,
+        errorMessage: null,
+      );
+      debugPrint('====== verificationViewModel._verifySignInOtp ======');
+      debugPrint(result.toString());
+      debugPrint('====== verificationViewModel._verifySignInOtp ======');
+    } else {
+      state = state.copyWith(
+        isLoading: false,
+        isSubmitting: false,
+        errorMessage: result.failure?.message ?? '인증 실패',
       );
 
       // 인증번호 시도 횟수 증가

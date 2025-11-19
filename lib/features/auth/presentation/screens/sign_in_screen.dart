@@ -15,6 +15,9 @@ import 'package:clozii/features/auth/presentation/widgets/forms/fields/phone_num
 // screens
 import 'package:clozii/features/auth/presentation/screens/verification_screen.dart';
 
+// enum
+import 'package:clozii/features/auth/core/enum/verification_mode.dart';
+
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -65,7 +68,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         if (next.verificationId != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (BuildContext context) => const VerificationScreen(),
+              builder: (BuildContext context) => const VerificationScreen(
+                mode: VerificationMode.signIn,
+              ),
             ),
           );
         }

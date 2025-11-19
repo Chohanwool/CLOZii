@@ -12,10 +12,19 @@ import 'package:clozii/features/auth/presentation/widgets/verification/verificat
 
 // providers
 import 'package:clozii/features/auth/presentation/sign_up/sign_up_provider.dart';
+import 'package:clozii/features/auth/presentation/sign_in/sign_in_provider.dart';
 import 'package:clozii/features/auth/presentation/verification/verification_provider.dart';
 
+// enum
+import 'package:clozii/features/auth/core/enum/verification_mode.dart';
+
 class VerificationScreen extends ConsumerStatefulWidget {
-  const VerificationScreen({super.key});
+  const VerificationScreen({
+    super.key,
+    this.mode = VerificationMode.signUp,
+  });
+
+  final VerificationMode mode;
 
   @override
   ConsumerState<VerificationScreen> createState() => _VerificationScreenState();
@@ -29,8 +38,9 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   void initState() {
     super.initState();
 
-    // 화면이 렌더링 된 후 타이머 시작
+    // 화면이 렌더링 된 후 타이머 시작 및 모드 설정
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(verificationProvider.notifier).setMode(widget.mode);
       ref
           .read(verificationProvider.notifier)
           .startCooldownTimer(totalSeconds: 30);
@@ -47,6 +57,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   @override
   Widget build(BuildContext context) {
     final signUpNotifier = ref.read(signUpProvider.notifier);
+    final signInNotifier = ref.read(signInProvider.notifier);
     final vState = ref.watch(verificationProvider);
     final vNotifier = ref.read(verificationProvider.notifier);
 
@@ -99,7 +110,12 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            signUpNotifier.resetAgreements();
+            // mode에 따라 다른 상태 초기화
+            if (widget.mode == VerificationMode.signUp) {
+              signUpNotifier.resetAgreements();
+            } else {
+              signInNotifier.reset();
+            }
             Navigator.of(context).pop();
           },
           icon: const Icon(Icons.arrow_back),
@@ -144,8 +160,12 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                           // attemptCount 증가
                           vNotifier.updateAttemptCount();
 
-                          // 인증번호 재전송
-                          await signUpNotifier.sendVerificationCode();
+                          // 인증번호 재전송 (mode에 따라 다른 provider 사용)
+                          if (widget.mode == VerificationMode.signUp) {
+                            await signUpNotifier.sendVerificationCode();
+                          } else {
+                            await signInNotifier.sendVerificationCode();
+                          }
 
                           // 타이머 시작
                           ref
