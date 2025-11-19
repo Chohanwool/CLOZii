@@ -68,9 +68,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         if (next.verificationId != null) {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (BuildContext context) => const VerificationScreen(
-                mode: VerificationMode.signIn,
-              ),
+              builder: (BuildContext context) =>
+                  const VerificationScreen(mode: VerificationMode.signIn),
             ),
           );
         }
@@ -79,7 +78,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
     // 에러 메시지 표시
     ref.listen<SignInState>(signInProvider, (previous, next) {
-      if (next.errorMessage != null && previous?.errorMessage != next.errorMessage) {
+      if (next.errorMessage != null &&
+          previous?.errorMessage != next.errorMessage) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(next.errorMessage!),
@@ -107,18 +107,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 // 제목
                 Text(
                   'Welcome back!',
-                  style: context.textTheme.headlineMedium?.copyWith(
+                  style: context.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   'Enter your phone number to sign in',
                   style: context.textTheme.bodyLarge?.copyWith(
                     color: Colors.grey,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 24),
 
                 // 전화번호 입력 필드
                 PhoneNumberField(
@@ -133,7 +133,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 CustomButton(
                   onTap: signInState.isPhoneValid && !signInState.isLoading
                       ? () async {
-                          if (signInNotifier.formKey.currentState?.validate() ?? false) {
+                          if (signInNotifier.formKey.currentState?.validate() ??
+                              false) {
                             await signInNotifier.sendVerificationCode();
                           }
                         }
