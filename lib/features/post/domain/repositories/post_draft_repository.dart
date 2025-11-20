@@ -1,4 +1,4 @@
-import 'package:clozii/features/post/presentation/states/post_create_state.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 
 /// 게시글 임시저장 Repository Interface (Domain Layer)
 abstract class PostDraftRepository {

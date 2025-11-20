@@ -1,18 +1,68 @@
 import 'dart:typed_data';
 
-import 'package:clozii/features/post/application/dto/post_draft.dart';
-import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
-import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/meeting_location.dart';
-import 'package:clozii/features/post/presentation/provider/create_post_use_case_provider.dart';
-import 'package:clozii/features/post/presentation/provider/post_draft_use_case_provider.dart';
-import 'package:clozii/features/post/core/models/image_data.dart';
-import 'package:clozii/features/post/presentation/states/post_create_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class PostCreateViewModel extends Notifier<PostCreateState> {
+// core
+import 'package:clozii/features/post/core/enums/trade_type.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/core/models/meeting_location.dart';
+
+// application
+import 'package:clozii/features/post/application/dto/post_draft.dart';
+import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
+
+// providers
+import 'package:clozii/features/post/presentation/providers/post_providers.dart';
+
+// parts
+part 'post_create_provider.freezed.dart';
+part 'post_create_provider.g.dart';
+
+// ============================================================================
+// State
+// ============================================================================
+
+@freezed
+sealed class PostCreateState with _$PostCreateState {
+  const PostCreateState._();
+
+  const factory PostCreateState({
+    // 사용자 입력 데이터
+    @Default('') String title,
+    @Default('') String content,
+    @Default(TradeType.sell) TradeType tradeType,
+    @Default(0) int price,
+    MeetingLocation? meetingLocation,
+    @Default({}) Map<String, ImageData> selectedImages,
+    // 모든 필드 입력에 대한 검증 성공 여부
+    @Default(false) bool isAllValid,
+    // 모달 상태
+    @Default(false) bool showGoToPhrases,
+    @Default(false) bool showAddPhraseModal,
+    @Default(false) bool showMoreOptions,
+    String? currentPhraseForEdit,
+  }) = _PostCreateState;
+
+  // Computed properties
+  static int get maxImageCount => 5;
+
+  bool get isEmpty =>
+      title.trim().isEmpty &&
+      content.trim().isEmpty &&
+      selectedImages.isEmpty &&
+      (tradeType == TradeType.sell && price == 0) &&
+      meetingLocation == null;
+}
+
+// ============================================================================
+// Provider (ViewModel)
+// ============================================================================
+
+@riverpod
+class PostCreate extends _$PostCreate {
   // FormKey를 ViewModel에서 직접 관리하는 것은 경미한 클린 아키텍처 위반 ⚠️
   // 원칙적으로 ViewModel은 UI 요소(FormKey 등)를 알아서는 안 됨 ❌
   // 하지만 "Form 검증"은 단순한 UI 로직이 아니라, 비즈니스 규칙에 가까움
@@ -33,15 +83,8 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
 
   // 게시글 변경사항 유무 여부 체크
   bool get hasChanges {
-    return draftState == null ? !isEmpty : !_hasSameContentAs(draftState!);
+    return draftState == null ? !state.isEmpty : !_hasSameContentAs(draftState!);
   }
-
-  bool get isEmpty =>
-      state.title.trim().isEmpty &&
-      state.content.trim().isEmpty &&
-      state.selectedImages.isEmpty &&
-      (state.tradeType == TradeType.sell && state.price == 0) &&
-      state.meetingLocation == null;
 
   // 임시저장 데이터와 현재 상태 비교
   bool _hasSameContentAs(PostCreateState other) {
@@ -194,16 +237,16 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
     draftState = state;
     state = state.copyWith(); // ← 리빌드 트리거
 
-    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
-    await postDraftUseCase.save(state);
+    final manageDraft = ref.read(manageDraftProvider);
+    await manageDraft.save(state);
 
     debugPrint('임시저장 완료');
   }
 
   // 임시저장 불러오기
   Future<PostCreateState?> loadTemp() async {
-    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
-    final draft = await postDraftUseCase.load();
+    final manageDraft = ref.read(manageDraftProvider);
+    final draft = await manageDraft.load();
 
     if (draft != null) {
       draftState = draft;
@@ -222,8 +265,8 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
   Future<void> deleteTemp() async {
     draftState = null;
 
-    final postDraftUseCase = ref.read(postDraftUseCaseProvider);
-    await postDraftUseCase.delete();
+    final manageDraft = ref.read(manageDraftProvider);
+    await manageDraft.delete();
     debugPrint('임시저장 삭제 완료');
   }
 
@@ -233,9 +276,9 @@ class PostCreateViewModel extends Notifier<PostCreateState> {
 
     if (!isFormValid) return;
 
-    // CreatePostUseCase 호출
-    final createPostUseCase = ref.read(createPostUseCaseProvider);
-    createPostUseCase(
+    // CreatePost 호출
+    final createPost = ref.read(createPostProvider);
+    createPost(
       PostDraft(
         title: state.title,
         content: state.content,

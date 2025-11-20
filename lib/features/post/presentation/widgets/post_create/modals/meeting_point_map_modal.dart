@@ -2,7 +2,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/detail_address_modal.dart';

@@ -3,8 +3,8 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
-import 'package:clozii/features/post/presentation/provider/post_detail_provider.dart';
-import 'package:clozii/features/post/presentation/provider/post_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_detail/post_detail_provider.dart';
+import 'package:clozii/features/post/presentation/viewmodels/post_provider.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_app_bar.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_body.dart';
 

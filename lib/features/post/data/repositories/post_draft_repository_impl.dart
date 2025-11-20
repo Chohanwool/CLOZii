@@ -5,7 +5,7 @@ import 'package:clozii/features/post/core/enums/trade_type.dart';
 import 'package:clozii/features/post/core/models/image_data.dart';
 import 'package:clozii/features/post/core/models/meeting_location.dart';
 import 'package:clozii/features/post/domain/repositories/post_draft_repository.dart';
-import 'package:clozii/features/post/presentation/states/post_create_state.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 import 'package:path_provider/path_provider.dart';
 
 /// JSON 파일 기반 게시글 임시저장 Repository 구현체 (Data Layer)

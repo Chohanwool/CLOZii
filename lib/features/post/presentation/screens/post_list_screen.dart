@@ -6,8 +6,8 @@ import 'package:clozii/core/utils/show_confirm_dialog.dart';
 // feature
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
-import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
-import 'package:clozii/features/post/presentation/provider/post_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/viewmodels/post_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/viewmodels/post_view_model.dart';

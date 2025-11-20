@@ -2,7 +2,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 
 // feature
-import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 
 // package
 import 'package:flutter/material.dart';

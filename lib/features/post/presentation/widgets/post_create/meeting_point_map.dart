@@ -1,6 +1,6 @@
 // core
 import 'package:clozii/core/theme/context_extension.dart';
-import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 
 // feature
 

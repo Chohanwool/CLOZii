@@ -1,7 +1,7 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/features/post/presentation/provider/go_to_phrases_provider.dart';
-import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/providers/go_to_phrase/go_to_phrase_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 
 // packages
 import 'package:flutter/material.dart';

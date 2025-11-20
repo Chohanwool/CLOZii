@@ -1,10 +1,10 @@
 import 'package:clozii/features/post/domain/repositories/post_draft_repository.dart';
-import 'package:clozii/features/post/presentation/states/post_create_state.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 
-class PostDraftUseCase {
+class ManageDraft {
   final PostDraftRepository _repository;
 
-  PostDraftUseCase(this._repository);
+  ManageDraft(this._repository);
 
   Future<void> save(PostCreateState state) async {
     await _repository.saveDraft(state);

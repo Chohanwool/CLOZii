@@ -4,8 +4,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 
 // features
 import 'package:clozii/features/post/presentation/widgets/post_create/modals/gallery_modal.dart';
-import 'package:clozii/features/post/presentation/provider/post_create_provider.dart';
-import 'package:clozii/features/post/presentation/states/post_create_state.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 
 // packages
 import 'package:flutter/cupertino.dart';

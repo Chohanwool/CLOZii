@@ -1,93 +1,35 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 // feature
 import 'package:clozii/features/post/core/enums/trade_type.dart';
 
-class Post {
-  Post({
-    required this.id,
-    required this.title,
-    required this.content,
+part 'post.freezed.dart';
+part 'post.g.dart';
+
+@freezed
+sealed class Post with _$Post {
+  const Post._();
+
+  const factory Post({
+    required String id,
+    required String title,
+    required String content,
     required List<String> originImageUrls,
     required List<String> thumbnailImageUrls,
-    required this.price,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.tradeType,
-    this.detailAddress,
-    this.meetingPointLat,
-    this.meetingPointLong,
-  }) : originImageUrls = List.unmodifiable(originImageUrls),
-       thumbnailImageUrls = List.unmodifiable(thumbnailImageUrls),
-       favorites = 0,
-       views = 0;
-
-  final String id;
-  final String title;
-  final String content;
-  final List<String> originImageUrls;
-  final List<String> thumbnailImageUrls;
-  final int price;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final TradeType tradeType;
-  final String? detailAddress;
-  final double? meetingPointLat;
-  final double? meetingPointLong;
-
-  int favorites;
-  int views;
-
-  Post copyWith({
-    String? id,
-    String? title,
-    String? content,
-    List<String>? originImageUrls,
-    List<String>? thumbnailImageUrls,
-    int? price,
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    TradeType? tradeType,
+    required int price,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required TradeType tradeType,
     String? detailAddress,
     double? meetingPointLat,
     double? meetingPointLong,
-    int? favorites,
-    int? views,
-  }) {
-    final post = Post(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      content: content ?? this.content,
-      originImageUrls: originImageUrls ?? this.originImageUrls,
-      thumbnailImageUrls: thumbnailImageUrls ?? this.thumbnailImageUrls,
-      price: price ?? this.price,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      tradeType: tradeType ?? this.tradeType,
-      detailAddress: detailAddress ?? this.detailAddress,
-      meetingPointLat: meetingPointLat ?? this.meetingPointLat,
-      meetingPointLong: meetingPointLong ?? this.meetingPointLong,
-    );
-    post.favorites = favorites ?? this.favorites;
-    post.views = views ?? this.views;
-    return post;
-  }
+    @Default(0) int favorites,
+    @Default(0) int views,
+  }) = _Post;
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'content': content,
-    'originImageUrls': originImageUrls,
-    'thumbnailImageUrls': thumbnailImageUrls,
-    'price': price,
-    'createdAt': createdAt.toIso8601String(),
-    'updatedAt': updatedAt.toIso8601String(),
-    'tradeType': tradeType.name,
-    'detailAddress': detailAddress,
-    'meetingPointLat': meetingPointLat,
-    'meetingPointLong': meetingPointLong,
-    'favorites': favorites,
-    'views': views,
-  };
+  factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);
 
-  void incrementFavorites() => favorites++;
-  void incrementViews() => views++;
+  // Helper methods
+  Post incrementFavorites() => copyWith(favorites: favorites + 1);
+  Post incrementViews() => copyWith(views: views + 1);
 }
