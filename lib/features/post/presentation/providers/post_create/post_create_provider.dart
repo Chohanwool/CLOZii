@@ -44,6 +44,8 @@ sealed class PostCreateState with _$PostCreateState {
     @Default(false) bool showAddPhraseModal,
     @Default(false) bool showMoreOptions,
     String? currentPhraseForEdit,
+    // 임시저장 상태 (변경 감지용)
+    PostCreateState? draftState,
   }) = _PostCreateState;
 
   // Computed properties
@@ -69,7 +71,6 @@ class PostCreate extends _$PostCreate {
   //  (예: 제목이 비어 있는지, 가격이 0 이상인지 등)
   // 따라서 전체 검증 로직을 ViewModel에 두는 편이 흐름이 명확하고 유지보수에도 유리함 ✅
   final formKey = GlobalKey<FormState>();
-  PostCreateState? draftState;
 
   @override
   PostCreateState build() {
@@ -83,9 +84,9 @@ class PostCreate extends _$PostCreate {
 
   // 게시글 변경사항 유무 여부 체크
   bool get hasChanges {
-    return draftState == null
+    return state.draftState == null
         ? !state.isEmpty
-        : !_hasSameContentAs(draftState!);
+        : !_hasSameContentAs(state.draftState!);
   }
 
   // 임시저장 데이터와 현재 상태 비교
@@ -236,11 +237,11 @@ class PostCreate extends _$PostCreate {
 
   // 임시저장
   Future<void> saveTemp() async {
-    draftState = state;
-    state = state.copyWith(); // ← 리빌드 트리거
-
     final manageDraft = ref.read(manageDraftProvider);
     await manageDraft.save(state);
+
+    // draftState를 현재 state로 업데이트하여 리빌드 트리거
+    state = state.copyWith(draftState: state);
 
     debugPrint('임시저장 완료');
   }
@@ -251,8 +252,7 @@ class PostCreate extends _$PostCreate {
     final draft = await manageDraft.load();
 
     if (draft != null) {
-      draftState = draft;
-      state = draft;
+      state = draft.copyWith(draftState: draft);
       debugPrint('임시저장 데이터 있음');
 
       return draft;
@@ -265,10 +265,10 @@ class PostCreate extends _$PostCreate {
 
   // 임시저장 삭제
   Future<void> deleteTemp() async {
-    draftState = null;
-
     final manageDraft = ref.read(manageDraftProvider);
     await manageDraft.delete();
+
+    state = state.copyWith(draftState: null);
     debugPrint('임시저장 삭제 완료');
   }
 

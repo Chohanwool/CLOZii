@@ -17,7 +17,8 @@ mixin _$PostCreateState {
 // 사용자 입력 데이터
  String get title; String get content; TradeType get tradeType; int get price; MeetingLocation? get meetingLocation; Map<String, ImageData> get selectedImages;// 모든 필드 입력에 대한 검증 성공 여부
  bool get isAllValid;// 모달 상태
- bool get showGoToPhrases; bool get showAddPhraseModal; bool get showMoreOptions; String? get currentPhraseForEdit;
+ bool get showGoToPhrases; bool get showAddPhraseModal; bool get showMoreOptions; String? get currentPhraseForEdit;// 임시저장 상태 (변경 감지용)
+ PostCreateState? get draftState;
 /// Create a copy of PostCreateState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +29,16 @@ $PostCreateStateCopyWith<PostCreateState> get copyWith => _$PostCreateStateCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostCreateState&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.tradeType, tradeType) || other.tradeType == tradeType)&&(identical(other.price, price) || other.price == price)&&(identical(other.meetingLocation, meetingLocation) || other.meetingLocation == meetingLocation)&&const DeepCollectionEquality().equals(other.selectedImages, selectedImages)&&(identical(other.isAllValid, isAllValid) || other.isAllValid == isAllValid)&&(identical(other.showGoToPhrases, showGoToPhrases) || other.showGoToPhrases == showGoToPhrases)&&(identical(other.showAddPhraseModal, showAddPhraseModal) || other.showAddPhraseModal == showAddPhraseModal)&&(identical(other.showMoreOptions, showMoreOptions) || other.showMoreOptions == showMoreOptions)&&(identical(other.currentPhraseForEdit, currentPhraseForEdit) || other.currentPhraseForEdit == currentPhraseForEdit));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PostCreateState&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.tradeType, tradeType) || other.tradeType == tradeType)&&(identical(other.price, price) || other.price == price)&&(identical(other.meetingLocation, meetingLocation) || other.meetingLocation == meetingLocation)&&const DeepCollectionEquality().equals(other.selectedImages, selectedImages)&&(identical(other.isAllValid, isAllValid) || other.isAllValid == isAllValid)&&(identical(other.showGoToPhrases, showGoToPhrases) || other.showGoToPhrases == showGoToPhrases)&&(identical(other.showAddPhraseModal, showAddPhraseModal) || other.showAddPhraseModal == showAddPhraseModal)&&(identical(other.showMoreOptions, showMoreOptions) || other.showMoreOptions == showMoreOptions)&&(identical(other.currentPhraseForEdit, currentPhraseForEdit) || other.currentPhraseForEdit == currentPhraseForEdit)&&(identical(other.draftState, draftState) || other.draftState == draftState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,content,tradeType,price,meetingLocation,const DeepCollectionEquality().hash(selectedImages),isAllValid,showGoToPhrases,showAddPhraseModal,showMoreOptions,currentPhraseForEdit);
+int get hashCode => Object.hash(runtimeType,title,content,tradeType,price,meetingLocation,const DeepCollectionEquality().hash(selectedImages),isAllValid,showGoToPhrases,showAddPhraseModal,showMoreOptions,currentPhraseForEdit,draftState);
 
 @override
 String toString() {
-  return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit)';
+  return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
 }
 
 
@@ -48,11 +49,11 @@ abstract mixin class $PostCreateStateCopyWith<$Res>  {
   factory $PostCreateStateCopyWith(PostCreateState value, $Res Function(PostCreateState) _then) = _$PostCreateStateCopyWithImpl;
 @useResult
 $Res call({
- String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageData> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit
+ String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageData> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit, PostCreateState? draftState
 });
 
 
-
+$PostCreateStateCopyWith<$Res>? get draftState;
 
 }
 /// @nodoc
@@ -65,7 +66,7 @@ class _$PostCreateStateCopyWithImpl<$Res>
 
 /// Create a copy of PostCreateState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? content = null,Object? tradeType = null,Object? price = null,Object? meetingLocation = freezed,Object? selectedImages = null,Object? isAllValid = null,Object? showGoToPhrases = null,Object? showAddPhraseModal = null,Object? showMoreOptions = null,Object? currentPhraseForEdit = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? content = null,Object? tradeType = null,Object? price = null,Object? meetingLocation = freezed,Object? selectedImages = null,Object? isAllValid = null,Object? showGoToPhrases = null,Object? showAddPhraseModal = null,Object? showMoreOptions = null,Object? currentPhraseForEdit = freezed,Object? draftState = freezed,}) {
   return _then(_self.copyWith(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
@@ -78,10 +79,23 @@ as bool,showGoToPhrases: null == showGoToPhrases ? _self.showGoToPhrases : showG
 as bool,showAddPhraseModal: null == showAddPhraseModal ? _self.showAddPhraseModal : showAddPhraseModal // ignore: cast_nullable_to_non_nullable
 as bool,showMoreOptions: null == showMoreOptions ? _self.showMoreOptions : showMoreOptions // ignore: cast_nullable_to_non_nullable
 as bool,currentPhraseForEdit: freezed == currentPhraseForEdit ? _self.currentPhraseForEdit : currentPhraseForEdit // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,draftState: freezed == draftState ? _self.draftState : draftState // ignore: cast_nullable_to_non_nullable
+as PostCreateState?,
   ));
 }
+/// Create a copy of PostCreateState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCreateStateCopyWith<$Res>? get draftState {
+    if (_self.draftState == null) {
+    return null;
+  }
 
+  return $PostCreateStateCopyWith<$Res>(_self.draftState!, (value) {
+    return _then(_self.copyWith(draftState: value));
+  });
+}
 }
 
 
@@ -160,10 +174,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostCreateState() when $default != null:
-return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit);case _:
+return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit,_that.draftState);case _:
   return orElse();
 
 }
@@ -181,10 +195,10 @@ return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meet
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)  $default,) {final _that = this;
 switch (_that) {
 case _PostCreateState():
-return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit);}
+return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit,_that.draftState);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -198,10 +212,10 @@ return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meet
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)?  $default,) {final _that = this;
 switch (_that) {
 case _PostCreateState() when $default != null:
-return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit);case _:
+return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit,_that.draftState);case _:
   return null;
 
 }
@@ -213,7 +227,7 @@ return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meet
 
 
 class _PostCreateState extends PostCreateState {
-  const _PostCreateState({this.title = '', this.content = '', this.tradeType = TradeType.sell, this.price = 0, this.meetingLocation, final  Map<String, ImageData> selectedImages = const {}, this.isAllValid = false, this.showGoToPhrases = false, this.showAddPhraseModal = false, this.showMoreOptions = false, this.currentPhraseForEdit}): _selectedImages = selectedImages,super._();
+  const _PostCreateState({this.title = '', this.content = '', this.tradeType = TradeType.sell, this.price = 0, this.meetingLocation, final  Map<String, ImageData> selectedImages = const {}, this.isAllValid = false, this.showGoToPhrases = false, this.showAddPhraseModal = false, this.showMoreOptions = false, this.currentPhraseForEdit, this.draftState}): _selectedImages = selectedImages,super._();
   
 
 // 사용자 입력 데이터
@@ -236,6 +250,8 @@ class _PostCreateState extends PostCreateState {
 @override@JsonKey() final  bool showAddPhraseModal;
 @override@JsonKey() final  bool showMoreOptions;
 @override final  String? currentPhraseForEdit;
+// 임시저장 상태 (변경 감지용)
+@override final  PostCreateState? draftState;
 
 /// Create a copy of PostCreateState
 /// with the given fields replaced by the non-null parameter values.
@@ -247,16 +263,16 @@ _$PostCreateStateCopyWith<_PostCreateState> get copyWith => __$PostCreateStateCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostCreateState&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.tradeType, tradeType) || other.tradeType == tradeType)&&(identical(other.price, price) || other.price == price)&&(identical(other.meetingLocation, meetingLocation) || other.meetingLocation == meetingLocation)&&const DeepCollectionEquality().equals(other._selectedImages, _selectedImages)&&(identical(other.isAllValid, isAllValid) || other.isAllValid == isAllValid)&&(identical(other.showGoToPhrases, showGoToPhrases) || other.showGoToPhrases == showGoToPhrases)&&(identical(other.showAddPhraseModal, showAddPhraseModal) || other.showAddPhraseModal == showAddPhraseModal)&&(identical(other.showMoreOptions, showMoreOptions) || other.showMoreOptions == showMoreOptions)&&(identical(other.currentPhraseForEdit, currentPhraseForEdit) || other.currentPhraseForEdit == currentPhraseForEdit));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PostCreateState&&(identical(other.title, title) || other.title == title)&&(identical(other.content, content) || other.content == content)&&(identical(other.tradeType, tradeType) || other.tradeType == tradeType)&&(identical(other.price, price) || other.price == price)&&(identical(other.meetingLocation, meetingLocation) || other.meetingLocation == meetingLocation)&&const DeepCollectionEquality().equals(other._selectedImages, _selectedImages)&&(identical(other.isAllValid, isAllValid) || other.isAllValid == isAllValid)&&(identical(other.showGoToPhrases, showGoToPhrases) || other.showGoToPhrases == showGoToPhrases)&&(identical(other.showAddPhraseModal, showAddPhraseModal) || other.showAddPhraseModal == showAddPhraseModal)&&(identical(other.showMoreOptions, showMoreOptions) || other.showMoreOptions == showMoreOptions)&&(identical(other.currentPhraseForEdit, currentPhraseForEdit) || other.currentPhraseForEdit == currentPhraseForEdit)&&(identical(other.draftState, draftState) || other.draftState == draftState));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,title,content,tradeType,price,meetingLocation,const DeepCollectionEquality().hash(_selectedImages),isAllValid,showGoToPhrases,showAddPhraseModal,showMoreOptions,currentPhraseForEdit);
+int get hashCode => Object.hash(runtimeType,title,content,tradeType,price,meetingLocation,const DeepCollectionEquality().hash(_selectedImages),isAllValid,showGoToPhrases,showAddPhraseModal,showMoreOptions,currentPhraseForEdit,draftState);
 
 @override
 String toString() {
-  return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit)';
+  return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
 }
 
 
@@ -267,11 +283,11 @@ abstract mixin class _$PostCreateStateCopyWith<$Res> implements $PostCreateState
   factory _$PostCreateStateCopyWith(_PostCreateState value, $Res Function(_PostCreateState) _then) = __$PostCreateStateCopyWithImpl;
 @override @useResult
 $Res call({
- String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageData> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit
+ String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageData> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit, PostCreateState? draftState
 });
 
 
-
+@override $PostCreateStateCopyWith<$Res>? get draftState;
 
 }
 /// @nodoc
@@ -284,7 +300,7 @@ class __$PostCreateStateCopyWithImpl<$Res>
 
 /// Create a copy of PostCreateState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? content = null,Object? tradeType = null,Object? price = null,Object? meetingLocation = freezed,Object? selectedImages = null,Object? isAllValid = null,Object? showGoToPhrases = null,Object? showAddPhraseModal = null,Object? showMoreOptions = null,Object? currentPhraseForEdit = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? content = null,Object? tradeType = null,Object? price = null,Object? meetingLocation = freezed,Object? selectedImages = null,Object? isAllValid = null,Object? showGoToPhrases = null,Object? showAddPhraseModal = null,Object? showMoreOptions = null,Object? currentPhraseForEdit = freezed,Object? draftState = freezed,}) {
   return _then(_PostCreateState(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,content: null == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
@@ -297,11 +313,24 @@ as bool,showGoToPhrases: null == showGoToPhrases ? _self.showGoToPhrases : showG
 as bool,showAddPhraseModal: null == showAddPhraseModal ? _self.showAddPhraseModal : showAddPhraseModal // ignore: cast_nullable_to_non_nullable
 as bool,showMoreOptions: null == showMoreOptions ? _self.showMoreOptions : showMoreOptions // ignore: cast_nullable_to_non_nullable
 as bool,currentPhraseForEdit: freezed == currentPhraseForEdit ? _self.currentPhraseForEdit : currentPhraseForEdit // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,draftState: freezed == draftState ? _self.draftState : draftState // ignore: cast_nullable_to_non_nullable
+as PostCreateState?,
   ));
 }
 
+/// Create a copy of PostCreateState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PostCreateStateCopyWith<$Res>? get draftState {
+    if (_self.draftState == null) {
+    return null;
+  }
 
+  return $PostCreateStateCopyWith<$Res>(_self.draftState!, (value) {
+    return _then(_self.copyWith(draftState: value));
+  });
+}
 }
 
 // dart format on

@@ -82,11 +82,11 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               // "저장하지 않은 내역은 사라집니다" 안내에서 '예' 버튼 클릭 시
               if (result != null && result) {
                 // 임시저장 데이터가 없을 경우, 상태 초기화 (reset)
-                postCreateNotifier.draftState == null
+                ref.read(postCreateProvider).draftState == null
                     ? postCreateNotifier.resetState()
                     // 임시저장 데이터가 있을 경우, 임시저장 데이터로 상태 초기화 (init)
                     : postCreateNotifier.initState(
-                        postCreateNotifier.draftState!,
+                        ref.read(postCreateProvider).draftState!,
                       );
 
                 Navigator.of(context).pop();
