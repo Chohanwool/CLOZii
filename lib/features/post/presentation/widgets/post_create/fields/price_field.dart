@@ -29,7 +29,7 @@ class _PriceFieldState extends ConsumerState<PriceField> {
   final priceFormatter = NumberFormat('#,###');
 
   // 가격 입력 필드 채워져 있는지 여부
-  bool _isFilled = false;
+  bool _isFilled = true;
 
   /// TextField의 기본 글자수 카운터 숨기기
   Widget? _hideCounter(
