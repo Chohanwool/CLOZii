@@ -47,11 +47,14 @@ class _PriceFieldState extends ConsumerState<PriceField> {
     // 거래방식이 실제로 변경되었을 때만 값 초기화
     if (oldWidget.isForSale != widget.isForSale) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // 거래방식이 나눔인 경우, 가격 = 0으로 초기화
         if (widget.isForSale == false) {
           setState(() {
             widget.controller.text = '0';
+            ref.read(postCreateProvider.notifier).setPrice(0);
             _isFilled = true; // 가격 필드가 0으로 채워져 있으므로, isFilled = true
           });
+          // 거래방식이 판매인 경우, 가격 필드 비우기
         } else {
           setState(() {
             widget.controller.clear();
