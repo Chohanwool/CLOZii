@@ -31,14 +31,13 @@ class _PriceFieldState extends ConsumerState<PriceField> {
   // 가격 입력 필드 채워져 있는지 여부
   bool _isFilled = true;
 
-  /// TextField의 기본 글자수 카운터 숨기기
-  Widget? _hideCounter(
-    BuildContext context, {
-    required int currentLength,
-    required bool isFocused,
-    required int? maxLength,
-  }) {
-    return null;
+  @override
+  void initState() {
+    super.initState();
+
+    widget.controller.text = priceFormatter.format(
+      int.tryParse(widget.controller.text) ?? 0,
+    );
   }
 
   // 거래방식이 나눔인 경우, 가격 = 0으로 초기화
@@ -92,13 +91,13 @@ class _PriceFieldState extends ConsumerState<PriceField> {
       },
 
       onChanged: (value) {
-        // 가격 저장 - 입력 값이 숫자가 아니면 0으로 초기화
-        final price = int.tryParse(value) ?? 0;
+        // 가격 저장 - 입력 값에 숫자 이외의 문자가 있으면 제거하고 숫자로 변환
+        final cleanValue = value.replaceAll(RegExp(r'[^0-9]'), '');
+        final price = int.tryParse(cleanValue) ?? 0;
         ref.read(postCreateProvider.notifier).setPrice(price);
 
-        setState(() {
-          _isFilled = value.isNotEmpty;
-        });
+        // 가격 필드가 채워져 있는지 여부 업데이트
+        _isFilled = value.isNotEmpty;
 
         if (value.isEmpty) return;
         widget.controller.text = priceFormatter.format(int.parse(value));
@@ -139,5 +138,15 @@ class _PriceFieldState extends ConsumerState<PriceField> {
         ),
       ),
     );
+  }
+
+  /// TextField의 기본 글자수 카운터 숨기기
+  Widget? _hideCounter(
+    BuildContext context, {
+    required int currentLength,
+    required bool isFocused,
+    required int? maxLength,
+  }) {
+    return null;
   }
 }
