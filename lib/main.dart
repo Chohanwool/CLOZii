@@ -6,12 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // firebase
 import 'package:clozii/firebase_options.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-
-// screens
-import 'package:clozii/presentation/screens/home_screen.dart';
-import 'package:clozii/features/onBoarding/presentation/screens/onboarding_screen.dart';
+import 'package:clozii/features/onBoarding/presentation/screens/splash_screen.dart';
 
 // packages
 import 'package:flutter/material.dart';
