@@ -61,7 +61,7 @@ sealed class PostCreateState with _$PostCreateState {
 // Provider (ViewModel)
 // ============================================================================
 
-@riverpod
+@Riverpod(keepAlive: true)
 class PostCreate extends _$PostCreate {
   // FormKey를 ViewModel에서 직접 관리하는 것은 경미한 클린 아키텍처 위반 ⚠️
   // 원칙적으로 ViewModel은 UI 요소(FormKey 등)를 알아서는 안 됨 ❌
@@ -83,7 +83,9 @@ class PostCreate extends _$PostCreate {
 
   // 게시글 변경사항 유무 여부 체크
   bool get hasChanges {
-    return draftState == null ? !state.isEmpty : !_hasSameContentAs(draftState!);
+    return draftState == null
+        ? !state.isEmpty
+        : !_hasSameContentAs(draftState!);
   }
 
   // 임시저장 데이터와 현재 상태 비교

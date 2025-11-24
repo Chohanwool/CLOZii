@@ -31,7 +31,17 @@ class CLOZii extends StatelessWidget {
       themeMode: ThemeMode.system,
       theme: buildLightTheme(),
       darkTheme: buildDarkTheme(),
-      home: SplashScreen(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return HomeScreen();
+          } else {
+            return HomeScreen();
+            // return OnBoardingScreen();
+          }
+        },
+      ),
     );
   }
 }

@@ -20,7 +20,7 @@ final class PostCreateProvider
         argument: null,
         retry: null,
         name: r'postCreateProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -41,7 +41,7 @@ final class PostCreateProvider
   }
 }
 
-String _$postCreateHash() => r'2b34abe5d0b3472d2f1c978d55d59dd2756ea3e2';
+String _$postCreateHash() => r'0f559926f9e9600b404605128509afbe91c8cea6';
 
 abstract class _$PostCreate extends $Notifier<PostCreateState> {
   PostCreateState build();
