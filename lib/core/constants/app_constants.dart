@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class AppConstants {
   static const String appName = 'CLOZii';
   static const String appSlogan = 'Closer People, Closer Deals';
-  static const String appLogo = 'assets/images/app_logo.png';
+  static const String appMainLogo = 'assets/images/logo/full_logo/default.png';
+  static const String appSplashLogo =
+      'assets/images/logo/full_logo/vibrant_duo.png';
   static const String appVersion = '1.0.0';
 }
 
@@ -13,6 +15,12 @@ class AppColors {
   static const Color secondary = Color(0xFFFFC9C2);
   static const Color tertiary = Color(0xFF607EBC);
   static const brandNeutralSurfaceDark = Color(0xFF1E1E1E);
+
+  // 스플래시 화면 배경 색상
+  // Vibrant Duo
+  static const Color splashGradientStart = Color(0xFFFFB6B9);
+  static const Color splashGradientMiddle = Color(0xFFFFA07A);
+  static const Color splashGradientEnd = Color(0xFFFF6B9D);
 
   // 블랙스케일
   static const Color black = Colors.black;

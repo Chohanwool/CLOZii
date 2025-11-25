@@ -48,7 +48,14 @@ class OnBoardingScreen extends StatelessWidget {
           child: Stack(
             children: [
               // 로고/슬로건
-              Center(child: const _ImageLogoAndSlogan()),
+              // - 스플래시 스크린 트랜지션 시 동일한 위치에서 자연스럽게 전환되도록 Positioned 사용
+              Positioned(
+                top: 20.0,
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: const _ImageLogoAndSlogan(),
+              ),
 
               // 회원가입/로그인 버튼
               Positioned(
@@ -84,7 +91,7 @@ class _ImageLogoAndSlogan extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Image.asset(
-          AppConstants.appLogo, // 로고 이미지 경로
+          AppConstants.appMainLogo, // 로고 이미지 경로
           width: MediaQuery.of(context).size.width * 3 / 4,
         ),
         const SizedBox(height: 12.0),
