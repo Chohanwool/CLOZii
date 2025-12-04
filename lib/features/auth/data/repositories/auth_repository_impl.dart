@@ -4,6 +4,7 @@ import 'package:clozii/features/auth/core/errors/auth_failures.dart';
 import 'package:clozii/features/auth/domain/entities/auth_result.dart';
 import 'package:clozii/features/auth/domain/entities/user.dart' as domain;
 import 'package:clozii/features/auth/domain/repositories/auth_repository.dart';
+import 'package:clozii/features/auth/data/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/rendering.dart';
@@ -139,8 +140,9 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final firestore = FirebaseFirestore.instance;
 
-      // User 엔티티를 JSON으로 변환하여 Firestore에 저장
-      await firestore.collection('users').doc(user.uid).set(user.toJson());
+      // Mapper 패턴: Domain Entity → Data Model → JSON
+      final userModel = UserModel.fromEntity(user);
+      await firestore.collection('users').doc(user.uid).set(userModel.toJson());
 
       debugPrint('====== AuthRepoImpl.saveUserToFirestore ======');
       debugPrint('사용자 정보 저장 성공: ${user.uid}');
@@ -177,13 +179,15 @@ class AuthRepositoryImpl implements AuthRepository {
         return AuthResult.failure(AuthenticationFailure('사용자 데이터가 비어있습니다.'));
       }
 
-      final user = domain.User.fromJson(userData);
+      // Mapper 패턴: JSON → Data Model → Domain Entity
+      final userModel = UserModel.fromJson(userData);
+      final userEntity = userModel.toEntity();
 
       debugPrint('====== AuthRepoImpl.getUserFromFirestore ======');
-      debugPrint('사용자 정보 조회 성공: ${user.uid}');
+      debugPrint('사용자 정보 조회 성공: ${userEntity.uid}');
       debugPrint('====== AuthRepoImpl.getUserFromFirestore ======');
 
-      return AuthResult.success(user);
+      return AuthResult.success(userEntity);
     } on FirebaseException catch (e) {
       debugPrint('FirebaseException: ${e.message}');
       return AuthResult.failure(

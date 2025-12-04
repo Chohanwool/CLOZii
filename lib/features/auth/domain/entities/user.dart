@@ -1,22 +1,32 @@
 // User entity for auth_sample
+// Domain Layer: 순수한 비즈니스 엔티티 (외부 패키지 의존 없음)
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+class User {
+  final String uid;
+  final String name;
+  final String phoneNumber;
+  final DateTime? birthDate;
+  final String? gender;
+  final bool isVerified;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
 
-part 'user.freezed.dart';
-part 'user.g.dart';
+  const User({
+    required this.uid,
+    required this.name,
+    required this.phoneNumber,
+    this.birthDate,
+    this.gender,
+    this.isVerified = false,
+    required this.createdAt,
+    this.updatedAt,
+  });
 
-@freezed
-sealed class User with _$User {
-  const factory User({
-    required String uid,
-    required String name,
-    required String phoneNumber,
-    DateTime? birthDate,
-    String? gender,
-    @Default(false) bool isVerified,
-    required DateTime createdAt,
-    DateTime? updatedAt,
-  }) = _User;
-
-  factory User.fromJson(Map<String, Object?> json) => _$UserFromJson(json);
+  // toString (디버깅용 - 현재 verify_otp_code.dart:45에서 사용 중)
+  @override
+  String toString() {
+    return 'User(uid: $uid, name: $name, phoneNumber: $phoneNumber, '
+        'birthDate: $birthDate, gender: $gender, isVerified: $isVerified, '
+        'createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
 }
