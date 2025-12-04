@@ -1,34 +1,33 @@
-// SelectedImageProvider 가 Map<String, ImageData> 형태의 상태를 관리함
-import 'dart:convert';
-import 'dart:typed_data';
+// ImageData: 단일 이미지의 원본/썸네일 URL을 표현하는 Value Object
+// Domain Layer에서 사용되며, Firestore에 저장된 이미지 URL을 나타냄
 
 class ImageData {
-  Uint8List? originBytes;
-  Uint8List? thumbnailBytes;
+  final String originUrl;
+  final String thumbnailUrl;
 
-  ImageData({this.originBytes, this.thumbnailBytes});
+  const ImageData({
+    required this.originUrl,
+    required this.thumbnailUrl,
+  });
 
   // JSON 직렬화
   Map<String, dynamic> toJson() {
     return {
-      'originBytes': originBytes != null
-          ? base64Encode(originBytes!)
-          : null,
-      'thumbnailBytes': thumbnailBytes != null
-          ? base64Encode(thumbnailBytes!)
-          : null,
+      'originUrl': originUrl,
+      'thumbnailUrl': thumbnailUrl,
     };
   }
 
   // JSON 역직렬화
   factory ImageData.fromJson(Map<String, dynamic> json) {
     return ImageData(
-      originBytes: json['originBytes'] != null
-          ? base64Decode(json['originBytes'] as String)
-          : null,
-      thumbnailBytes: json['thumbnailBytes'] != null
-          ? base64Decode(json['thumbnailBytes'] as String)
-          : null,
+      originUrl: json['originUrl'] as String,
+      thumbnailUrl: json['thumbnailUrl'] as String,
     );
+  }
+
+  @override
+  String toString() {
+    return 'ImageData(originUrl: $originUrl, thumbnailUrl: $thumbnailUrl)';
   }
 }
