@@ -1,35 +1,70 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+// Post entity
+// Domain Layer: 순수한 비즈니스 엔티티 (외부 패키지 의존 없음)
 
-// feature
+import 'dart:typed_data';
+
+import 'package:clozii/features/post/core/enums/post_category.dart';
+import 'package:clozii/features/post/core/enums/post_status.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
 
-part 'post.freezed.dart';
-part 'post.g.dart';
+class Post {
+  // 기본 정보
+  final String id;
+  final String title;
+  final String content;
+  final List<Uint8List> originImages;
+  final List<Uint8List> thumbnailImages;
 
-@freezed
-sealed class Post with _$Post {
-  const Post._();
+  // 거래 정보
+  final int price;
+  final TradeType tradeType;
+  final PostStatus postStatus;
+  final PostCategory category;
 
-  const factory Post({
-    required String id,
-    required String title,
-    required String content,
-    required List<String> originImageUrls,
-    required List<String> thumbnailImageUrls,
-    required int price,
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    required TradeType tradeType,
-    String? detailAddress,
-    double? meetingPointLat,
-    double? meetingPointLong,
-    @Default(0) int favorites,
-    @Default(0) int views,
-  }) = _Post;
+  // 위치 정보
+  final String? detailAddress;
+  final double? meetingPointLong;
+  final double? meetingPointLat;
 
-  factory Post.fromJson(Map<String, Object?> json) => _$PostFromJson(json);
+  // 메타 정보
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  final int favorites;
+  final int views;
 
-  // Helper methods
-  Post incrementFavorites() => copyWith(favorites: favorites + 1);
-  Post incrementViews() => copyWith(views: views + 1);
+  // 사용자 정보
+  final String authorUid;
+  final String authorNickname;
+  final Uint8List? authorProfileImage;
+
+  const Post({
+    required this.id,
+    required this.title,
+    required this.content,
+    required this.originImages,
+    required this.thumbnailImages,
+    required this.price,
+    required this.tradeType,
+    required this.postStatus,
+    required this.category,
+    this.detailAddress,
+    this.meetingPointLong,
+    this.meetingPointLat,
+    required this.createdAt,
+    this.updatedAt,
+    this.favorites = 0,
+    this.views = 0,
+    required this.authorUid,
+    required this.authorNickname,
+    this.authorProfileImage,
+  });
+
+  // toString (디버깅용)
+  @override
+  String toString() {
+    return 'Post(id: $id, title: $title, price: $price, tradeType: $tradeType, '
+        'postStatus: $postStatus, category: $category, authorUid: $authorUid, '
+        'authorNickname: $authorNickname, favorites: $favorites, views: $views, '
+        'createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
 }
