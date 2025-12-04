@@ -7,6 +7,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_status.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/core/models/meeting_location.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 
 part 'post_model.freezed.dart';
@@ -26,9 +28,7 @@ sealed class PostModel with _$PostModel {
     required String tradeType, // enum을 string으로 저장
     required String postStatus, // enum을 string으로 저장
     required String category, // enum을 string으로 저장
-    String? detailAddress,
-    double? meetingPointLong,
-    double? meetingPointLat,
+    MeetingLocation? meetingLocation,
     required DateTime createdAt,
     DateTime? updatedAt,
     @Default(0) int favorites,
@@ -43,7 +43,7 @@ sealed class PostModel with _$PostModel {
       _$PostModelFromJson(json);
 
   // Domain Entity → Data Model 변환 (수동 작성)
-  // 주의: 이미지 업로드는 별도로 처리 필요 (Uint8List → Storage URL)
+  // 주의: 이미지 업로드는 별도로 처리 필요 (ImageData → Storage URL)
   factory PostModel.fromEntity(
     Post entity, {
     required List<String> originImageUrls,
@@ -60,9 +60,7 @@ sealed class PostModel with _$PostModel {
       tradeType: entity.tradeType.name,
       postStatus: entity.postStatus.name,
       category: entity.category.name,
-      detailAddress: entity.detailAddress,
-      meetingPointLong: entity.meetingPointLong,
-      meetingPointLat: entity.meetingPointLat,
+      meetingLocation: entity.meetingLocation,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       favorites: entity.favorites,
@@ -74,25 +72,21 @@ sealed class PostModel with _$PostModel {
   }
 
   // Data Model → Domain Entity 변환
-  // 주의: 이미지 다운로드는 별도로 처리 필요 (Storage URL → Uint8List)
+  // 주의: 이미지 다운로드는 별도로 처리 필요 (Storage URL → ImageData)
   Post toEntity({
-    required List<Uint8List> originImages,
-    required List<Uint8List> thumbnailImages,
+    required List<ImageData> images,
     Uint8List? authorProfileImage,
   }) {
     return Post(
       id: id,
       title: title,
       content: content,
-      originImages: originImages,
-      thumbnailImages: thumbnailImages,
+      images: images,
       price: price,
       tradeType: TradeType.values.firstWhere((e) => e.name == tradeType),
       postStatus: PostStatus.values.firstWhere((e) => e.name == postStatus),
       category: PostCategory.values.firstWhere((e) => e.name == category),
-      detailAddress: detailAddress,
-      meetingPointLong: meetingPointLong,
-      meetingPointLat: meetingPointLat,
+      meetingLocation: meetingLocation,
       createdAt: createdAt,
       updatedAt: updatedAt,
       favorites: favorites,

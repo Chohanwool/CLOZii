@@ -1,21 +1,22 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+// MeetingLocation model
+// 순수 Dart 클래스 (외부 패키지 의존 없음)
 
 class MeetingLocation {
-  final LatLng coordinate;
+  final double latitude;
+  final double longitude;
   final String detailAddress;
 
   const MeetingLocation({
-    required this.coordinate,
+    required this.latitude,
+    required this.longitude,
     required this.detailAddress,
   });
 
   // JSON 직렬화
   Map<String, dynamic> toJson() {
     return {
-      'coordinate': {
-        'latitude': coordinate.latitude,
-        'longitude': coordinate.longitude,
-      },
+      'latitude': latitude,
+      'longitude': longitude,
       'detailAddress': detailAddress,
     };
   }
@@ -23,10 +24,8 @@ class MeetingLocation {
   // JSON 역직렬화
   factory MeetingLocation.fromJson(Map<String, dynamic> json) {
     return MeetingLocation(
-      coordinate: LatLng(
-        (json['coordinate'] as Map<String, dynamic>)['latitude'] as double,
-        (json['coordinate'] as Map<String, dynamic>)['longitude'] as double,
-      ),
+      latitude: json['latitude'] as double,
+      longitude: json['longitude'] as double,
       detailAddress: json['detailAddress'] as String,
     );
   }

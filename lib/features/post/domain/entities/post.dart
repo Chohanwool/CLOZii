@@ -6,14 +6,15 @@ import 'dart:typed_data';
 import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_status.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
+import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/core/models/meeting_location.dart';
 
 class Post {
   // 기본 정보
   final String id;
   final String title;
   final String content;
-  final List<Uint8List> originImages;
-  final List<Uint8List> thumbnailImages;
+  final List<ImageData> images;
 
   // 거래 정보
   final int price;
@@ -22,9 +23,7 @@ class Post {
   final PostCategory category;
 
   // 위치 정보
-  final String? detailAddress;
-  final double? meetingPointLong;
-  final double? meetingPointLat;
+  final MeetingLocation? meetingLocation;
 
   // 메타 정보
   final DateTime createdAt;
@@ -41,15 +40,12 @@ class Post {
     required this.id,
     required this.title,
     required this.content,
-    required this.originImages,
-    required this.thumbnailImages,
+    required this.images,
     required this.price,
     required this.tradeType,
     required this.postStatus,
     required this.category,
-    this.detailAddress,
-    this.meetingPointLong,
-    this.meetingPointLat,
+    this.meetingLocation,
     required this.createdAt,
     this.updatedAt,
     this.favorites = 0,
