@@ -117,7 +117,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
       final originalImage = await asset?.originBytes;
 
       if (originalImage != null) {
-        imageData.originBytes = originalImage;
+        imageSelection[assetId] = imageData.copyWith(originBytes: originalImage);
       }
     }
   }
@@ -203,12 +203,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                   setState(() {
                     if (imageSelection.containsKey(assetId)) {
                       imageSelection.remove(assetId);
-                    } else {
-                      if (imageSelection.length < PostCreateState.maxImageCount) {
-                        final imageData = ImageBytes();
-                        imageData.thumbnailBytes = thumbData;
-                        imageSelection[assetId] = imageData;
-                      }
+                    } else if (imageSelection.length < PostCreateState.maxImageCount) {
+                      imageSelection[assetId] = ImageBytes(thumbnailBytes: thumbData);
                     }
                   });
                 },
