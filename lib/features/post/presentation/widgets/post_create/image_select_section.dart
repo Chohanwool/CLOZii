@@ -19,8 +19,8 @@ class ImageSelectSection extends StatelessWidget {
         itemBuilder: (context, index) {
           // ImageSelector - 사진 선택 위젯
           if (index == 0) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
+            return const Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
               child: ImageSelector(),
             );
           }

@@ -20,8 +20,8 @@ class MeetingPointSelector extends ConsumerWidget {
       enableDrag: false,
       backgroundColor: AppColors.white,
       builder: (BuildContext context) => Container(
-        padding: EdgeInsets.only(top: kToolbarHeight),
-        child: MeetingPointMapModal(),
+        padding: const EdgeInsets.only(top: kToolbarHeight),
+        child: const MeetingPointMapModal(),
       ),
     );
   }
@@ -38,7 +38,7 @@ class MeetingPointSelector extends ConsumerWidget {
       decoration: InputDecoration(
         isDense: true,
 
-        hint: Row(
+        hint: const Row(
           children: [
             Text('Select Meeting Point'),
             Icon(Icons.chevron_right),
@@ -50,19 +50,19 @@ class MeetingPointSelector extends ConsumerWidget {
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.check, color: AppColors.success, size: 18.0),
-                  SizedBox(width: 8.0),
+                  const Icon(Icons.check, color: AppColors.success, size: 18.0),
+                  const SizedBox(width: 8.0),
                   Expanded(child: Text(meetingLocation.detailAddress)),
                 ],
               )
             : null,
 
         // 필드 활성화 시 테두리 색 지정 - 사실상 기본 테두리 색
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.black54),
         ),
 
-        focusedBorder: OutlineInputBorder(
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.black54),
         ),
       ),

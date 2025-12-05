@@ -49,9 +49,8 @@ class _AddPhraseModalState extends State<AddPhraseModal> {
           icon: const Icon(Icons.close),
         ),
         title: const Text('Add Go-To Phrase'),
-        shape: Border(bottom: BorderSide(color: AppColors.black12)),
+        shape: const Border(bottom: BorderSide(color: AppColors.black12)),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -61,16 +60,14 @@ class _AddPhraseModalState extends State<AddPhraseModal> {
           ],
         ),
       ),
-
       bottomSheet: KeyboardAwareButton(
         text: 'Add',
         onTap: _controller.text.trim().isEmpty
             ? null
             : () => Navigator.of(
-                context,
-              ).pop(_controller.text.trim()), // 입력된 문구를 모달 밖으로 반환
+                  context,
+                ).pop(_controller.text.trim()), // 입력된 문구를 모달 밖으로 반환
       ),
-
       bottomNavigationBar: Container(height: kToolbarHeight),
     );
   }

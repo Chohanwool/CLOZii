@@ -30,10 +30,8 @@ class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
   void initState() {
     super.initState();
     // 화면 진입 시점의 주소를 로컬 상태로 저장 (reactive하지 않음)
-    _initialDetailAddress = ref
-        .read(postCreateProvider)
-        .meetingLocation
-        ?.detailAddress;
+    _initialDetailAddress =
+        ref.read(postCreateProvider).meetingLocation?.detailAddress;
   }
 
   void _onCameraIdle(LatLng currentLatLng) {
@@ -74,7 +72,7 @@ class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => Navigator.of(context).pop(),
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
         ),
       ),
       body: Column(
@@ -124,7 +122,7 @@ class _MeetingPointMapModalState extends ConsumerState<MeetingPointMapModal> {
                             height: 80.0,
                             decoration: BoxDecoration(
                               boxShadow: [
-                                BoxShadow(
+                                const BoxShadow(
                                   color: AppColors.gray200,
                                   blurRadius: 10.0,
                                   offset: Offset(0, 10.0),

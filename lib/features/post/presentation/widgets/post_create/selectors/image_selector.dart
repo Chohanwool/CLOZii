@@ -26,7 +26,7 @@ class ImageSelector extends ConsumerWidget {
           top: kToolbarHeight,
           bottom: kBottomNavigationBarHeight,
         ),
-        child: GalleryModal(),
+        child: const GalleryModal(),
       ),
     );
   }
@@ -47,7 +47,7 @@ class ImageSelector extends ConsumerWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
+            const Icon(
               CupertinoIcons.camera_fill,
               size: 32.0,
               color: AppColors.black54,

@@ -97,7 +97,7 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
               Navigator.of(context).pop();
             }
           },
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
         ),
         title: const Text('Sell My Items'),
         actions: [
@@ -112,24 +112,24 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
                 onPressed:
                     // 게시글 생성 화면이 비어있지 않고, 변경 사항이 존재할 경우, 임시저장 저장 버튼 활성화
                     !ref.read(postCreateProvider).isEmpty &&
-                        postCreateNotifier.hasChanges
-                    ? () {
-                        // 임시저장 저장 성공 스낵바 표시
-                        showSnackBar(
-                          context: context,
-                          message: 'Successfully saved draft!',
-                        );
-                        // 임시저장 저장 진행
-                        postCreateNotifier.saveTemp();
-                      }
-                    : null,
+                            postCreateNotifier.hasChanges
+                        ? () {
+                            // 임시저장 저장 성공 스낵바 표시
+                            showSnackBar(
+                              context: context,
+                              message: 'Successfully saved draft!',
+                            );
+                            // 임시저장 저장 진행
+                            postCreateNotifier.saveTemp();
+                          }
+                        : null,
                 child: const Text('Save'),
               );
             },
           ),
         ],
         surfaceTintColor: Colors.transparent,
-        shape: Border(bottom: BorderSide(color: AppColors.black12)),
+        shape: const Border(bottom: BorderSide(color: AppColors.black12)),
       ),
       body: GestureDetector(
         behavior: HitTestBehavior.translucent,
@@ -141,12 +141,11 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
             padding: const EdgeInsets.all(20.0),
             child: Form(
               key: postCreateNotifier.formKey,
-              child: PostCreateForm(),
+              child: const PostCreateForm(),
             ),
           ),
         ),
       ),
-
       bottomNavigationBar: Container(
         padding: const EdgeInsets.only(top: 12.0, left: 16.0, right: 16.0),
         color: AppColors.white,

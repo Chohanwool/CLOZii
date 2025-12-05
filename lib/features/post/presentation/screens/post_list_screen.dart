@@ -133,7 +133,7 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
                   height: 55,
                   child: Row(
                     children: [
-                      Spacer(flex: 2),
+                      const Spacer(flex: 2),
                       Icon(
                         Icons.add,
                         color: context.colors.onPrimary, // + 아이콘
@@ -145,7 +145,7 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
                           fontWeight: FontWeight.w700,
                         ),
                       ),
-                      Spacer(flex: 3),
+                      const Spacer(flex: 3),
                     ],
                   ),
                 ),

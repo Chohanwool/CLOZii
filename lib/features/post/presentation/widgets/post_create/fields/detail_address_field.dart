@@ -13,15 +13,12 @@ class DetailAddressField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       controller: controller,
-
       autocorrect: false,
       enableSuggestions: false,
       textCapitalization: TextCapitalization.none,
-
       autofocus: true,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'ex. infront of McDonald\'s Laguna Bel-Air',
-
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.black54),

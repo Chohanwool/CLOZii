@@ -27,7 +27,7 @@ class PostListTile extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
             blurRadius: 10.0,
-            offset: Offset(0, 5.0),
+            offset: const Offset(0, 5.0),
           ),
         ],
       ),
@@ -92,11 +92,11 @@ class PostListTile extends StatelessWidget {
                               ),
                             ],
                           ),
-                    Spacer(),
+                    const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.favorite_outline,
                           size: 16,
                           color: Colors.black26,
@@ -109,7 +109,7 @@ class PostListTile extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 10.0),
-                        Icon(
+                        const Icon(
                           CupertinoIcons.bubble_left,
                           size: 16,
                           color: Colors.black26,

@@ -25,9 +25,9 @@ class ChatBox extends StatelessWidget {
           // ... 아이콘, TextField, Send 버튼
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.favorite_border_outlined, size: 30.0),
+            icon: const Icon(Icons.favorite_border_outlined, size: 30.0),
           ),
-          Expanded(child: ChatField()),
+          const Expanded(child: ChatField()),
           const SizedBox(width: 8.0),
           CustomButton(text: 'Send', onTap: () {}, width: 80.0, height: 45.0),
           const SizedBox(width: 8.0),

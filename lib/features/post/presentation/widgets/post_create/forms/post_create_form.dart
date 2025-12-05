@@ -114,7 +114,7 @@ class _PostCreateFormState extends ConsumerState<PostCreateForm> {
           ),
         ),
         const SizedBox(height: 10.0),
-        MeetingPointSelector(),
+        const MeetingPointSelector(),
 
         const SizedBox(height: kBottomNavigationBarHeight * 2),
       ],

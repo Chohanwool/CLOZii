@@ -31,9 +31,9 @@ class _GoToPhraseModalState extends State<GoToPhraseModal> {
     return Column(
       children: [
         // Drag Handle
-        Divider(
+        const Divider(
           thickness: 4.0,
-          color: const Color.fromRGBO(0, 0, 0, 0.122),
+          color: Color.fromRGBO(0, 0, 0, 0.122),
           indent: 150.0,
           endIndent: 150.0,
         ),
@@ -103,9 +103,9 @@ class _GoToPhraseModalState extends State<GoToPhraseModal> {
                                     trailing: IconButton(
                                       onPressed: () =>
                                           widget.onMoreOptionsPressed(
-                                            goToPhrases[index],
-                                          ),
-                                      icon: Icon(Icons.more_vert),
+                                        goToPhrases[index],
+                                      ),
+                                      icon: const Icon(Icons.more_vert),
                                     ),
                                   ),
                                   const Divider(),

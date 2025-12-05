@@ -38,9 +38,8 @@ class PostDetailAppBar extends StatelessWidget {
       // 상태바 아이콘 색상 설정
       // 앱바가 확장되어 있으면, 상태바 아이콘 색상을 밝게 설정
       // 앱바가 축소되면, 상태바 아이콘 색상을 어둡게 설정
-      systemOverlayStyle: isExpanded
-          ? SystemUiOverlayStyle.light
-          : SystemUiOverlayStyle.dark,
+      systemOverlayStyle:
+          isExpanded ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
 
       // 상단 앱바 아이콘(텍스트 등) 색상 설정
       // 앱바가 확장되어 있으면, 아이콘 색상을 밝게 설정
@@ -92,8 +91,7 @@ class PostDetailAppBar extends StatelessWidget {
                 // top: -100 - 59 + 0 = top: -159
                 // 오버스크롤 (위로) : collapseExtent = -100, _stretchOffset = -100
                 // top: 100 - 59 + -100 = top: -59
-                top:
-                    -collapseExtent -
+                top: -collapseExtent -
                     MediaQuery.of(context).padding.top +
                     stretchOffset,
 
@@ -112,8 +110,7 @@ class PostDetailAppBar extends StatelessWidget {
                 // 따라서 _stretchOffset 만큼 이미지 높이를 추가하기 위해서는
                 // _stretchOffset 를 빼줘야 함
                 // 예를 들어 -100만큼 오버스크롤이 된 경우 (-(-100)) = 100만큼 이미지 높이를 추가
-                height:
-                    expandedHeight +
+                height: expandedHeight +
                     MediaQuery.of(context).padding.top -
                     stretchOffset,
 
@@ -140,7 +137,7 @@ class PostDetailAppBar extends StatelessWidget {
                   decoration: BoxDecoration(
                     // _isExpanded = true 인 경우, 화면 상단에 약간 어두운 그라데이션을 적용함
                     gradient: isExpanded
-                        ? LinearGradient(
+                        ? const LinearGradient(
                             colors: [Colors.black38, Colors.transparent],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -162,10 +159,10 @@ class PostDetailAppBar extends StatelessWidget {
         // 공유 버튼
         IconButton(
           onPressed: () {},
-          icon: Icon(CupertinoIcons.arrowshape_turn_up_right_fill),
+          icon: const Icon(CupertinoIcons.arrowshape_turn_up_right_fill),
         ),
         // 더보기 버튼
-        IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
       ],
     );
   }
@@ -192,10 +189,10 @@ class PostDetailAppBar extends StatelessWidget {
         // 공유 버튼
         IconButton(
           onPressed: () {},
-          icon: Icon(CupertinoIcons.arrowshape_turn_up_right_fill),
+          icon: const Icon(CupertinoIcons.arrowshape_turn_up_right_fill),
         ),
         // 더보기 버튼
-        IconButton(onPressed: () {}, icon: Icon(Icons.more_vert)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
       ],
     );
   }

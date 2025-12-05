@@ -81,15 +81,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
             children: [
               IconButton(
                 onPressed: () {},
-                icon: Icon(
+                icon: const Icon(
                   Icons.favorite_border_outlined,
                   size: 28.0,
                   color: AppColors.primary,
                 ),
               ),
-
               const SizedBox(width: 12.0),
-
               const VerticalDivider(
                 indent: 8.0,
                 endIndent: 8.0,
@@ -97,9 +95,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                 thickness: 1,
                 width: 1,
               ),
-
               const SizedBox(width: 12.0),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -110,17 +106,15 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                         : 'Sharing',
                     style: context.textTheme.titleLarge,
                   ),
-                  Text(
+                  const Text(
                     'Price negotiable',
                   ), // "Price negotiable" / "Price fixed"
                 ],
               ),
-
               Spacer(),
               Expanded(
                 child: CustomButton(text: 'Chat', onTap: () {}),
               ),
-
               const SizedBox(width: 12.0),
             ],
           ),

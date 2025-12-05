@@ -16,9 +16,8 @@ class FullScreenImageViewer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final originBytes = ref
-        .read(postCreateProvider.notifier)
-        .getOrigin(assetId);
+    final originBytes =
+        ref.read(postCreateProvider.notifier).getOrigin(assetId);
 
     return Scaffold(
       backgroundColor: AppColors.black,
@@ -34,7 +33,7 @@ class FullScreenImageViewer extends ConsumerWidget {
       body: Center(
         child: originBytes != null
             ? Image.memory(originBytes, fit: BoxFit.contain)
-            : Placeholder(),
+            : const Placeholder(),
       ),
     );
   }

@@ -240,7 +240,7 @@ class PostDetailBody extends StatelessWidget {
                           const SizedBox(width: 10.0),
 
                           // 거래희망장소 링크 뒤 아이콘 ( > )
-                          Icon(CupertinoIcons.right_chevron, size: 16.0),
+                          const Icon(CupertinoIcons.right_chevron, size: 16.0),
                         ],
                       ),
                     ],
@@ -272,7 +272,7 @@ class PostDetailBody extends StatelessWidget {
                         ),
                         markers: {
                           Marker(
-                            markerId: MarkerId('meetingPoint'),
+                            markerId: const MarkerId('meetingPoint'),
                             position: LatLng(
                               post.meetingLocation!.latitude,
                               post.meetingLocation!.longitude,

@@ -96,8 +96,8 @@ class _PostTitleFieldState extends ConsumerState<PostTitleField> {
         hintText: 'Post title',
         hintStyle: const TextStyle(color: AppColors.gray300, fontSize: 16),
 
-        border: OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
+        border: const OutlineInputBorder(),
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.black54),
         ),
       ),

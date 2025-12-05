@@ -61,15 +61,14 @@ class _ContentFieldState extends ConsumerState<ContentField> {
         textCapitalization: TextCapitalization.none,
 
         // 글자수 카운터
-        buildCounter:
-            (
-              context, {
-              required currentLength,
-              required isFocused,
-              required maxLength,
-            }) {
-              return Text('$currentLength/$maxLength');
-            },
+        buildCounter: (
+          context, {
+          required currentLength,
+          required isFocused,
+          required maxLength,
+        }) {
+          return Text('$currentLength/$maxLength');
+        },
 
         // 유효성 검사
         validator: (value) {
@@ -112,17 +111,14 @@ class _ContentFieldState extends ConsumerState<ContentField> {
           ref.read(postCreateProvider.notifier).setContent(value);
         },
 
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           isDense: true,
-
           contentPadding: EdgeInsets.symmetric(
             horizontal: 16.0,
             vertical: 16.0,
           ),
-
           hintText: 'Post Content',
-          hintStyle: const TextStyle(color: AppColors.gray300, fontSize: 16),
-
+          hintStyle: TextStyle(color: AppColors.gray300, fontSize: 16),
           border: OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: AppColors.black54),

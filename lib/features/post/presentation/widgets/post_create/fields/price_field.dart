@@ -122,21 +122,20 @@ class _PriceFieldState extends ConsumerState<PriceField> {
         prefixStyle: TextStyle(
           fontSize: 16,
           color: widget.isForSale
-              ? AppColors
-                    .textPrimary // 판매인 경우, 화폐 기호 색 검정
+              ? AppColors.textPrimary // 판매인 경우, 화폐 기호 색 검정
               : AppColors.disabledText, // 나눔인 경우, 화폐 기호 색 회색
         ),
 
         hintText: _isFilled ? '' : '₱ Please set a price.',
-        hintStyle: TextStyle(color: AppColors.gray300, fontSize: 16),
+        hintStyle: const TextStyle(color: AppColors.gray300, fontSize: 16),
 
-        border: OutlineInputBorder(),
-        focusedBorder: OutlineInputBorder(
+        border: const OutlineInputBorder(),
+        focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.black54),
         ),
 
         // 나눔인 경우, 필드 테두리 색 회색
-        disabledBorder: OutlineInputBorder(
+        disabledBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.borderDark),
         ),
       ),
