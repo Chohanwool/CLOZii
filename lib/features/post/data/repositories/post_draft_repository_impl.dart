@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/image_data.dart';
 import 'package:clozii/features/post/core/models/meeting_location.dart';
 import 'package:clozii/features/post/domain/repositories/post_draft_repository.dart';
+import 'package:clozii/features/post/presentation/models/image_bytes.dart';
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -66,7 +66,7 @@ class PostDraftRepositoryImpl implements PostDraftRepository {
             ? (json['selectedImages'] as Map<String, dynamic>).map(
                 (key, value) => MapEntry(
                   key,
-                  ImageData.fromJson(value as Map<String, dynamic>),
+                  ImageBytes.fromJson(value as Map<String, dynamic>),
                 ),
               )
             : const {},

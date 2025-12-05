@@ -1,11 +1,11 @@
-// ImageData: 단일 이미지의 원본/썸네일 URL을 표현하는 Value Object
+// ImageUrls: 단일 이미지의 원본/썸네일 URL을 표현하는 Value Object
 // Domain Layer에서 사용되며, Firestore에 저장된 이미지 URL을 나타냄
 
-class ImageData {
+class ImageUrls {
   final String originUrl;
   final String thumbnailUrl;
 
-  const ImageData({
+  const ImageUrls({
     required this.originUrl,
     required this.thumbnailUrl,
   });
@@ -19,8 +19,8 @@ class ImageData {
   }
 
   // JSON 역직렬화
-  factory ImageData.fromJson(Map<String, dynamic> json) {
-    return ImageData(
+  factory ImageUrls.fromJson(Map<String, dynamic> json) {
+    return ImageUrls(
       originUrl: json['originUrl'] as String,
       thumbnailUrl: json['thumbnailUrl'] as String,
     );
@@ -28,6 +28,6 @@ class ImageData {
 
   @override
   String toString() {
-    return 'ImageData(originUrl: $originUrl, thumbnailUrl: $thumbnailUrl)';
+    return 'ImageUrls(originUrl: $originUrl, thumbnailUrl: $thumbnailUrl)';
   }
 }

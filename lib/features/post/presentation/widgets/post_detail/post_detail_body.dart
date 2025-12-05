@@ -38,13 +38,13 @@ class PostDetailBody extends StatelessWidget {
                   Container(
                     width: 40,
                     height: 40,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       shape: BoxShape.circle,
                       color: AppColors.backgroundSecondary,
                     ),
-                    child: Icon(Icons.person, size: 24, color: Colors.grey),
+                    child:
+                        const Icon(Icons.person, size: 24, color: Colors.grey),
                   ),
-
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,9 +56,8 @@ class PostDetailBody extends StatelessWidget {
                       ),
                     ],
                   ),
-
-                  Spacer(),
-                  Icon(
+                  const Spacer(),
+                  const Icon(
                     CupertinoIcons.chevron_right,
                     size: 16,
                     color: AppColors.textSecondary,
@@ -119,7 +118,7 @@ class PostDetailBody extends StatelessWidget {
                 Row(
                   children: [
                     // 카테고리 아이콘
-                    Icon(
+                    const Icon(
                       CupertinoIcons.square_list,
                       size: 16,
                       color: AppColors.textSecondary,
@@ -143,7 +142,7 @@ class PostDetailBody extends StatelessWidget {
                 Row(
                   children: [
                     // 업로드 시간 아이콘
-                    Icon(
+                    const Icon(
                       CupertinoIcons.time,
                       size: 16,
                       color: AppColors.textSecondary,
@@ -202,12 +201,9 @@ class PostDetailBody extends StatelessWidget {
           const SizedBox(height: 10),
 
           // 거래 희망 장소 카드
-          if (post.detailAddress != null &&
-              post.meetingPointLat != null &&
-              post.meetingPointLong != null)
+          if (post.meetingLocation != null)
             CardContainer(
               padding: const EdgeInsets.all(16.0),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -217,7 +213,7 @@ class PostDetailBody extends StatelessWidget {
                       Row(
                         children: [
                           // 거래희망장소 아이콘
-                          Icon(
+                          const Icon(
                             CupertinoIcons.map_pin_ellipse,
                             size: 16,
                             color: AppColors.primary,
@@ -234,12 +230,11 @@ class PostDetailBody extends StatelessWidget {
                           ),
                         ],
                       ),
-
                       Row(
                         children: [
                           // 거래희망장소 링크
                           CustomTextLink(
-                            linkText: post.detailAddress!,
+                            linkText: post.meetingLocation!.detailAddress,
                             onTap: () {},
                           ),
                           const SizedBox(width: 10.0),
@@ -257,7 +252,6 @@ class PostDetailBody extends StatelessWidget {
                   Material(
                     clipBehavior: Clip.hardEdge,
                     borderRadius: BorderRadiusGeometry.circular(16.0),
-
                     child: Container(
                       width: double.infinity,
                       height: 150.0,
@@ -271,8 +265,8 @@ class PostDetailBody extends StatelessWidget {
                       child: GoogleMap(
                         initialCameraPosition: CameraPosition(
                           target: LatLng(
-                            post.meetingPointLat!,
-                            post.meetingPointLong!,
+                            post.meetingLocation!.latitude,
+                            post.meetingLocation!.longitude,
                           ),
                           zoom: 17.0,
                         ),
@@ -280,8 +274,8 @@ class PostDetailBody extends StatelessWidget {
                           Marker(
                             markerId: MarkerId('meetingPoint'),
                             position: LatLng(
-                              post.meetingPointLat!,
-                              post.meetingPointLong!,
+                              post.meetingLocation!.latitude,
+                              post.meetingLocation!.longitude,
                             ),
                           ),
                         },

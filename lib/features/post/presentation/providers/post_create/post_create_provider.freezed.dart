@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 mixin _$PostCreateState {
 
 // 사용자 입력 데이터
- String get title; String get content; TradeType get tradeType; int get price; MeetingLocation? get meetingLocation; Map<String, ImageData> get selectedImages;// 모든 필드 입력에 대한 검증 성공 여부
+ String get title; String get content; TradeType get tradeType; int get price; MeetingLocation? get meetingLocation; Map<String, ImageBytes> get selectedImages;// 모든 필드 입력에 대한 검증 성공 여부
  bool get isAllValid;// 모달 상태
  bool get showGoToPhrases; bool get showAddPhraseModal; bool get showMoreOptions; String? get currentPhraseForEdit;// 임시저장 상태 (변경 감지용)
  PostCreateState? get draftState;
@@ -49,7 +49,7 @@ abstract mixin class $PostCreateStateCopyWith<$Res>  {
   factory $PostCreateStateCopyWith(PostCreateState value, $Res Function(PostCreateState) _then) = _$PostCreateStateCopyWithImpl;
 @useResult
 $Res call({
- String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageData> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit, PostCreateState? draftState
+ String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageBytes> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit, PostCreateState? draftState
 });
 
 
@@ -74,7 +74,7 @@ as String,tradeType: null == tradeType ? _self.tradeType : tradeType // ignore: 
 as TradeType,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,meetingLocation: freezed == meetingLocation ? _self.meetingLocation : meetingLocation // ignore: cast_nullable_to_non_nullable
 as MeetingLocation?,selectedImages: null == selectedImages ? _self.selectedImages : selectedImages // ignore: cast_nullable_to_non_nullable
-as Map<String, ImageData>,isAllValid: null == isAllValid ? _self.isAllValid : isAllValid // ignore: cast_nullable_to_non_nullable
+as Map<String, ImageBytes>,isAllValid: null == isAllValid ? _self.isAllValid : isAllValid // ignore: cast_nullable_to_non_nullable
 as bool,showGoToPhrases: null == showGoToPhrases ? _self.showGoToPhrases : showGoToPhrases // ignore: cast_nullable_to_non_nullable
 as bool,showAddPhraseModal: null == showAddPhraseModal ? _self.showAddPhraseModal : showAddPhraseModal // ignore: cast_nullable_to_non_nullable
 as bool,showMoreOptions: null == showMoreOptions ? _self.showMoreOptions : showMoreOptions // ignore: cast_nullable_to_non_nullable
@@ -174,7 +174,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageBytes> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PostCreateState() when $default != null:
 return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit,_that.draftState);case _:
@@ -195,7 +195,7 @@ return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meet
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageBytes> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)  $default,) {final _that = this;
 switch (_that) {
 case _PostCreateState():
 return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit,_that.draftState);}
@@ -212,7 +212,7 @@ return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meet
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageData> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String content,  TradeType tradeType,  int price,  MeetingLocation? meetingLocation,  Map<String, ImageBytes> selectedImages,  bool isAllValid,  bool showGoToPhrases,  bool showAddPhraseModal,  bool showMoreOptions,  String? currentPhraseForEdit,  PostCreateState? draftState)?  $default,) {final _that = this;
 switch (_that) {
 case _PostCreateState() when $default != null:
 return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meetingLocation,_that.selectedImages,_that.isAllValid,_that.showGoToPhrases,_that.showAddPhraseModal,_that.showMoreOptions,_that.currentPhraseForEdit,_that.draftState);case _:
@@ -227,7 +227,7 @@ return $default(_that.title,_that.content,_that.tradeType,_that.price,_that.meet
 
 
 class _PostCreateState extends PostCreateState {
-  const _PostCreateState({this.title = '', this.content = '', this.tradeType = TradeType.sell, this.price = 0, this.meetingLocation, final  Map<String, ImageData> selectedImages = const {}, this.isAllValid = false, this.showGoToPhrases = false, this.showAddPhraseModal = false, this.showMoreOptions = false, this.currentPhraseForEdit, this.draftState}): _selectedImages = selectedImages,super._();
+  const _PostCreateState({this.title = '', this.content = '', this.tradeType = TradeType.sell, this.price = 0, this.meetingLocation, final  Map<String, ImageBytes> selectedImages = const {}, this.isAllValid = false, this.showGoToPhrases = false, this.showAddPhraseModal = false, this.showMoreOptions = false, this.currentPhraseForEdit, this.draftState}): _selectedImages = selectedImages,super._();
   
 
 // 사용자 입력 데이터
@@ -236,8 +236,8 @@ class _PostCreateState extends PostCreateState {
 @override@JsonKey() final  TradeType tradeType;
 @override@JsonKey() final  int price;
 @override final  MeetingLocation? meetingLocation;
- final  Map<String, ImageData> _selectedImages;
-@override@JsonKey() Map<String, ImageData> get selectedImages {
+ final  Map<String, ImageBytes> _selectedImages;
+@override@JsonKey() Map<String, ImageBytes> get selectedImages {
   if (_selectedImages is EqualUnmodifiableMapView) return _selectedImages;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_selectedImages);
@@ -283,7 +283,7 @@ abstract mixin class _$PostCreateStateCopyWith<$Res> implements $PostCreateState
   factory _$PostCreateStateCopyWith(_PostCreateState value, $Res Function(_PostCreateState) _then) = __$PostCreateStateCopyWithImpl;
 @override @useResult
 $Res call({
- String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageData> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit, PostCreateState? draftState
+ String title, String content, TradeType tradeType, int price, MeetingLocation? meetingLocation, Map<String, ImageBytes> selectedImages, bool isAllValid, bool showGoToPhrases, bool showAddPhraseModal, bool showMoreOptions, String? currentPhraseForEdit, PostCreateState? draftState
 });
 
 
@@ -308,7 +308,7 @@ as String,tradeType: null == tradeType ? _self.tradeType : tradeType // ignore: 
 as TradeType,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as int,meetingLocation: freezed == meetingLocation ? _self.meetingLocation : meetingLocation // ignore: cast_nullable_to_non_nullable
 as MeetingLocation?,selectedImages: null == selectedImages ? _self._selectedImages : selectedImages // ignore: cast_nullable_to_non_nullable
-as Map<String, ImageData>,isAllValid: null == isAllValid ? _self.isAllValid : isAllValid // ignore: cast_nullable_to_non_nullable
+as Map<String, ImageBytes>,isAllValid: null == isAllValid ? _self.isAllValid : isAllValid // ignore: cast_nullable_to_non_nullable
 as bool,showGoToPhrases: null == showGoToPhrases ? _self.showGoToPhrases : showGoToPhrases // ignore: cast_nullable_to_non_nullable
 as bool,showAddPhraseModal: null == showAddPhraseModal ? _self.showAddPhraseModal : showAddPhraseModal // ignore: cast_nullable_to_non_nullable
 as bool,showMoreOptions: null == showMoreOptions ? _self.showMoreOptions : showMoreOptions // ignore: cast_nullable_to_non_nullable

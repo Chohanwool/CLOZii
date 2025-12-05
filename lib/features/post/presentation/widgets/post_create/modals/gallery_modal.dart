@@ -7,7 +7,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 
 // features
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
-import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/presentation/models/image_bytes.dart';
 
 // packages
 import 'package:flutter/material.dart';
@@ -26,11 +26,11 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   List<String> imageIds = []; // 불러온 이미디(AssetEntity) id 리스트
   Map<String, Uint8List?> thumbnailCache = {}; // 썸네일 캐싱용 맵
 
-  late Map<String, ImageData>
-  previousState; // 이전 선택 상태 저장용 - 갤러리 모달에서 X 누르면 이전 상태로 복원
+  late Map<String, ImageBytes>
+      previousState; // 이전 선택 상태 저장용 - 갤러리 모달에서 X 누르면 이전 상태로 복원
 
-  late Map<String, ImageData>
-  newState; // 현재 선택하는 사진 상태 저장용 - 갤러리 모달에서 Done 버튼 누르면 프로바이더에 이 상태 저장
+  late Map<String, ImageBytes>
+      newState; // 현재 선택하는 사진 상태 저장용 - 갤러리 모달에서 Done 버튼 누르면 프로바이더에 이 상태 저장
 
   int _loadedImageCount = 0; // 로드된 이미지 개수
   final int _loadLimit = 2; // 한 번에 로드할 이미지 개수
@@ -42,7 +42,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   void initState() {
     super.initState();
     previousState = ref.read(postCreateProvider).selectedImages;
-    newState = Map<String, ImageData>.from(previousState);
+    newState = Map<String, ImageBytes>.from(previousState);
     _loadImages();
   }
 
@@ -86,7 +86,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
 
       // loadedImages 의 각 AssetEntity 에 대해 썸네일 데이터 로드 (Future)
       final futureThumbData = loadedImages
-          .map((asset) => asset.thumbnailDataWithSize(ThumbnailSize(100, 100)))
+          .map((asset) =>
+              asset.thumbnailDataWithSize(const ThumbnailSize(100, 100)))
           .toList();
 
       // 모든 썸네일 로딩 작업을 병렬 처리
@@ -106,10 +107,10 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
     }
   }
 
-  void _loadOriginalImages(Map<String, ImageData> newState) async {
+  void _loadOriginalImages(Map<String, ImageBytes> newState) async {
     for (final entry in newState.entries) {
       String assetId = entry.key;
-      ImageData imageData = entry.value;
+      ImageBytes imageData = entry.value;
 
       // 이미 원본 이미지가 로드된 경우는 스킵
       if (imageData.originBytes != null) continue;
@@ -141,15 +142,15 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
-        shape: Border(bottom: BorderSide(color: AppColors.black12)),
+        shape: const Border(bottom: BorderSide(color: AppColors.black12)),
         leading: IconButton(
           onPressed: () {
             ref.read(postCreateProvider.notifier).undoChanges(previousState);
             Navigator.of(context).pop();
           },
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
         ),
-        title: Text('Gallery'),
+        title: const Text('Gallery'),
         actions: [
           TextButton(
             onPressed: () {
@@ -157,7 +158,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
               ref.read(postCreateProvider.notifier).saveImages(newState);
               Navigator.of(context).pop();
             },
-            child: Text('Done'),
+            child: const Text('Done'),
           ),
         ],
       ),
@@ -185,7 +186,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.camera_alt, size: 40.0),
+                    const Icon(Icons.camera_alt, size: 40.0),
                     Text('Camera', style: context.textTheme.bodyMedium),
                   ],
                 ),
@@ -207,7 +208,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                       newState.remove(assetId);
                     } else {
                       if (newState.length < PostCreateState.maxImageCount) {
-                        final imageData = ImageData();
+                        final imageData = ImageBytes();
                         imageData.thumbnailBytes = thumbData;
                         newState[assetId] = imageData;
                       }
@@ -219,10 +220,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                     Positioned.fill(
                       child: Image.memory(thumbData, fit: BoxFit.cover),
                     ),
-
                     if (isSelected(assetId))
                       Positioned(child: Container(color: AppColors.black26)),
-
                     if (isSelected(assetId))
                       Positioned.fill(
                         child: Container(
@@ -234,7 +233,6 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           ),
                         ),
                       ),
-
                     if (isSelected(assetId))
                       Positioned(
                         top: 8,
@@ -249,7 +247,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           child: Center(
                             child: Text(
                               '${newState.keys.toList().indexOf(assetId) + 1}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -258,7 +256,6 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           ),
                         ),
                       ),
-
                     if (!isSelected(assetId))
                       Positioned(
                         top: 6,
@@ -270,7 +267,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           shadows: [
                             Shadow(
                               color: Colors.black.withOpacity(0.7),
-                              offset: Offset(0, 0),
+                              offset: const Offset(0, 0),
                               blurRadius: 4.0,
                             ),
                           ],

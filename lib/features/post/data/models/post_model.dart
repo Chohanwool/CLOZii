@@ -7,7 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_status.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/core/models/image_urls.dart';
 import 'package:clozii/features/post/core/models/meeting_location.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 
@@ -72,9 +72,9 @@ sealed class PostModel with _$PostModel {
   }
 
   // Data Model → Domain Entity 변환
-  // 주의: 이미지 다운로드는 별도로 처리 필요 (Storage URL → ImageData)
+  // 주의: 이미지 다운로드는 별도로 처리 필요 (Storage URL → ImageUrls)
   Post toEntity({
-    required List<ImageData> images,
+    required List<ImageUrls> images,
     Uint8List? authorProfileImage,
   }) {
     return Post(

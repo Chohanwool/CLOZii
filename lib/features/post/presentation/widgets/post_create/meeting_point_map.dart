@@ -37,13 +37,14 @@ class _MeetingPointSelectorState extends ConsumerState<MeetingPointMap> {
     super.initState();
 
     // 사용자가 이전에 설정한 거래희망장소 좌표가 있으면 그 좌표를 사용, 없으면 기본 좌표를 사용
-    final stateLatLng = ref
+    final meetingLocation = ref
         .read(postCreateProvider)
-        .meetingLocation
-        ?.coordinate;
+        .meetingLocation;
 
-    initialPosition = stateLatLng != null
-        ? CameraPosition(target: stateLatLng, zoom: 17.0)
+    initialPosition = meetingLocation != null
+        ? CameraPosition(
+            target: LatLng(meetingLocation.latitude, meetingLocation.longitude),
+            zoom: 17.0)
         : defaultPosition;
   }
 

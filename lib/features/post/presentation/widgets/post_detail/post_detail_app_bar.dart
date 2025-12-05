@@ -23,7 +23,7 @@ class PostDetailAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return post.originImageUrls.isNotEmpty
+    return post.images.isNotEmpty
         ? appBarWithImage(context)
         : appBarWithoutImage(context);
   }
@@ -120,8 +120,11 @@ class PostDetailAppBar extends StatelessWidget {
                 // PageView: 이미지 슬라이드 위젯
                 child: PageView(
                   children: [
-                    ...post.originImageUrls.map(
-                      (url) => Image.network(url, fit: BoxFit.cover),
+                    ...post.images.map(
+                      (imageData) => Image.network(
+                        imageData.originUrl,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ],
                 ),

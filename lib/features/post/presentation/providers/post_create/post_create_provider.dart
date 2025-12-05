@@ -7,12 +7,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // core
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/image_data.dart';
 import 'package:clozii/features/post/core/models/meeting_location.dart';
 
 // application
 import 'package:clozii/features/post/application/dto/post_draft.dart';
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
+
+// presentation
+import 'package:clozii/features/post/presentation/models/image_bytes.dart';
 
 // providers
 import 'package:clozii/features/post/presentation/providers/post_providers.dart';
@@ -36,7 +38,7 @@ sealed class PostCreateState with _$PostCreateState {
     @Default(TradeType.sell) TradeType tradeType,
     @Default(0) int price,
     MeetingLocation? meetingLocation,
-    @Default({}) Map<String, ImageData> selectedImages,
+    @Default({}) Map<String, ImageBytes> selectedImages,
     // 모든 필드 입력에 대한 검증 성공 여부
     @Default(false) bool isAllValid,
     // 모달 상태
@@ -100,7 +102,7 @@ class PostCreate extends _$PostCreate {
   }
 
   // 이미지 키 비교
-  bool _hasSameImageKeys(Map<String, ImageData> a, Map<String, ImageData> b) {
+  bool _hasSameImageKeys(Map<String, ImageBytes> a, Map<String, ImageBytes> b) {
     if (a.length != b.length) return false;
     return a.keys.every((key) => b.containsKey(key));
   }
@@ -109,7 +111,9 @@ class PostCreate extends _$PostCreate {
   bool _hasSameMeetingLocation(MeetingLocation? a, MeetingLocation? b) {
     if (a == null && b == null) return true;
     if (a == null || b == null) return false;
-    return a.coordinate == b.coordinate && a.detailAddress == b.detailAddress;
+    return a.latitude == b.latitude &&
+        a.longitude == b.longitude &&
+        a.detailAddress == b.detailAddress;
   }
 
   // 제목 저장 - 매 입력마다 호출됨
@@ -136,19 +140,20 @@ class PostCreate extends _$PostCreate {
   void setMeetingLocation(String detailAddress, LatLng coordinate) {
     state = state.copyWith(
       meetingLocation: MeetingLocation(
-        coordinate: coordinate,
+        latitude: coordinate.latitude,
+        longitude: coordinate.longitude,
         detailAddress: detailAddress,
       ),
     );
   }
 
   // 선택된 이미지 저장
-  void saveImages(Map<String, ImageData> images) {
+  void saveImages(Map<String, ImageBytes> images) {
     state = state.copyWith(selectedImages: images);
   }
 
   // 선택 취소 시 이전 상태로 복원
-  void undoChanges(Map<String, ImageData> previousImages) {
+  void undoChanges(Map<String, ImageBytes> previousImages) {
     state = state.copyWith(selectedImages: previousImages);
   }
 
@@ -163,7 +168,7 @@ class PostCreate extends _$PostCreate {
   // 모든 원본 이미지 가져오기
   List<Uint8List?> getAllOrigins() {
     return state.selectedImages.values
-        .map((imageData) => imageData.originBytes)
+        .map((imageBytes) => imageBytes.originBytes)
         .toList();
   }
 
@@ -178,7 +183,7 @@ class PostCreate extends _$PostCreate {
   // 모든 썸네일 이미지 가져오기
   List<Uint8List?> getAllThumbnails() {
     return state.selectedImages.values
-        .map((imageData) => imageData.thumbnailBytes)
+        .map((imageBytes) => imageBytes.thumbnailBytes)
         .toList();
   }
 
@@ -288,13 +293,12 @@ class PostCreate extends _$PostCreate {
         thumbnailImages: getAllThumbnails(),
         price: state.price,
         tradeType: state.tradeType,
-        meetingPoint: state.meetingLocation?.coordinate,
-        detailAddress: state.meetingLocation?.detailAddress,
+        meetingLocation: state.meetingLocation,
       ),
     );
 
     debugPrint(
-      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.meetingLocation?.coordinate} | ${state.meetingLocation?.detailAddress} | ${state.selectedImages.length}',
+      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.meetingLocation?.latitude},${state.meetingLocation?.longitude} | ${state.meetingLocation?.detailAddress} | ${state.selectedImages.length}',
     );
 
     debugPrint(dummyPosts.length.toString());

@@ -6,7 +6,7 @@ import 'dart:typed_data';
 import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_status.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/image_data.dart';
+import 'package:clozii/features/post/core/models/image_urls.dart';
 import 'package:clozii/features/post/core/models/meeting_location.dart';
 
 class Post {
@@ -14,7 +14,7 @@ class Post {
   final String id;
   final String title;
   final String content;
-  final List<ImageData> images;
+  final List<ImageUrls> images;
 
   // 거래 정보
   final int price;

@@ -42,10 +42,12 @@ class PostListTile extends StatelessWidget {
                 width: MediaQuery.of(context).size.width / 4,
                 height: MediaQuery.of(context).size.width / 4,
                 decoration: const BoxDecoration(color: Colors.black26),
-                child: Image.network(
-                  post.thumbnailImageUrls[0],
-                  fit: BoxFit.cover,
-                ),
+                child: post.images.isNotEmpty
+                    ? Image.network(
+                        post.images[0].thumbnailUrl,
+                        fit: BoxFit.cover,
+                      )
+                    : Container(color: Colors.grey),
               ),
             ),
             const SizedBox(width: 16.0),
