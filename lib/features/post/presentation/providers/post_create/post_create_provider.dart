@@ -152,11 +152,6 @@ class PostCreate extends _$PostCreate {
     state = state.copyWith(selectedImages: images);
   }
 
-  // 선택 취소 시 이전 상태로 복원
-  void undoChanges(Map<String, ImageBytes> previousImages) {
-    state = state.copyWith(selectedImages: previousImages);
-  }
-
   // 특정 원본 이미지 가져오기
   Uint8List? getOrigin(String id) {
     if (state.selectedImages.containsKey(id)) {

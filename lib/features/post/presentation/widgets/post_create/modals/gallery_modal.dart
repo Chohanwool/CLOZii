@@ -27,10 +27,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   Map<String, Uint8List?> thumbnailCache = {}; // 썸네일 캐싱용 맵
 
   late Map<String, ImageBytes>
-      previousState; // 이전 선택 상태 저장용 - 갤러리 모달에서 X 누르면 이전 상태로 복원
-
-  late Map<String, ImageBytes>
-      newState; // 현재 선택하는 사진 상태 저장용 - 갤러리 모달에서 Done 버튼 누르면 프로바이더에 이 상태 저장
+      imageSelection; // 선택된 사진 상태 저장용 - 갤러리 모달에서 Done 버튼 누르면 프로바이더에 이 상태 저장
 
   int _loadedImageCount = 0; // 로드된 이미지 개수
   final int _loadLimit = 2; // 한 번에 로드할 이미지 개수
@@ -41,8 +38,9 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
   @override
   void initState() {
     super.initState();
-    previousState = ref.read(postCreateProvider).selectedImages;
-    newState = Map<String, ImageBytes>.from(previousState);
+    imageSelection = Map<String, ImageBytes>.from(
+      ref.read(postCreateProvider).selectedImages,
+    );
     _loadImages();
   }
 
@@ -107,8 +105,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
     }
   }
 
-  void _loadOriginalImages(Map<String, ImageBytes> newState) async {
-    for (final entry in newState.entries) {
+  void _loadOriginalImages(Map<String, ImageBytes> imageSelection) async {
+    for (final entry in imageSelection.entries) {
       String assetId = entry.key;
       ImageBytes imageData = entry.value;
 
@@ -134,7 +132,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
 
   // 이미지 선택 여부 확인
   bool isSelected(String id) {
-    return newState.containsKey(id);
+    return imageSelection.containsKey(id);
   }
 
   @override
@@ -145,7 +143,6 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         shape: const Border(bottom: BorderSide(color: AppColors.black12)),
         leading: IconButton(
           onPressed: () {
-            ref.read(postCreateProvider.notifier).undoChanges(previousState);
             Navigator.of(context).pop();
           },
           icon: const Icon(Icons.close),
@@ -154,8 +151,8 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
         actions: [
           TextButton(
             onPressed: () {
-              _loadOriginalImages(newState);
-              ref.read(postCreateProvider.notifier).saveImages(newState);
+              _loadOriginalImages(imageSelection);
+              ref.read(postCreateProvider.notifier).saveImages(imageSelection);
               Navigator.of(context).pop();
             },
             child: const Text('Done'),
@@ -204,13 +201,13 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
               return GestureDetector(
                 onTap: () {
                   setState(() {
-                    if (newState.containsKey(assetId)) {
-                      newState.remove(assetId);
+                    if (imageSelection.containsKey(assetId)) {
+                      imageSelection.remove(assetId);
                     } else {
-                      if (newState.length < PostCreateState.maxImageCount) {
+                      if (imageSelection.length < PostCreateState.maxImageCount) {
                         final imageData = ImageBytes();
                         imageData.thumbnailBytes = thumbData;
-                        newState[assetId] = imageData;
+                        imageSelection[assetId] = imageData;
                       }
                     }
                   });
@@ -246,7 +243,7 @@ class _GalleryModalState extends ConsumerState<GalleryModal> {
                           ),
                           child: Center(
                             child: Text(
-                              '${newState.keys.toList().indexOf(assetId) + 1}',
+                              '${imageSelection.keys.toList().indexOf(assetId) + 1}',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
