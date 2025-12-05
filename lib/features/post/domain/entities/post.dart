@@ -55,6 +55,45 @@ class Post {
     this.authorProfileImage,
   });
 
+  // copyWith (불변성 유지하면서 값 변경)
+  Post copyWith({
+    String? id,
+    String? title,
+    String? content,
+    List<ImageUrls>? images,
+    int? price,
+    TradeType? tradeType,
+    PostStatus? postStatus,
+    PostCategory? category,
+    MeetingLocation? meetingLocation,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? favorites,
+    int? views,
+    String? authorUid,
+    String? authorNickname,
+    Uint8List? authorProfileImage,
+  }) {
+    return Post(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      images: images ?? this.images,
+      price: price ?? this.price,
+      tradeType: tradeType ?? this.tradeType,
+      postStatus: postStatus ?? this.postStatus,
+      category: category ?? this.category,
+      meetingLocation: meetingLocation ?? this.meetingLocation,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      favorites: favorites ?? this.favorites,
+      views: views ?? this.views,
+      authorUid: authorUid ?? this.authorUid,
+      authorNickname: authorNickname ?? this.authorNickname,
+      authorProfileImage: authorProfileImage ?? this.authorProfileImage,
+    );
+  }
+
   // toString (디버깅용)
   @override
   String toString() {
