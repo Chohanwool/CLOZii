@@ -8,8 +8,6 @@ import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/home/presentation/widgets/post_list_tile.dart';
-import 'package:clozii/features/post/presentation/viewmodels/post_provider.dart';
-import 'package:clozii/features/post/presentation/viewmodels/post_view_model.dart';
 
 //package
 import 'package:flutter/material.dart';
@@ -39,10 +37,7 @@ class _HomeTabScreenState extends ConsumerState<HomeTabScreen> {
   void _navigateToPostDetail(Post post) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ProviderScope(
-          overrides: [postProvider.overrideWith(() => PostViewModel(post))],
-          child: PostDetailScreen(),
-        ),
+        builder: (context) => PostDetailScreen(post: post),
       ),
     );
   }

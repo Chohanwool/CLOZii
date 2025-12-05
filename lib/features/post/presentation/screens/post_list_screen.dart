@@ -7,10 +7,8 @@ import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
-import 'package:clozii/features/post/presentation/viewmodels/post_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
-import 'package:clozii/features/post/presentation/viewmodels/post_view_model.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list/post_list_tile.dart';
 
 //package
@@ -44,10 +42,7 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
   void _navigateToPostDetail(Post post) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ProviderScope(
-          overrides: [postProvider.overrideWith(() => PostViewModel(post))],
-          child: PostDetailScreen(),
-        ),
+        builder: (context) => PostDetailScreen(post: post),
       ),
     );
   }

@@ -3,8 +3,8 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
+import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/providers/post_detail/post_detail_provider.dart';
-import 'package:clozii/features/post/presentation/viewmodels/post_provider.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_app_bar.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_body.dart';
 
@@ -13,7 +13,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
-  const PostDetailScreen({super.key});
+  const PostDetailScreen({super.key, required this.post});
+
+  final Post post;
 
   @override
   ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -23,12 +25,14 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   // 아래의 스크롤 컨트롤러는 UI 조작용이므로, Screen 에 둔다.
   // 비즈니스 로직과 관련된 컨트롤러의 경우 viewModel 에 둬야 한다. (예: 스크롤 끝에서 다음 데이터 로드, 특정 위치에서 ViewModel 호출 등)
   late final ScrollController _controller; // 스크롤 컨트롤러
+  late Post _currentPost; // 현재 게시글
 
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
     _controller.addListener(_onScroll);
+    _currentPost = widget.post; // navigation parameter로 받은 post 저장
   }
 
   @override
@@ -43,18 +47,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   // TODO - 상수/문자열 분리 : 하드코딩 텍스트는 constants/localization 로 이동
   @override
   Widget build(BuildContext context) {
-    // autoDispose로 인해 PostProvider 를 구독하는 위젯이 없으면 자동으로 프로바이더에 등록된 post 가 dispost 됨
-    final post = ref.watch(postProvider);
     final postDetailState = ref.watch(postDetailProvider);
-
-    if (post == null) {
-      return Scaffold(
-        body: Center(
-          // lotties로 대체 가능
-          child: const CircularProgressIndicator(),
-        ),
-      );
-    }
 
     return Scaffold(
       backgroundColor: AppColors.backgroundSecondary,
@@ -66,13 +59,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
         slivers: [
           // SliverAppBar: 상단 앱바
           PostDetailAppBar(
-            post: post,
+            post: _currentPost,
             isExpanded: postDetailState.isExpanded,
             stretchOffset: postDetailState.stretchOffset,
           ),
 
           // SliverToBoxAdapter: 앱바 하단 고정 영역
-          PostDetailBody(post: post),
+          PostDetailBody(post: _currentPost),
         ],
       ),
 
@@ -112,8 +105,8 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    post.price != 0
-                        ? '\u20B1 ${formatPrice(post.price)}'
+                    _currentPost.price != 0
+                        ? '\u20B1 ${formatPrice(_currentPost.price)}'
                         : 'Sharing',
                     style: context.textTheme.titleLarge,
                   ),
