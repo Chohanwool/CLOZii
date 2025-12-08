@@ -15,7 +15,7 @@ class VerifySignInOtp {
     String otpCode,
   ) async {
     try {
-      // 1. OTP 검증 (Firebase Auth 로그인)
+      // 1. OTP 검증 (uid, phoneNumber만 포함된 User 반환)
       final verifyResult = await _authRepository.verifyCode(
         verificationId,
         otpCode,
@@ -25,15 +25,15 @@ class VerifySignInOtp {
         return AuthResult.failure(verifyResult.failure!);
       }
 
-      final firebaseUser = verifyResult.data!; // Firebase User
+      final verifiedUser = verifyResult.data!; // domain.User (uid, phoneNumber만)
 
       debugPrint('====== verifySignInOtpUsecase.call ======');
-      debugPrint('Firebase User UID: ${firebaseUser.uid}');
+      debugPrint('UID: ${verifiedUser.uid}');
       debugPrint('====== verifySignInOtpUsecase.call ======');
 
-      // 2. Firestore에서 사용자 정보 조회
+      // 2. Firestore에서 전체 사용자 정보 조회
       final getUserResult =
-          await _authRepository.getUserFromFirestore(firebaseUser.uid);
+          await _authRepository.getUserFromFirestore(verifiedUser.uid);
 
       if (!getUserResult.isSuccess) {
         // Firestore에 사용자 정보가 없으면 회원가입 필요

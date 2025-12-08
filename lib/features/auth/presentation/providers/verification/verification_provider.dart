@@ -185,7 +185,7 @@ class Verification extends _$Verification {
       signUp.verificationId!,
       state.otpCode,
       signUp.name,
-      signUp.phoneNumber,
+      // signUp.phoneNumber,  // ✅ 제거 (verifyCode에서 Firebase User의 phoneNumber 사용)
       DateTime.parse(signUp.birthDate!),
       signUp.gender!,
     );

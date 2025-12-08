@@ -14,12 +14,11 @@ class VerifyOtpCode {
     String verificationId,
     String otpCode,
     String name,
-    String phoneNumber,
     DateTime birthDate,
     String gender,
   ) async {
     try {
-      // 1. OTP 검증 (Firebase 연락처 자동 로그인 사용)
+      // 1. OTP 검증 (uid, phoneNumber만 포함된 User 반환)
       final verifyResult = await _authRepository.verifyCode(
         verificationId,
         otpCode,
@@ -29,15 +28,16 @@ class VerifyOtpCode {
         return AuthResult.failure(verifyResult.failure!);
       }
 
-      final firebaseUser = verifyResult.data!; // Firebase User
+      final verifiedUser = verifyResult.data!; // domain.User (uid, phoneNumber만)
 
-      // 2. 회원가입 완료 (Firebase User → 도메인 User 변환)
+      // 2. 회원가입 완료 (추가 정보 포함한 완전한 User 생성)
       final domainUser = User(
-        uid: firebaseUser.uid,
-        phoneNumber: firebaseUser.phoneNumber!,
+        uid: verifiedUser.uid,
+        phoneNumber: verifiedUser.phoneNumber,
         name: name,
         birthDate: birthDate,
         gender: gender,
+        isVerified: true,  // OTP 검증 완료
         createdAt: DateTime.now(),
       );
 
@@ -50,12 +50,7 @@ class VerifyOtpCode {
 
       // Firestore 저장 실패 시 생성된 Firebase Auth 사용자 삭제 (롤백)
       if (!saveResult.isSuccess) {
-        try {
-          debugPrint('====== Firebase Auth 사용자 롤백 완료 ======');
-          await firebaseUser.delete();
-        } catch (deleteError) {
-          debugPrint('====== Firebase Auth 사용자 삭제 실패: $deleteError ======');
-        }
+        await _authRepository.deleteCurrentFirebaseUser();
         return AuthResult.failure(saveResult.failure!);
       }
 

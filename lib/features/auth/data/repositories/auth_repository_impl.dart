@@ -11,17 +11,6 @@ import 'package:flutter/rendering.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   @override
-  Future<AuthResult<User>> signUp({
-    required String name,
-    required String phoneNumber,
-    required DateTime birthDate,
-    required String gender,
-  }) {
-    // TODO: implement signUp
-    throw UnimplementedError();
-  }
-
-  @override
   Future<AuthResult<bool>> isPhoneRegistered(String phoneNumber) {
     // TODO: implement isPhoneRegistered
     throw UnimplementedError();
@@ -100,7 +89,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<AuthResult<User>> verifyCode(
+  Future<AuthResult<domain.User>> verifyCode(
     String verificationId,
     String otpCode,
   ) async {
@@ -115,21 +104,34 @@ class AuthRepositoryImpl implements AuthRepository {
 
       var auth = FirebaseAuth.instance;
 
-      // 로그인 시도(현재 단계에서는 무조건 최초 로그인이므로 회원가입)
+      // 로그인 시도
       UserCredential userCredential = await auth.signInWithCredential(
         credential,
       );
 
-      User? user = userCredential.user;
+      User? firebaseUser = userCredential.user;
 
-      if (user != null) {
-        debugPrint("======= AuthRepoImpl.verifyCode =======");
-        debugPrint('회원가입 성공: ${user.toString()}');
-        debugPrint("======= AuthRepoImpl.verifyCode =======");
-        return AuthResult.success(user);
-      } else {
+      if (firebaseUser == null) {
         return AuthResult.failure(UnknownFailure('User is null'));
       }
+
+      // Firebase User → Domain User 변환 (uid, phoneNumber만)
+      // Phone Auth이므로 phoneNumber는 항상 존재함
+      final domainUser = domain.User(
+        uid: firebaseUser.uid,
+        phoneNumber: firebaseUser.phoneNumber!,
+        name: '', // OTP 검증 단계에서는 이름 없음
+        isVerified: true,
+        createdAt: DateTime.now(),
+      );
+
+      debugPrint("======= AuthRepoImpl.verifyCode =======");
+      debugPrint(
+        'OTP 검증 성공 - uid: ${domainUser.uid}, phone: ${domainUser.phoneNumber}',
+      );
+      debugPrint("======= AuthRepoImpl.verifyCode =======");
+
+      return AuthResult.success(domainUser);
     } catch (e) {
       return AuthResult.failure(UnknownFailure(e.toString()));
     }
@@ -196,6 +198,46 @@ class AuthRepositoryImpl implements AuthRepository {
     } catch (e) {
       debugPrint('UnknownError: $e');
       return AuthResult.failure(AuthenticationFailure('사용자 정보 조회 중 오류 발생: $e'));
+    }
+  }
+
+  // ✅ 추가: 현재 로그인된 유저 정보 가져오기
+  @override
+  Future<AuthResult<domain.User>> getCurrentUser() async {
+    try {
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+
+      if (firebaseUser == null) {
+        return AuthResult.failure(AuthenticationFailure('로그인되지 않음'));
+      }
+
+      debugPrint('====== AuthRepoImpl.getCurrentUser ======');
+      debugPrint('현재 유저 uid: ${firebaseUser.uid}');
+      debugPrint('====== AuthRepoImpl.getCurrentUser ======');
+
+      // Firestore에서 전체 User 정보 가져오기 (기존 메서드 재사용)
+      return await getUserFromFirestore(firebaseUser.uid);
+    } catch (e) {
+      debugPrint('UnknownError: $e');
+      return AuthResult.failure(UnknownFailure(e.toString()));
+    }
+  }
+
+  // ✅ 추가: 현재 Firebase Auth 유저 삭제 (롤백용)
+  @override
+  Future<AuthResult<void>> deleteCurrentFirebaseUser() async {
+    try {
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+
+      if (firebaseUser != null) {
+        await firebaseUser.delete();
+        debugPrint('====== Firebase Auth 사용자 삭제 완료 ======');
+      }
+
+      return AuthResult.success(null);
+    } catch (e) {
+      debugPrint('====== Firebase Auth 사용자 삭제 실패: $e ======');
+      return AuthResult.failure(UnknownFailure(e.toString()));
     }
   }
 }
