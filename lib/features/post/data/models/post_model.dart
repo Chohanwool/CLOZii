@@ -43,19 +43,20 @@ sealed class PostModel with _$PostModel {
       _$PostModelFromJson(json);
 
   // Domain Entity → Data Model 변환 (수동 작성)
-  // 주의: 이미지 업로드는 별도로 처리 필요 (ImageData → Storage URL)
   factory PostModel.fromEntity(
     Post entity, {
-    required List<String> originImageUrls,
-    required List<String> thumbnailImageUrls,
     String? authorProfileImageUrl,
   }) {
+    // Post의 ImageUrls에서 URL 추출
+    final originUrls = entity.images.map((img) => img.originUrl).toList();
+    final thumbnailUrls = entity.images.map((img) => img.thumbnailUrl).toList();
+
     return PostModel(
       id: entity.id,
       title: entity.title,
       content: entity.content,
-      originImageUrls: originImageUrls,
-      thumbnailImageUrls: thumbnailImageUrls,
+      originImageUrls: originUrls,
+      thumbnailImageUrls: thumbnailUrls,
       price: entity.price,
       tradeType: entity.tradeType.name,
       postStatus: entity.postStatus.name,
@@ -72,11 +73,18 @@ sealed class PostModel with _$PostModel {
   }
 
   // Data Model → Domain Entity 변환
-  // 주의: 이미지 다운로드는 별도로 처리 필요 (Storage URL → ImageUrls)
   Post toEntity({
-    required List<ImageUrls> images,
     Uint8List? authorProfileImage,
   }) {
+    // PostModel의 URL 리스트에서 ImageUrls 객체 생성
+    final images = List.generate(
+      originImageUrls.length,
+      (i) => ImageUrls(
+        originUrl: originImageUrls[i],
+        thumbnailUrl: thumbnailImageUrls[i],
+      ),
+    );
+
     return Post(
       id: id,
       title: title,
