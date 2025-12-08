@@ -7,7 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // core
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/meeting_location.dart';
+import 'package:clozii/features/post/domain/value_objects/meeting_location.dart';
 
 // application
 import 'package:clozii/features/post/application/dto/post_draft.dart';

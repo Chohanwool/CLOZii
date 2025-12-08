@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/meeting_location.dart';
+import 'package:clozii/features/post/domain/value_objects/meeting_location.dart';
 import 'package:clozii/features/post/domain/repositories/post_draft_repository.dart';
 import 'package:clozii/features/post/presentation/models/image_bytes.dart';
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
@@ -21,7 +21,7 @@ class PostDraftRepositoryImpl implements PostDraftRepository {
   @override
   Future<void> saveDraft(PostCreateState state) async {
     final file = await _getDraftFile();
-    
+
     // 저장할 필드만 선택 (UI 상태는 제외)
     final draftData = {
       'title': state.title,
@@ -40,7 +40,7 @@ class PostDraftRepositoryImpl implements PostDraftRepository {
   @override
   Future<PostCreateState?> loadDraft() async {
     final file = await _getDraftFile();
-    
+
     if (!await file.exists()) {
       return null;
     }
@@ -80,7 +80,7 @@ class PostDraftRepositoryImpl implements PostDraftRepository {
   @override
   Future<void> deleteDraft() async {
     final file = await _getDraftFile();
-    
+
     if (await file.exists()) {
       await file.delete();
     }

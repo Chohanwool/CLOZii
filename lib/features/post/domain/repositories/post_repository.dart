@@ -1,9 +1,17 @@
-import 'package:clozii/features/post/application/dto/post_draft.dart';
+import 'dart:typed_data';
+
 import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/domain/value_objects/upload_result.dart';
 
 abstract class PostRepository {
   // 게시글 작성
-  Future<Post> createPost(PostDraft postDraft);
+  Future<Post> createPost(Post post);
+
+  // 이미지 업로드
+  Future<UploadResult> uploadImages(
+    List<Uint8List?> originImages,
+    List<Uint8List?> thumbnailImages,
+  );
 
   // 게시글 수정
   // UpdatePostUseCase에서 PostUpdate DTO 사용해서 부분 수정 처리 후 Post 엔티티로 변환하여 전달

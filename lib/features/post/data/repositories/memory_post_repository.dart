@@ -1,6 +1,6 @@
 import 'package:clozii/features/post/application/dto/post_draft.dart';
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
-import 'package:clozii/features/post/core/models/image_urls.dart';
+import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
 

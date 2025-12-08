@@ -6,8 +6,8 @@ import 'dart:typed_data';
 import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_status.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
-import 'package:clozii/features/post/core/models/image_urls.dart';
-import 'package:clozii/features/post/core/models/meeting_location.dart';
+import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
+import 'package:clozii/features/post/domain/value_objects/meeting_location.dart';
 
 class Post {
   // 기본 정보
