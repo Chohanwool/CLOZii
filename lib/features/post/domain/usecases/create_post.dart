@@ -27,7 +27,6 @@ class CreatePost {
     final post = postDraft
         .toPost(
           id: uploadResult.id,
-          now: DateTime.now(),
           authorUid: user.uid,
           authorNickname: user.name,
         )

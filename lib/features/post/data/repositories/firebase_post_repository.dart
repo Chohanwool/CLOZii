@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clozii/features/post/data/models/post_model.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
@@ -9,9 +10,33 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebasePostRepository extends PostRepository {
   @override
-  Future<Post> createPost(Post post) {
-    // TODO: implement deletePost
-    throw UnimplementedError();
+  Future<Post> createPost(Post post) async {
+    final postModel = PostModel.fromEntity(post);
+    final jsonPost = postModel.toJson();
+
+    // 서버 타임스탬프 설정 - Firestore 서버가 저장 시점에 직접 시간을 채우게 하는 예약 값
+    jsonPost['createdAt'] = FieldValue.serverTimestamp();
+    jsonPost['updatedAt'] = FieldValue.serverTimestamp();
+
+    final firestore = FirebaseFirestore.instance;
+
+    try {
+      // 저장
+      await firestore.collection('posts').doc(post.id).set(jsonPost);
+
+      // 조회
+      final snapshot = await firestore.collection('posts').doc(post.id).get();
+
+      if (!snapshot.exists || snapshot.data() == null) {
+        throw Exception('문서 없음 after save (id: ${post.id})');
+      }
+
+      return PostModel.fromJson(snapshot.data()!).toEntity();
+    } on FirebaseException catch (e) {
+      throw Exception('게시글 생성 실패(Firebase): ${e.message}');
+    } catch (e) {
+      throw Exception('게시글 생성 실패: $e');
+    }
   }
 
   @override
@@ -23,7 +48,6 @@ class FirebasePostRepository extends PostRepository {
     final storage = FirebaseStorage.instance;
 
     final docId = firestore.collection('posts').doc().id;
-
     final List<ImageUrls> uploadedImageUrls = [];
 
     for (int i = 0; i < originImages.length; i++) {
@@ -41,19 +65,24 @@ class FirebasePostRepository extends PostRepository {
       final originRef = storage.ref().child(originPath);
       final thumbnailRef = storage.ref().child(thumbnailPath);
 
-      await originRef.putData(originData);
-      await thumbnailRef.putData(thumbnailData);
+      try {
+        // 업로드
+        await originRef.putData(originData);
+        await thumbnailRef.putData(thumbnailData);
 
-      // 다운로드 URL 가져오기
-      final originUrl = await originRef.getDownloadURL();
-      final thumbnailUrl = await thumbnailRef.getDownloadURL();
+        // URL 가져오기
+        final originUrl = await originRef.getDownloadURL();
+        final thumbnailUrl = await thumbnailRef.getDownloadURL();
 
-      uploadedImageUrls.add(
-        ImageUrls(
-          originUrl: originUrl,
-          thumbnailUrl: thumbnailUrl,
-        ),
-      );
+        uploadedImageUrls.add(
+          ImageUrls(
+            originUrl: originUrl,
+            thumbnailUrl: thumbnailUrl,
+          ),
+        );
+      } on FirebaseException catch (e) {
+        throw Exception('[$i]번째 이미지 처리 실패: ${e.message}');
+      }
     }
 
     return UploadResult(id: docId, imageUrls: uploadedImageUrls);

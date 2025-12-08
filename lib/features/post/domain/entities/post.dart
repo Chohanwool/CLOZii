@@ -26,7 +26,7 @@ class Post {
   final MeetingLocation? meetingLocation;
 
   // 메타 정보
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final DateTime? updatedAt;
   final int favorites;
   final int views;

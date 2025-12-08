@@ -29,7 +29,6 @@ class PostDraft {
 
   Post toPost({
     required String id,
-    required DateTime now,
     required String authorUid,
     required String authorNickname,
     Uint8List? authorProfileImage,
@@ -40,8 +39,8 @@ class PostDraft {
       content: content,
       images: [], // 빈 리스트 (실제 업로드 후 URL로 채워짐)
       price: price,
-      createdAt: now,
-      updatedAt: now,
+      createdAt: null, // 서버에서 채워짐
+      updatedAt: null, // 서버에서 채워짐
       tradeType: tradeType,
       postStatus: PostStatus.selling,
       category: PostCategory.freeGiveaway,
