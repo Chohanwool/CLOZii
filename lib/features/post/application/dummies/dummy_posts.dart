@@ -119,9 +119,9 @@ List<Post> dummyPosts = [
     images: [
       const ImageUrls(
         originUrl:
-            'https://www.ikea.com/global/assets/range-categorisation/images/dinnerware-sets-31781.jpeg',
+            'https://www.mij.co.uk/cdn/shop/files/cookware.jpg?v=1731057419&width=1200',
         thumbnailUrl:
-            'https://www.ikea.com/global/assets/range-categorisation/images/dinnerware-sets-31781.jpeg',
+            'https://www.mij.co.uk/cdn/shop/files/cookware.jpg?v=1731057419&width=1200',
       ),
     ],
     price: 0,
