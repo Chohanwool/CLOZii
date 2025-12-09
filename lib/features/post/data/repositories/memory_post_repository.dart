@@ -1,15 +1,28 @@
-import 'package:clozii/features/post/application/dto/post_draft.dart';
+import 'dart:typed_data';
+
 import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
+import 'package:clozii/features/post/domain/value_objects/upload_result.dart';
 
 class MemoryPostRepository extends PostRepository {
   int id = 0;
 
   @override
-  Future<Post> createPost(PostDraft postDraft) {
-    final originImageUrls = postDraft.originImages
+  Future<Post> createPost(Post post) {
+    dummyPosts.add(post);
+    return Future.value(post);
+  }
+
+  @override
+  Future<UploadResult> uploadImages(
+    List<Uint8List?> originImages,
+    List<Uint8List?> thumbnailImages,
+  ) {
+    List<ImageUrls> uploadedImageUrls = [];
+
+    final originImageUrls = originImages
         .map(
           // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
           (image) => image != null
@@ -18,8 +31,8 @@ class MemoryPostRepository extends PostRepository {
         )
         .toList();
 
-    final thumbnailImageUrls = postDraft.thumbnailImages.isNotEmpty
-        ? postDraft.thumbnailImages
+    final thumbnailImageUrls = thumbnailImages.isNotEmpty
+        ? thumbnailImages
             .map(
               // 이미지 있으면 임시로 성공 이미지, 없으면 플레이스 홀더 표시
               (image) => image != null
@@ -31,10 +44,8 @@ class MemoryPostRepository extends PostRepository {
             'https://static.vecteezy.com/system/resources/thumbnails/022/059/000/small_2x/no-image-available-icon-vector.jpg',
           ];
 
-    List<ImageUrls> urls = [];
-
     for (int i = 0; i < originImageUrls.length; i++) {
-      urls.add(
+      uploadedImageUrls.add(
         ImageUrls(
           originUrl: originImageUrls[i],
           thumbnailUrl: thumbnailImageUrls[i],
@@ -42,19 +53,12 @@ class MemoryPostRepository extends PostRepository {
       );
     }
 
-    // PostDraft의 toPost 메서드 사용
-    final newPost = postDraft
-        .toPost(
-          id: 'postId_${id++}',
-          now: DateTime.now(),
-          authorUid: 'test_user_uid',
-          authorNickname: 'Test User',
-        )
-        .copyWith(images: urls);
-
-    dummyPosts.add(newPost);
-
-    return Future.value(newPost);
+    return Future.value(
+      UploadResult(
+        id: 'postId_${id++}',
+        imageUrls: uploadedImageUrls,
+      ),
+    );
   }
 
   @override
