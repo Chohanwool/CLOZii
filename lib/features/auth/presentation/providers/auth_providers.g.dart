@@ -32,15 +32,15 @@ final class AuthRepositoryProvider
   /// - verifyOtpCode -> verifyOtpCodeProvider
   /// - verifySignInOtp -> verifySignInOtpProvider
   const AuthRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'authRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'authRepositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$authRepositoryHash();
@@ -69,24 +69,20 @@ String _$authRepositoryHash() => r'a8767550d220ede9bb05149c073a651c4422d5ef';
 @ProviderFor(sendVerification)
 const sendVerificationProvider = SendVerificationProvider._();
 
-final class SendVerificationProvider
-    extends
-        $FunctionalProvider<
-          SendVerification,
-          SendVerification,
-          SendVerification
-        >
-    with $Provider<SendVerification> {
+final class SendVerificationProvider extends $FunctionalProvider<
+    SendVerification,
+    SendVerification,
+    SendVerification> with $Provider<SendVerification> {
   const SendVerificationProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'sendVerificationProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'sendVerificationProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$sendVerificationHash();
@@ -119,15 +115,15 @@ final class VerifyOtpCodeProvider
     extends $FunctionalProvider<VerifyOtpCode, VerifyOtpCode, VerifyOtpCode>
     with $Provider<VerifyOtpCode> {
   const VerifyOtpCodeProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'verifyOtpCodeProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'verifyOtpCodeProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$verifyOtpCodeHash();
@@ -156,20 +152,18 @@ String _$verifyOtpCodeHash() => r'3bb4701e05c770f5c0b91c74d8e16cb6bdfce18a';
 @ProviderFor(verifySignInOtp)
 const verifySignInOtpProvider = VerifySignInOtpProvider._();
 
-final class VerifySignInOtpProvider
-    extends
-        $FunctionalProvider<VerifySignInOtp, VerifySignInOtp, VerifySignInOtp>
-    with $Provider<VerifySignInOtp> {
+final class VerifySignInOtpProvider extends $FunctionalProvider<VerifySignInOtp,
+    VerifySignInOtp, VerifySignInOtp> with $Provider<VerifySignInOtp> {
   const VerifySignInOtpProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'verifySignInOtpProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'verifySignInOtpProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$verifySignInOtpHash();

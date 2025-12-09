@@ -7,34 +7,35 @@ part of 'post_model.dart';
 // **************************************************************************
 
 _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
-  id: json['id'] as String,
-  title: json['title'] as String,
-  content: json['content'] as String,
-  originImageUrls: (json['originImageUrls'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  thumbnailImageUrls: (json['thumbnailImageUrls'] as List<dynamic>)
-      .map((e) => e as String)
-      .toList(),
-  price: (json['price'] as num).toInt(),
-  tradeType: json['tradeType'] as String,
-  postStatus: json['postStatus'] as String,
-  category: json['category'] as String,
-  meetingLocation: json['meetingLocation'] == null
-      ? null
-      : MeetingLocation.fromJson(
-          json['meetingLocation'] as Map<String, dynamic>,
-        ),
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt: json['updatedAt'] == null
-      ? null
-      : DateTime.parse(json['updatedAt'] as String),
-  favorites: (json['favorites'] as num?)?.toInt() ?? 0,
-  views: (json['views'] as num?)?.toInt() ?? 0,
-  authorUid: json['authorUid'] as String,
-  authorNickname: json['authorNickname'] as String,
-  authorProfileImageUrl: json['authorProfileImageUrl'] as String?,
-);
+      id: json['id'] as String,
+      title: json['title'] as String,
+      content: json['content'] as String,
+      originImageUrls: (json['originImageUrls'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      thumbnailImageUrls: (json['thumbnailImageUrls'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      price: (json['price'] as num).toInt(),
+      tradeType: json['tradeType'] as String,
+      postStatus: json['postStatus'] as String,
+      category: json['category'] as String,
+      meetingLocation: json['meetingLocation'] == null
+          ? null
+          : MeetingLocation.fromJson(
+              json['meetingLocation'] as Map<String, dynamic>),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+      favorites: (json['favorites'] as num?)?.toInt() ?? 0,
+      views: (json['views'] as num?)?.toInt() ?? 0,
+      authorUid: json['authorUid'] as String,
+      authorNickname: json['authorNickname'] as String,
+      authorProfileImageUrl: json['authorProfileImageUrl'] as String?,
+    );
 
 Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
     <String, dynamic>{
@@ -48,7 +49,7 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'postStatus': instance.postStatus,
       'category': instance.category,
       'meetingLocation': instance.meetingLocation,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
       'favorites': instance.favorites,
       'views': instance.views,

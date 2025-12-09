@@ -15,15 +15,15 @@ const goToPhrasesProvider = GoToPhrasesProvider._();
 final class GoToPhrasesProvider
     extends $NotifierProvider<GoToPhrases, GoToPhraseState> {
   const GoToPhrasesProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'goToPhrasesProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'goToPhrasesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$goToPhrasesHash();
@@ -50,14 +50,11 @@ abstract class _$GoToPhrases extends $Notifier<GoToPhraseState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<GoToPhraseState, GoToPhraseState>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<GoToPhraseState, GoToPhraseState>,
-              GoToPhraseState,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<GoToPhraseState, GoToPhraseState>,
+        GoToPhraseState,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

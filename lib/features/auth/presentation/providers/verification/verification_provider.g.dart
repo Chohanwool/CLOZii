@@ -15,15 +15,15 @@ const verificationProvider = VerificationProvider._();
 final class VerificationProvider
     extends $NotifierProvider<Verification, VerificationState> {
   const VerificationProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'verificationProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'verificationProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$verificationHash();
@@ -41,7 +41,7 @@ final class VerificationProvider
   }
 }
 
-String _$verificationHash() => r'4455cfab0a0216e84651cb10ee1547027c00e2ce';
+String _$verificationHash() => r'47da4d055acff4596fd7ae411a327ca06ba9f92a';
 
 abstract class _$Verification extends $Notifier<VerificationState> {
   VerificationState build();
@@ -50,14 +50,11 @@ abstract class _$Verification extends $Notifier<VerificationState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<VerificationState, VerificationState>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<VerificationState, VerificationState>,
-              VerificationState,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<VerificationState, VerificationState>,
+        VerificationState,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

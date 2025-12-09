@@ -37,19 +37,19 @@ final class PostRepositoryProvider
   /// - PostDraftRepository -> postDraftRepositoryProvider
   /// - CreatePost -> createPostProvider
   /// - ManageDraft -> manageDraftProvider
-  // ============================================================================
-  // Repositories
-  // ============================================================================
+// ============================================================================
+// Repositories
+// ============================================================================
   const PostRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'postRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'postRepositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$postRepositoryHash();
@@ -78,24 +78,20 @@ String _$postRepositoryHash() => r'6d7aca58f6e68f4b61b0f5697a5ee3719ef0101e';
 @ProviderFor(postDraftRepository)
 const postDraftRepositoryProvider = PostDraftRepositoryProvider._();
 
-final class PostDraftRepositoryProvider
-    extends
-        $FunctionalProvider<
-          PostDraftRepository,
-          PostDraftRepository,
-          PostDraftRepository
-        >
-    with $Provider<PostDraftRepository> {
+final class PostDraftRepositoryProvider extends $FunctionalProvider<
+    PostDraftRepository,
+    PostDraftRepository,
+    PostDraftRepository> with $Provider<PostDraftRepository> {
   const PostDraftRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'postDraftRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'postDraftRepositoryProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$postDraftRepositoryHash();
@@ -103,8 +99,8 @@ final class PostDraftRepositoryProvider
   @$internal
   @override
   $ProviderElement<PostDraftRepository> $createElement(
-    $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
   PostDraftRepository create(Ref ref) {
@@ -130,15 +126,15 @@ final class CreatePostProvider
     extends $FunctionalProvider<CreatePost, CreatePost, CreatePost>
     with $Provider<CreatePost> {
   const CreatePostProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'createPostProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'createPostProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$createPostHash();
@@ -171,15 +167,15 @@ final class ManageDraftProvider
     extends $FunctionalProvider<ManageDraft, ManageDraft, ManageDraft>
     with $Provider<ManageDraft> {
   const ManageDraftProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'manageDraftProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'manageDraftProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$manageDraftHash();

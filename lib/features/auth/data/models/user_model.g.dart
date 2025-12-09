@@ -7,19 +7,19 @@ part of 'user_model.dart';
 // **************************************************************************
 
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
-  uid: json['uid'] as String,
-  name: json['name'] as String,
-  phoneNumber: json['phoneNumber'] as String,
-  birthDate: json['birthDate'] == null
-      ? null
-      : DateTime.parse(json['birthDate'] as String),
-  gender: json['gender'] as String?,
-  isVerified: json['isVerified'] as bool? ?? false,
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt: json['updatedAt'] == null
-      ? null
-      : DateTime.parse(json['updatedAt'] as String),
-);
+      uid: json['uid'] as String,
+      name: json['name'] as String,
+      phoneNumber: json['phoneNumber'] as String,
+      birthDate: json['birthDate'] == null
+          ? null
+          : DateTime.parse(json['birthDate'] as String),
+      gender: json['gender'] as String?,
+      isVerified: json['isVerified'] as bool? ?? false,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
+    );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{

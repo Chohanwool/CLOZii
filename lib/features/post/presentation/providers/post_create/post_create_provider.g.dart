@@ -15,15 +15,15 @@ const postCreateProvider = PostCreateProvider._();
 final class PostCreateProvider
     extends $NotifierProvider<PostCreate, PostCreateState> {
   const PostCreateProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'postCreateProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'postCreateProvider',
+          isAutoDispose: false,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$postCreateHash();
@@ -41,7 +41,7 @@ final class PostCreateProvider
   }
 }
 
-String _$postCreateHash() => r'd2cbef645c00985b191377af5e64c34aed04bca9';
+String _$postCreateHash() => r'befa377ff24e8549ba136873c50f7c9a4af372c2';
 
 abstract class _$PostCreate extends $Notifier<PostCreateState> {
   PostCreateState build();
@@ -50,14 +50,11 @@ abstract class _$PostCreate extends $Notifier<PostCreateState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<PostCreateState, PostCreateState>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<PostCreateState, PostCreateState>,
-              PostCreateState,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<PostCreateState, PostCreateState>,
+        PostCreateState,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

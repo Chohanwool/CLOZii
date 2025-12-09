@@ -14,15 +14,15 @@ const signUpProvider = SignUpProvider._();
 
 final class SignUpProvider extends $NotifierProvider<SignUp, SignUpState> {
   const SignUpProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'signUpProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'signUpProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$signUpHash();
@@ -49,14 +49,8 @@ abstract class _$SignUp extends $Notifier<SignUpState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<SignUpState, SignUpState>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<SignUpState, SignUpState>,
-              SignUpState,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<SignUpState, SignUpState>, SignUpState, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

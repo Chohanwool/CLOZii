@@ -29,7 +29,7 @@ sealed class PostModel with _$PostModel {
     required String postStatus, // enum을 string으로 저장
     required String category, // enum을 string으로 저장
     MeetingLocation? meetingLocation,
-    required DateTime createdAt,
+    DateTime? createdAt,
     DateTime? updatedAt,
     @Default(0) int favorites,
     @Default(0) int views,

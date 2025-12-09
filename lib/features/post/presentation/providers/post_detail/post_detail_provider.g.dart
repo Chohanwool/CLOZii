@@ -15,15 +15,15 @@ const postDetailProvider = PostDetailProvider._();
 final class PostDetailProvider
     extends $NotifierProvider<PostDetail, PostDetailState> {
   const PostDetailProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'postDetailProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'postDetailProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
 
   @override
   String debugGetCreateSourceHash() => _$postDetailHash();
@@ -50,14 +50,11 @@ abstract class _$PostDetail extends $Notifier<PostDetailState> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<PostDetailState, PostDetailState>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<PostDetailState, PostDetailState>,
-              PostDetailState,
-              Object?,
-              Object?
-            >;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<PostDetailState, PostDetailState>,
+        PostDetailState,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
