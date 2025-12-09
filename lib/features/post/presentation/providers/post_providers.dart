@@ -1,5 +1,8 @@
-import 'package:clozii/features/post/domain/usecases/manage_draft.dart';
+// riverpod
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+// provider
+import 'package:clozii/features/auth/presentation/providers/auth_providers.dart';
 
 // repositories
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
@@ -9,6 +12,7 @@ import 'package:clozii/features/post/data/repositories/post_draft_repository_imp
 
 // usecases
 import 'package:clozii/features/post/domain/usecases/create_post.dart';
+import 'package:clozii/features/post/domain/usecases/manage_draft.dart';
 
 part 'post_providers.g.dart';
 
@@ -39,7 +43,8 @@ PostDraftRepository postDraftRepository(Ref ref) {
 @riverpod
 CreatePost createPost(Ref ref) {
   final postRepository = ref.read(postRepositoryProvider);
-  return CreatePost(postRepository);
+  final authRepository = ref.read(authRepositoryProvider);
+  return CreatePost(postRepository, authRepository);
 }
 
 @riverpod
