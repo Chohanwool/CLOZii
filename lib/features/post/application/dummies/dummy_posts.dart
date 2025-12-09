@@ -4,6 +4,7 @@ import 'package:clozii/features/post/core/enums/post_status.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/domain/value_objects/meeting_location.dart';
 
 List<Post> dummyPosts = [
   Post(
@@ -26,6 +27,11 @@ List<Post> dummyPosts = [
     ],
     authorUid: 'dummy_user_1',
     authorNickname: 'John Doe',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '2',
@@ -47,6 +53,11 @@ List<Post> dummyPosts = [
     price: 0,
     authorUid: 'dummy_user_2',
     authorNickname: 'Jane Smith',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '3',
@@ -68,6 +79,11 @@ List<Post> dummyPosts = [
     ],
     authorUid: 'dummy_user_3',
     authorNickname: 'Mike Johnson',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '4',
@@ -90,6 +106,11 @@ List<Post> dummyPosts = [
     category: PostCategory.petsAndHobbies,
     authorUid: 'dummy_user_4',
     authorNickname: 'Sarah Lee',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '5',
@@ -111,6 +132,11 @@ List<Post> dummyPosts = [
     category: PostCategory.laptopsAndPcs,
     authorUid: 'dummy_user_5',
     authorNickname: 'Tom Brown',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '6',
@@ -132,6 +158,11 @@ List<Post> dummyPosts = [
     category: PostCategory.homeAndLiving,
     authorUid: 'dummy_user_6',
     authorNickname: 'Emily Davis',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '7',
@@ -153,6 +184,11 @@ List<Post> dummyPosts = [
     category: PostCategory.sports,
     authorUid: 'dummy_user_7',
     authorNickname: 'Chris Wilson',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '8',
@@ -174,6 +210,11 @@ List<Post> dummyPosts = [
     category: PostCategory.fashionApparel,
     authorUid: 'dummy_user_8',
     authorNickname: 'Lisa Garcia',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '9',
@@ -195,6 +236,11 @@ List<Post> dummyPosts = [
     category: PostCategory.videoGames,
     authorUid: 'dummy_user_9',
     authorNickname: 'David Martinez',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
   Post(
     id: '10',
@@ -216,5 +262,10 @@ List<Post> dummyPosts = [
     category: PostCategory.babyAndMaternity,
     authorUid: 'dummy_user_10',
     authorNickname: 'Anna Rodriguez',
+    meetingLocation: const MeetingLocation(
+      latitude: 14.264076669634353,
+      longitude: 121.074357368052,
+      detailAddress: 'Mcdonald\'s LBA1',
+    ),
   ),
 ];
