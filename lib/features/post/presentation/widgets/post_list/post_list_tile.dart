@@ -63,7 +63,7 @@ class PostListTile extends StatelessWidget {
                       style: context.textTheme.titleSmall,
                     ),
                     Text(
-                      '${showUploadedTime(post.createdAt)} ago',
+                      '${showUploadedTime(post.createdAt ?? DateTime.now())} ago',
                       style: context.textTheme.bodyLarge!.copyWith(
                         color: Colors.black45,
                       ),

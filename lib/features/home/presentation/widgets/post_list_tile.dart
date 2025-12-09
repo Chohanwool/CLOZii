@@ -53,7 +53,7 @@ class PostListTile extends StatelessWidget {
                           style: context.textTheme.titleSmall,
                         ),
                         Text(
-                          'address · ${showUploadedTime(post.createdAt)} ago',
+                          'address · ${showUploadedTime(post.createdAt ?? DateTime.now())} ago',
                           style: context.textTheme.bodyLarge!.copyWith(
                             color: Colors.black45,
                           ),
@@ -69,11 +69,11 @@ class PostListTile extends StatelessWidget {
                                 children: [
                                   Text(
                                     'SHARES',
-                                    style: context.textTheme.bodyLarge!
-                                        .copyWith(
-                                          color: context.colors.primary,
-                                          fontWeight: FontWeight.w700,
-                                        ),
+                                    style:
+                                        context.textTheme.bodyLarge!.copyWith(
+                                      color: context.colors.primary,
+                                      fontWeight: FontWeight.w700,
+                                    ),
                                   ),
                                   const SizedBox(width: 4.0),
                                   Icon(

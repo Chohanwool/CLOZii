@@ -151,7 +151,7 @@ class PostDetailBody extends StatelessWidget {
 
                     // 업로드 시간 텍스트
                     Text(
-                      '${showUploadedTime(post.createdAt)} ago',
+                      '${showUploadedTime(post.createdAt ?? DateTime.now())} ago',
                       style: context.textTheme.bodyLarge!.copyWith(
                         color: AppColors.textSecondary,
                       ),
