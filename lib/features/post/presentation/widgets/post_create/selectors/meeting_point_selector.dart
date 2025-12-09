@@ -28,7 +28,7 @@ class MeetingPointSelector extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final meetingLocation = ref.read(postCreateProvider).meetingLocation;
+    final meetingLocation = ref.watch(postCreateProvider).meetingLocation;
 
     return TextField(
       readOnly: true,
