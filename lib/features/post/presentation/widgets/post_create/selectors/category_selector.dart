@@ -19,6 +19,13 @@ class _CategorySelectorState extends State<CategorySelector> {
       onTap: () {
         debugPrint('category modal pop-up');
       },
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please select a category.';
+        }
+
+        return null;
+      },
       decoration: InputDecoration(
         isDense: true,
 
@@ -48,6 +55,10 @@ class _CategorySelectorState extends State<CategorySelector> {
 
         focusedBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: AppColors.black54),
+        ),
+
+        errorBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: AppColors.error),
         ),
       ),
     );
