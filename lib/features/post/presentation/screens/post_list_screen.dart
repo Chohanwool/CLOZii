@@ -35,8 +35,12 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
   // 게시글 목록 로드
   Future<void> _loadPosts() async {
     try {
+      debugPrint('════════════════════════════════════════');
+      debugPrint('📥 Loading posts from Firebase...');
       final getAllPosts = ref.read(getAllPostsProvider);
       final posts = await getAllPosts();
+      debugPrint('📦 Received ${posts.length} posts from Firebase');
+      debugPrint('════════════════════════════════════════');
       if (mounted) {
         setState(() {
           _posts = posts;
@@ -51,14 +55,18 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load posts: $e')),
         );
-        debugPrint('Failed to load posts: $e');
+        debugPrint('════════════════════════════════════════');
+        debugPrint('❌ Failed to load posts: $e');
+        debugPrint('════════════════════════════════════════');
       }
     }
   }
 
   // 새로고침
   Future<void> _onRefresh() async {
+    debugPrint('\n🔄 Refreshing posts...');
     await _loadPosts();
+    debugPrint('✅ Refresh complete. Loaded ${_posts.length} posts\n');
   }
 
   // 게시글 상세 화면으로 이동
