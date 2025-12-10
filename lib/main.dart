@@ -1,6 +1,5 @@
 // core
 import 'package:clozii/core/theme/theme.dart';
-// import 'package:clozii/features/post/application/seed_dummy_posts.dart';
 
 // APIs
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,9 +17,6 @@ void main() async {
 
   // initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-// 🌱 더미 데이터 업로드 (필요할 때만 주석 해제)
-  // await seedDummyPostsToFirestore();
 
   runApp(const ProviderScope(child: CLOZii()));
 }

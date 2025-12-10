@@ -7,7 +7,6 @@ import 'package:clozii/features/auth/presentation/providers/auth_providers.dart'
 
 // repositories
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
-import 'package:clozii/features/post/data/repositories/memory_post_repository.dart';
 import 'package:clozii/features/post/domain/repositories/post_draft_repository.dart';
 import 'package:clozii/features/post/data/repositories/post_draft_repository_impl.dart';
 
