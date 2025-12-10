@@ -6,6 +6,7 @@ import 'package:clozii/features/post/presentation/widgets/post_create/fields/con
 import 'package:clozii/features/post/presentation/widgets/post_create/fields/price_field.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/fields/title_field.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/image_select_section.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/selectors/category_selector.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/selectors/meeting_point_selector.dart';
 import 'package:clozii/features/post/presentation/widgets/post_create/selectors/trade_type_selector.dart';
 
@@ -83,6 +84,17 @@ class _PostCreateFormState extends ConsumerState<PostCreateForm> {
           width: 160.0,
           height: 40.0,
         ),
+        const SizedBox(height: 40.0),
+
+        // 카테고리 선택 버튼
+        Text(
+          'Category',
+          style: context.textTheme.bodyMedium!.copyWith(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        const SizedBox(height: 10.0),
+        const CategorySelector(),
         const SizedBox(height: 40.0),
 
         // 가격 / 판매 방법 선택
