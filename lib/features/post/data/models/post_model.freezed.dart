@@ -23,7 +23,9 @@ mixin _$PostModel {
   String get tradeType; // enum을 string으로 저장
   String get postStatus; // enum을 string으로 저장
   String get category; // enum을 string으로 저장
-  MeetingLocation? get meetingLocation;
+  double? get meetingLatitude;
+  double? get meetingLongitude;
+  String? get meetingDetailAddress;
   DateTime? get createdAt;
   DateTime? get updatedAt;
   int get favorites;
@@ -61,8 +63,12 @@ mixin _$PostModel {
                 other.postStatus == postStatus) &&
             (identical(other.category, category) ||
                 other.category == category) &&
-            (identical(other.meetingLocation, meetingLocation) ||
-                other.meetingLocation == meetingLocation) &&
+            (identical(other.meetingLatitude, meetingLatitude) ||
+                other.meetingLatitude == meetingLatitude) &&
+            (identical(other.meetingLongitude, meetingLongitude) ||
+                other.meetingLongitude == meetingLongitude) &&
+            (identical(other.meetingDetailAddress, meetingDetailAddress) ||
+                other.meetingDetailAddress == meetingDetailAddress) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -80,29 +86,32 @@ mixin _$PostModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      title,
-      content,
-      const DeepCollectionEquality().hash(originImageUrls),
-      const DeepCollectionEquality().hash(thumbnailImageUrls),
-      price,
-      tradeType,
-      postStatus,
-      category,
-      meetingLocation,
-      createdAt,
-      updatedAt,
-      favorites,
-      views,
-      authorUid,
-      authorNickname,
-      authorProfileImageUrl);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        title,
+        content,
+        const DeepCollectionEquality().hash(originImageUrls),
+        const DeepCollectionEquality().hash(thumbnailImageUrls),
+        price,
+        tradeType,
+        postStatus,
+        category,
+        meetingLatitude,
+        meetingLongitude,
+        meetingDetailAddress,
+        createdAt,
+        updatedAt,
+        favorites,
+        views,
+        authorUid,
+        authorNickname,
+        authorProfileImageUrl
+      ]);
 
   @override
   String toString() {
-    return 'PostModel(id: $id, title: $title, content: $content, originImageUrls: $originImageUrls, thumbnailImageUrls: $thumbnailImageUrls, price: $price, tradeType: $tradeType, postStatus: $postStatus, category: $category, meetingLocation: $meetingLocation, createdAt: $createdAt, updatedAt: $updatedAt, favorites: $favorites, views: $views, authorUid: $authorUid, authorNickname: $authorNickname, authorProfileImageUrl: $authorProfileImageUrl)';
+    return 'PostModel(id: $id, title: $title, content: $content, originImageUrls: $originImageUrls, thumbnailImageUrls: $thumbnailImageUrls, price: $price, tradeType: $tradeType, postStatus: $postStatus, category: $category, meetingLatitude: $meetingLatitude, meetingLongitude: $meetingLongitude, meetingDetailAddress: $meetingDetailAddress, createdAt: $createdAt, updatedAt: $updatedAt, favorites: $favorites, views: $views, authorUid: $authorUid, authorNickname: $authorNickname, authorProfileImageUrl: $authorProfileImageUrl)';
   }
 }
 
@@ -121,7 +130,9 @@ abstract mixin class $PostModelCopyWith<$Res> {
       String tradeType,
       String postStatus,
       String category,
-      MeetingLocation? meetingLocation,
+      double? meetingLatitude,
+      double? meetingLongitude,
+      String? meetingDetailAddress,
       DateTime? createdAt,
       DateTime? updatedAt,
       int favorites,
@@ -152,7 +163,9 @@ class _$PostModelCopyWithImpl<$Res> implements $PostModelCopyWith<$Res> {
     Object? tradeType = null,
     Object? postStatus = null,
     Object? category = null,
-    Object? meetingLocation = freezed,
+    Object? meetingLatitude = freezed,
+    Object? meetingLongitude = freezed,
+    Object? meetingDetailAddress = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? favorites = null,
@@ -198,10 +211,18 @@ class _$PostModelCopyWithImpl<$Res> implements $PostModelCopyWith<$Res> {
           ? _self.category
           : category // ignore: cast_nullable_to_non_nullable
               as String,
-      meetingLocation: freezed == meetingLocation
-          ? _self.meetingLocation
-          : meetingLocation // ignore: cast_nullable_to_non_nullable
-              as MeetingLocation?,
+      meetingLatitude: freezed == meetingLatitude
+          ? _self.meetingLatitude
+          : meetingLatitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      meetingLongitude: freezed == meetingLongitude
+          ? _self.meetingLongitude
+          : meetingLongitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      meetingDetailAddress: freezed == meetingDetailAddress
+          ? _self.meetingDetailAddress
+          : meetingDetailAddress // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: freezed == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
@@ -335,7 +356,9 @@ extension PostModelPatterns on PostModel {
             String tradeType,
             String postStatus,
             String category,
-            MeetingLocation? meetingLocation,
+            double? meetingLatitude,
+            double? meetingLongitude,
+            String? meetingDetailAddress,
             DateTime? createdAt,
             DateTime? updatedAt,
             int favorites,
@@ -359,7 +382,9 @@ extension PostModelPatterns on PostModel {
             _that.tradeType,
             _that.postStatus,
             _that.category,
-            _that.meetingLocation,
+            _that.meetingLatitude,
+            _that.meetingLongitude,
+            _that.meetingDetailAddress,
             _that.createdAt,
             _that.updatedAt,
             _that.favorites,
@@ -397,7 +422,9 @@ extension PostModelPatterns on PostModel {
             String tradeType,
             String postStatus,
             String category,
-            MeetingLocation? meetingLocation,
+            double? meetingLatitude,
+            double? meetingLongitude,
+            String? meetingDetailAddress,
             DateTime? createdAt,
             DateTime? updatedAt,
             int favorites,
@@ -420,7 +447,9 @@ extension PostModelPatterns on PostModel {
             _that.tradeType,
             _that.postStatus,
             _that.category,
-            _that.meetingLocation,
+            _that.meetingLatitude,
+            _that.meetingLongitude,
+            _that.meetingDetailAddress,
             _that.createdAt,
             _that.updatedAt,
             _that.favorites,
@@ -455,7 +484,9 @@ extension PostModelPatterns on PostModel {
             String tradeType,
             String postStatus,
             String category,
-            MeetingLocation? meetingLocation,
+            double? meetingLatitude,
+            double? meetingLongitude,
+            String? meetingDetailAddress,
             DateTime? createdAt,
             DateTime? updatedAt,
             int favorites,
@@ -478,7 +509,9 @@ extension PostModelPatterns on PostModel {
             _that.tradeType,
             _that.postStatus,
             _that.category,
-            _that.meetingLocation,
+            _that.meetingLatitude,
+            _that.meetingLongitude,
+            _that.meetingDetailAddress,
             _that.createdAt,
             _that.updatedAt,
             _that.favorites,
@@ -505,7 +538,9 @@ class _PostModel extends PostModel {
       required this.tradeType,
       required this.postStatus,
       required this.category,
-      this.meetingLocation,
+      this.meetingLatitude,
+      this.meetingLongitude,
+      this.meetingDetailAddress,
       this.createdAt,
       this.updatedAt,
       this.favorites = 0,
@@ -557,7 +592,11 @@ class _PostModel extends PostModel {
   final String category;
 // enum을 string으로 저장
   @override
-  final MeetingLocation? meetingLocation;
+  final double? meetingLatitude;
+  @override
+  final double? meetingLongitude;
+  @override
+  final String? meetingDetailAddress;
   @override
   final DateTime? createdAt;
   @override
@@ -609,8 +648,12 @@ class _PostModel extends PostModel {
                 other.postStatus == postStatus) &&
             (identical(other.category, category) ||
                 other.category == category) &&
-            (identical(other.meetingLocation, meetingLocation) ||
-                other.meetingLocation == meetingLocation) &&
+            (identical(other.meetingLatitude, meetingLatitude) ||
+                other.meetingLatitude == meetingLatitude) &&
+            (identical(other.meetingLongitude, meetingLongitude) ||
+                other.meetingLongitude == meetingLongitude) &&
+            (identical(other.meetingDetailAddress, meetingDetailAddress) ||
+                other.meetingDetailAddress == meetingDetailAddress) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
@@ -628,29 +671,32 @@ class _PostModel extends PostModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      title,
-      content,
-      const DeepCollectionEquality().hash(_originImageUrls),
-      const DeepCollectionEquality().hash(_thumbnailImageUrls),
-      price,
-      tradeType,
-      postStatus,
-      category,
-      meetingLocation,
-      createdAt,
-      updatedAt,
-      favorites,
-      views,
-      authorUid,
-      authorNickname,
-      authorProfileImageUrl);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        title,
+        content,
+        const DeepCollectionEquality().hash(_originImageUrls),
+        const DeepCollectionEquality().hash(_thumbnailImageUrls),
+        price,
+        tradeType,
+        postStatus,
+        category,
+        meetingLatitude,
+        meetingLongitude,
+        meetingDetailAddress,
+        createdAt,
+        updatedAt,
+        favorites,
+        views,
+        authorUid,
+        authorNickname,
+        authorProfileImageUrl
+      ]);
 
   @override
   String toString() {
-    return 'PostModel(id: $id, title: $title, content: $content, originImageUrls: $originImageUrls, thumbnailImageUrls: $thumbnailImageUrls, price: $price, tradeType: $tradeType, postStatus: $postStatus, category: $category, meetingLocation: $meetingLocation, createdAt: $createdAt, updatedAt: $updatedAt, favorites: $favorites, views: $views, authorUid: $authorUid, authorNickname: $authorNickname, authorProfileImageUrl: $authorProfileImageUrl)';
+    return 'PostModel(id: $id, title: $title, content: $content, originImageUrls: $originImageUrls, thumbnailImageUrls: $thumbnailImageUrls, price: $price, tradeType: $tradeType, postStatus: $postStatus, category: $category, meetingLatitude: $meetingLatitude, meetingLongitude: $meetingLongitude, meetingDetailAddress: $meetingDetailAddress, createdAt: $createdAt, updatedAt: $updatedAt, favorites: $favorites, views: $views, authorUid: $authorUid, authorNickname: $authorNickname, authorProfileImageUrl: $authorProfileImageUrl)';
   }
 }
 
@@ -672,7 +718,9 @@ abstract mixin class _$PostModelCopyWith<$Res>
       String tradeType,
       String postStatus,
       String category,
-      MeetingLocation? meetingLocation,
+      double? meetingLatitude,
+      double? meetingLongitude,
+      String? meetingDetailAddress,
       DateTime? createdAt,
       DateTime? updatedAt,
       int favorites,
@@ -703,7 +751,9 @@ class __$PostModelCopyWithImpl<$Res> implements _$PostModelCopyWith<$Res> {
     Object? tradeType = null,
     Object? postStatus = null,
     Object? category = null,
-    Object? meetingLocation = freezed,
+    Object? meetingLatitude = freezed,
+    Object? meetingLongitude = freezed,
+    Object? meetingDetailAddress = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
     Object? favorites = null,
@@ -749,10 +799,18 @@ class __$PostModelCopyWithImpl<$Res> implements _$PostModelCopyWith<$Res> {
           ? _self.category
           : category // ignore: cast_nullable_to_non_nullable
               as String,
-      meetingLocation: freezed == meetingLocation
-          ? _self.meetingLocation
-          : meetingLocation // ignore: cast_nullable_to_non_nullable
-              as MeetingLocation?,
+      meetingLatitude: freezed == meetingLatitude
+          ? _self.meetingLatitude
+          : meetingLatitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      meetingLongitude: freezed == meetingLongitude
+          ? _self.meetingLongitude
+          : meetingLongitude // ignore: cast_nullable_to_non_nullable
+              as double?,
+      meetingDetailAddress: freezed == meetingDetailAddress
+          ? _self.meetingDetailAddress
+          : meetingDetailAddress // ignore: cast_nullable_to_non_nullable
+              as String?,
       createdAt: freezed == createdAt
           ? _self.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable

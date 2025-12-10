@@ -20,10 +20,9 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
       tradeType: json['tradeType'] as String,
       postStatus: json['postStatus'] as String,
       category: json['category'] as String,
-      meetingLocation: json['meetingLocation'] == null
-          ? null
-          : MeetingLocation.fromJson(
-              json['meetingLocation'] as Map<String, dynamic>),
+      meetingLatitude: (json['meetingLatitude'] as num?)?.toDouble(),
+      meetingLongitude: (json['meetingLongitude'] as num?)?.toDouble(),
+      meetingDetailAddress: json['meetingDetailAddress'] as String?,
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
@@ -48,7 +47,9 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'tradeType': instance.tradeType,
       'postStatus': instance.postStatus,
       'category': instance.category,
-      'meetingLocation': instance.meetingLocation,
+      'meetingLatitude': instance.meetingLatitude,
+      'meetingLongitude': instance.meetingLongitude,
+      'meetingDetailAddress': instance.meetingDetailAddress,
       'createdAt': instance.createdAt?.toIso8601String(),
       'updatedAt': instance.updatedAt?.toIso8601String(),
       'favorites': instance.favorites,

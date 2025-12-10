@@ -28,7 +28,9 @@ sealed class PostModel with _$PostModel {
     required String tradeType, // enum을 string으로 저장
     required String postStatus, // enum을 string으로 저장
     required String category, // enum을 string으로 저장
-    MeetingLocation? meetingLocation,
+    double? meetingLatitude,
+    double? meetingLongitude,
+    String? meetingDetailAddress,
     DateTime? createdAt,
     DateTime? updatedAt,
     @Default(0) int favorites,
@@ -61,7 +63,9 @@ sealed class PostModel with _$PostModel {
       tradeType: entity.tradeType.name,
       postStatus: entity.postStatus.name,
       category: entity.category.name,
-      meetingLocation: entity.meetingLocation,
+      meetingLatitude: entity.meetingLocation?.latitude,
+      meetingLongitude: entity.meetingLocation?.longitude,
+      meetingDetailAddress: entity.meetingLocation?.detailAddress,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       favorites: entity.favorites,
@@ -84,6 +88,18 @@ sealed class PostModel with _$PostModel {
         thumbnailUrl: thumbnailImageUrls[i],
       ),
     );
+
+    // MeetingLocation 객체 재구성 (모든 필드가 있을 때만)
+    MeetingLocation? meetingLocation;
+    if (meetingLatitude != null &&
+        meetingLongitude != null &&
+        meetingDetailAddress != null) {
+      meetingLocation = MeetingLocation(
+        latitude: meetingLatitude!,
+        longitude: meetingLongitude!,
+        detailAddress: meetingDetailAddress!,
+      );
+    }
 
     return Post(
       id: id,

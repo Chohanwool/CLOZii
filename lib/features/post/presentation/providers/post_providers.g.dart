@@ -158,7 +158,7 @@ final class CreatePostProvider
   }
 }
 
-String _$createPostHash() => r'638478116c19a005329d644e1a410d5a85868e70';
+String _$createPostHash() => r'48f57f2e48973530c699ccf2b98589feac121d85';
 
 @ProviderFor(manageDraft)
 const manageDraftProvider = ManageDraftProvider._();

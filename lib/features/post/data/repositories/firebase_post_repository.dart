@@ -95,9 +95,25 @@ class FirebasePostRepository extends PostRepository {
   }
 
   @override
-  Future<List<Post>> findAllPosts({int page = 1, int limit = 20}) {
-    // TODO: implement findAllPosts
-    throw UnimplementedError();
+  Future<List<Post>> findAllPosts({int page = 1, int limit = 20}) async {
+    final firestore = FirebaseFirestore.instance;
+
+    try {
+      // 최신순으로 정렬하여 조회
+      final querySnapshot = await firestore
+          .collection('posts')
+          .orderBy('createdAt', descending: true)
+          .limit(limit)
+          .get();
+
+      return querySnapshot.docs
+          .map((doc) => PostModel.fromJson(doc.data()).toEntity())
+          .toList();
+    } on FirebaseException catch (e) {
+      throw Exception('게시글 목록 조회 실패(Firebase): ${e.message}');
+    } catch (e) {
+      throw Exception('게시글 목록 조회 실패: $e');
+    }
   }
 
   @override
