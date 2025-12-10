@@ -52,7 +52,7 @@ class CategorySelector extends ConsumerWidget {
                 children: [
                   const Icon(Icons.check, color: AppColors.success, size: 18.0),
                   const SizedBox(width: 8.0),
-                  Expanded(child: Text(selectedCategory.name)),
+                  Expanded(child: Text(selectedCategory.displayName)),
                 ],
               )
             : null,

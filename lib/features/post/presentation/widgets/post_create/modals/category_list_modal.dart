@@ -27,7 +27,7 @@ class CategoryListModal extends ConsumerWidget {
 
           return ListTile(
             title: Text(
-              currentCategory.name,
+              currentCategory.displayName,
               style: context.textTheme.bodyMedium!
                   .copyWith(fontSize: 18.0, fontWeight: FontWeight.w400),
             ),
@@ -35,7 +35,6 @@ class CategoryListModal extends ConsumerWidget {
               ref
                   .read(postCreateProvider.notifier)
                   .setCategory(currentCategory);
-              debugPrint('selected category: ${currentCategory.name}');
 
               Navigator.of(context).pop();
             },
