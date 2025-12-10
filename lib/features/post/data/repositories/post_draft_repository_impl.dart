@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/trade_type.dart';
 import 'package:clozii/features/post/domain/value_objects/meeting_location.dart';
 import 'package:clozii/features/post/domain/repositories/post_draft_repository.dart';
@@ -28,6 +29,7 @@ class PostDraftRepositoryImpl implements PostDraftRepository {
       'content': state.content,
       'tradeType': state.tradeType.name,
       'price': state.price,
+      'category': state.category?.name,
       'meetingLocation': state.meetingLocation?.toJson(),
       'selectedImages': state.selectedImages.map(
         (key, value) => MapEntry(key, value.toJson()),
@@ -57,6 +59,11 @@ class PostDraftRepositoryImpl implements PostDraftRepository {
           orElse: () => TradeType.sell,
         ),
         price: json['price'] as int? ?? 0,
+        category: json['category'] != null
+            ? PostCategory.values.firstWhere(
+                (e) => e.name == json['category'],
+              )
+            : null,
         meetingLocation: json['meetingLocation'] != null
             ? MeetingLocation.fromJson(
                 json['meetingLocation'] as Map<String, dynamic>,

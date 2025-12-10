@@ -16,6 +16,7 @@ class PostDraft {
     required this.thumbnailImages,
     required this.price,
     required this.tradeType,
+    this.category,
     this.meetingLocation,
   });
 
@@ -25,6 +26,7 @@ class PostDraft {
   List<Uint8List?> thumbnailImages;
   int price;
   TradeType tradeType;
+  PostCategory? category;
   MeetingLocation? meetingLocation;
 
   Post toPost({
@@ -43,7 +45,7 @@ class PostDraft {
       updatedAt: null, // 서버에서 채워짐
       tradeType: tradeType,
       postStatus: PostStatus.selling,
-      category: PostCategory.freeGiveaway,
+      category: category ?? PostCategory.freeGiveaway, // validator로 보장되지만 안전장치
       meetingLocation: meetingLocation,
       authorUid: authorUid,
       authorNickname: authorNickname,

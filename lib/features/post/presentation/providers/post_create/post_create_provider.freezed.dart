@@ -19,6 +19,7 @@ mixin _$PostCreateState {
   String get content;
   TradeType get tradeType;
   int get price;
+  PostCategory? get category;
   MeetingLocation? get meetingLocation;
   Map<String, ImageBytes> get selectedImages; // 모든 필드 입력에 대한 검증 성공 여부
   bool get isAllValid; // 모달 상태
@@ -46,6 +47,8 @@ mixin _$PostCreateState {
             (identical(other.tradeType, tradeType) ||
                 other.tradeType == tradeType) &&
             (identical(other.price, price) || other.price == price) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             (identical(other.meetingLocation, meetingLocation) ||
                 other.meetingLocation == meetingLocation) &&
             const DeepCollectionEquality()
@@ -71,6 +74,7 @@ mixin _$PostCreateState {
       content,
       tradeType,
       price,
+      category,
       meetingLocation,
       const DeepCollectionEquality().hash(selectedImages),
       isAllValid,
@@ -82,7 +86,7 @@ mixin _$PostCreateState {
 
   @override
   String toString() {
-    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
+    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, category: $category, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
   }
 }
 
@@ -97,6 +101,7 @@ abstract mixin class $PostCreateStateCopyWith<$Res> {
       String content,
       TradeType tradeType,
       int price,
+      PostCategory? category,
       MeetingLocation? meetingLocation,
       Map<String, ImageBytes> selectedImages,
       bool isAllValid,
@@ -126,6 +131,7 @@ class _$PostCreateStateCopyWithImpl<$Res>
     Object? content = null,
     Object? tradeType = null,
     Object? price = null,
+    Object? category = freezed,
     Object? meetingLocation = freezed,
     Object? selectedImages = null,
     Object? isAllValid = null,
@@ -152,6 +158,10 @@ class _$PostCreateStateCopyWithImpl<$Res>
           ? _self.price
           : price // ignore: cast_nullable_to_non_nullable
               as int,
+      category: freezed == category
+          ? _self.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as PostCategory?,
       meetingLocation: freezed == meetingLocation
           ? _self.meetingLocation
           : meetingLocation // ignore: cast_nullable_to_non_nullable
@@ -298,6 +308,7 @@ extension PostCreateStatePatterns on PostCreateState {
             String content,
             TradeType tradeType,
             int price,
+            PostCategory? category,
             MeetingLocation? meetingLocation,
             Map<String, ImageBytes> selectedImages,
             bool isAllValid,
@@ -317,6 +328,7 @@ extension PostCreateStatePatterns on PostCreateState {
             _that.content,
             _that.tradeType,
             _that.price,
+            _that.category,
             _that.meetingLocation,
             _that.selectedImages,
             _that.isAllValid,
@@ -350,6 +362,7 @@ extension PostCreateStatePatterns on PostCreateState {
             String content,
             TradeType tradeType,
             int price,
+            PostCategory? category,
             MeetingLocation? meetingLocation,
             Map<String, ImageBytes> selectedImages,
             bool isAllValid,
@@ -368,6 +381,7 @@ extension PostCreateStatePatterns on PostCreateState {
             _that.content,
             _that.tradeType,
             _that.price,
+            _that.category,
             _that.meetingLocation,
             _that.selectedImages,
             _that.isAllValid,
@@ -398,6 +412,7 @@ extension PostCreateStatePatterns on PostCreateState {
             String content,
             TradeType tradeType,
             int price,
+            PostCategory? category,
             MeetingLocation? meetingLocation,
             Map<String, ImageBytes> selectedImages,
             bool isAllValid,
@@ -416,6 +431,7 @@ extension PostCreateStatePatterns on PostCreateState {
             _that.content,
             _that.tradeType,
             _that.price,
+            _that.category,
             _that.meetingLocation,
             _that.selectedImages,
             _that.isAllValid,
@@ -438,6 +454,7 @@ class _PostCreateState extends PostCreateState {
       this.content = '',
       this.tradeType = TradeType.sell,
       this.price = 0,
+      this.category,
       this.meetingLocation,
       final Map<String, ImageBytes> selectedImages = const {},
       this.isAllValid = false,
@@ -462,6 +479,8 @@ class _PostCreateState extends PostCreateState {
   @override
   @JsonKey()
   final int price;
+  @override
+  final PostCategory? category;
   @override
   final MeetingLocation? meetingLocation;
   final Map<String, ImageBytes> _selectedImages;
@@ -511,6 +530,8 @@ class _PostCreateState extends PostCreateState {
             (identical(other.tradeType, tradeType) ||
                 other.tradeType == tradeType) &&
             (identical(other.price, price) || other.price == price) &&
+            (identical(other.category, category) ||
+                other.category == category) &&
             (identical(other.meetingLocation, meetingLocation) ||
                 other.meetingLocation == meetingLocation) &&
             const DeepCollectionEquality()
@@ -536,6 +557,7 @@ class _PostCreateState extends PostCreateState {
       content,
       tradeType,
       price,
+      category,
       meetingLocation,
       const DeepCollectionEquality().hash(_selectedImages),
       isAllValid,
@@ -547,7 +569,7 @@ class _PostCreateState extends PostCreateState {
 
   @override
   String toString() {
-    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
+    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, category: $category, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
   }
 }
 
@@ -564,6 +586,7 @@ abstract mixin class _$PostCreateStateCopyWith<$Res>
       String content,
       TradeType tradeType,
       int price,
+      PostCategory? category,
       MeetingLocation? meetingLocation,
       Map<String, ImageBytes> selectedImages,
       bool isAllValid,
@@ -594,6 +617,7 @@ class __$PostCreateStateCopyWithImpl<$Res>
     Object? content = null,
     Object? tradeType = null,
     Object? price = null,
+    Object? category = freezed,
     Object? meetingLocation = freezed,
     Object? selectedImages = null,
     Object? isAllValid = null,
@@ -620,6 +644,10 @@ class __$PostCreateStateCopyWithImpl<$Res>
           ? _self.price
           : price // ignore: cast_nullable_to_non_nullable
               as int,
+      category: freezed == category
+          ? _self.category
+          : category // ignore: cast_nullable_to_non_nullable
+              as PostCategory?,
       meetingLocation: freezed == meetingLocation
           ? _self.meetingLocation
           : meetingLocation // ignore: cast_nullable_to_non_nullable

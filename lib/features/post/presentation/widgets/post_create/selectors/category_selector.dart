@@ -1,26 +1,35 @@
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/features/post/core/enums/post_category.dart';
+import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/category_list_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CategorySelector extends StatefulWidget {
+class CategorySelector extends ConsumerWidget {
   const CategorySelector({super.key});
 
-  @override
-  State<CategorySelector> createState() => _CategorySelectorState();
-}
+  void _showCategoryList(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: AppColors.white,
+      builder: (BuildContext context) => Container(
+        padding: const EdgeInsets.only(top: kToolbarHeight),
+        child: const CategoryListModal(),
+      ),
+    );
+  }
 
-class _CategorySelectorState extends State<CategorySelector> {
-  PostCategory? _selectedCategory;
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedCategory = ref.watch(postCreateProvider).category;
+
     return TextFormField(
       readOnly: true,
-      onTap: () {
-        debugPrint('category modal pop-up');
-      },
+      onTap: () => _showCategoryList(context),
       validator: (value) {
-        if (value == null || value.isEmpty) {
+        if (selectedCategory == null) {
           return 'Please select a category.';
         }
 
@@ -37,13 +46,13 @@ class _CategorySelectorState extends State<CategorySelector> {
           ],
         ),
 
-        helper: _selectedCategory != null
+        helper: selectedCategory != null
             ? Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Icon(Icons.check, color: AppColors.success, size: 18.0),
                   const SizedBox(width: 8.0),
-                  Expanded(child: Text(_selectedCategory!.name)),
+                  Expanded(child: Text(selectedCategory.name)),
                 ],
               )
             : null,

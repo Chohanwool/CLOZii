@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -36,6 +37,7 @@ sealed class PostCreateState with _$PostCreateState {
     @Default('') String content,
     @Default(TradeType.sell) TradeType tradeType,
     @Default(0) int price,
+    PostCategory? category,
     MeetingLocation? meetingLocation,
     @Default({}) Map<String, ImageBytes> selectedImages,
     // 모든 필드 입력에 대한 검증 성공 여부
@@ -56,6 +58,7 @@ sealed class PostCreateState with _$PostCreateState {
       title.trim().isEmpty &&
       content.trim().isEmpty &&
       selectedImages.isEmpty &&
+      category == null &&
       (tradeType == TradeType.sell && price == 0) &&
       meetingLocation == null;
 }
@@ -96,6 +99,7 @@ class PostCreate extends _$PostCreate {
         state.content == other.content &&
         state.price == other.price &&
         state.tradeType == other.tradeType &&
+        state.category == other.category &&
         _hasSameImageKeys(state.selectedImages, other.selectedImages) &&
         _hasSameMeetingLocation(state.meetingLocation, other.meetingLocation);
   }
@@ -133,6 +137,10 @@ class PostCreate extends _$PostCreate {
   // 가격 저장 - 매 입력마다 호출됨
   void setPrice(int price) {
     state = state.copyWith(price: price);
+  }
+
+  void setCategory(PostCategory category) {
+    state = state.copyWith(category: category);
   }
 
   // 거래희망장소 저장
@@ -287,6 +295,7 @@ class PostCreate extends _$PostCreate {
         thumbnailImages: getAllThumbnails(),
         price: state.price,
         tradeType: state.tradeType,
+        category: state.category,
         meetingLocation: state.meetingLocation,
       ),
     );
