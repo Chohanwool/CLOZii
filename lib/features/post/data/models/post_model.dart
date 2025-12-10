@@ -10,6 +10,7 @@ import 'package:clozii/features/post/core/enums/trade_type.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/value_objects/meeting_location.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/data/models/timestamp_converter.dart';
 
 part 'post_model.freezed.dart';
 part 'post_model.g.dart';
@@ -31,8 +32,8 @@ sealed class PostModel with _$PostModel {
     double? meetingLatitude,
     double? meetingLongitude,
     String? meetingDetailAddress,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    @TimestampConverter() DateTime? createdAt,
+    @TimestampConverter() DateTime? updatedAt,
     @Default(0) int favorites,
     @Default(0) int views,
     required String authorUid,

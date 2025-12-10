@@ -1,4 +1,5 @@
 // riverpod
+import 'package:clozii/features/post/data/repositories/firebase_post_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 // provider
@@ -13,14 +14,16 @@ import 'package:clozii/features/post/data/repositories/post_draft_repository_imp
 // usecases
 import 'package:clozii/features/post/domain/usecases/create_post.dart';
 import 'package:clozii/features/post/domain/usecases/manage_draft.dart';
+import 'package:clozii/features/post/domain/usecases/get_all_posts.dart';
 
 part 'post_providers.g.dart';
 
 /// post 도메인의 DI provider 모음
-/// - PostRepository -> postRepositoryProvider (메모리 저장소)
+/// - PostRepository -> postRepositoryProvider (Firebase 저장소)
 /// - PostDraftRepository -> postDraftRepositoryProvider
 /// - CreatePost -> createPostProvider
 /// - ManageDraft -> manageDraftProvider
+/// - GetAllPosts -> getAllPostsProvider
 
 // ============================================================================
 // Repositories
@@ -28,7 +31,8 @@ part 'post_providers.g.dart';
 
 @riverpod
 PostRepository postRepository(Ref ref) {
-  return MemoryPostRepository();
+  // return MemoryPostRepository();
+  return FirebasePostRepository();
 }
 
 @riverpod
@@ -51,4 +55,10 @@ CreatePost createPost(Ref ref) {
 ManageDraft manageDraft(Ref ref) {
   final repository = ref.read(postDraftRepositoryProvider);
   return ManageDraft(repository);
+}
+
+@riverpod
+GetAllPosts getAllPosts(Ref ref) {
+  final repository = ref.read(postRepositoryProvider);
+  return GetAllPosts(repository);
 }

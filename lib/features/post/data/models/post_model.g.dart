@@ -23,12 +23,8 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
       meetingLatitude: (json['meetingLatitude'] as num?)?.toDouble(),
       meetingLongitude: (json['meetingLongitude'] as num?)?.toDouble(),
       meetingDetailAddress: json['meetingDetailAddress'] as String?,
-      createdAt: json['createdAt'] == null
-          ? null
-          : DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] == null
-          ? null
-          : DateTime.parse(json['updatedAt'] as String),
+      createdAt: const TimestampConverter().fromJson(json['createdAt']),
+      updatedAt: const TimestampConverter().fromJson(json['updatedAt']),
       favorites: (json['favorites'] as num?)?.toInt() ?? 0,
       views: (json['views'] as num?)?.toInt() ?? 0,
       authorUid: json['authorUid'] as String,
@@ -50,8 +46,8 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'meetingLatitude': instance.meetingLatitude,
       'meetingLongitude': instance.meetingLongitude,
       'meetingDetailAddress': instance.meetingDetailAddress,
-      'createdAt': instance.createdAt?.toIso8601String(),
-      'updatedAt': instance.updatedAt?.toIso8601String(),
+      'createdAt': const TimestampConverter().toJson(instance.createdAt),
+      'updatedAt': const TimestampConverter().toJson(instance.updatedAt),
       'favorites': instance.favorites,
       'views': instance.views,
       'authorUid': instance.authorUid,

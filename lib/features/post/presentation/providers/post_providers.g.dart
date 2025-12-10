@@ -9,10 +9,11 @@ part of 'post_providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// post 도메인의 DI provider 모음
-/// - PostRepository -> postRepositoryProvider (메모리 저장소)
+/// - PostRepository -> postRepositoryProvider (Firebase 저장소)
 /// - PostDraftRepository -> postDraftRepositoryProvider
 /// - CreatePost -> createPostProvider
 /// - ManageDraft -> manageDraftProvider
+/// - GetAllPosts -> getAllPostsProvider
 // ============================================================================
 // Repositories
 // ============================================================================
@@ -21,10 +22,11 @@ part of 'post_providers.dart';
 const postRepositoryProvider = PostRepositoryProvider._();
 
 /// post 도메인의 DI provider 모음
-/// - PostRepository -> postRepositoryProvider (메모리 저장소)
+/// - PostRepository -> postRepositoryProvider (Firebase 저장소)
 /// - PostDraftRepository -> postDraftRepositoryProvider
 /// - CreatePost -> createPostProvider
 /// - ManageDraft -> manageDraftProvider
+/// - GetAllPosts -> getAllPostsProvider
 // ============================================================================
 // Repositories
 // ============================================================================
@@ -33,10 +35,11 @@ final class PostRepositoryProvider
     extends $FunctionalProvider<PostRepository, PostRepository, PostRepository>
     with $Provider<PostRepository> {
   /// post 도메인의 DI provider 모음
-  /// - PostRepository -> postRepositoryProvider (메모리 저장소)
+  /// - PostRepository -> postRepositoryProvider (Firebase 저장소)
   /// - PostDraftRepository -> postDraftRepositoryProvider
   /// - CreatePost -> createPostProvider
   /// - ManageDraft -> manageDraftProvider
+  /// - GetAllPosts -> getAllPostsProvider
 // ============================================================================
 // Repositories
 // ============================================================================
@@ -73,7 +76,7 @@ final class PostRepositoryProvider
   }
 }
 
-String _$postRepositoryHash() => r'6d7aca58f6e68f4b61b0f5697a5ee3719ef0101e';
+String _$postRepositoryHash() => r'ef37f529fdb7c718870e77166055c0e87d450585';
 
 @ProviderFor(postDraftRepository)
 const postDraftRepositoryProvider = PostDraftRepositoryProvider._();
@@ -200,3 +203,44 @@ final class ManageDraftProvider
 }
 
 String _$manageDraftHash() => r'905fd157236a680b5ed42e1b4c9e9eb9ad9770e7';
+
+@ProviderFor(getAllPosts)
+const getAllPostsProvider = GetAllPostsProvider._();
+
+final class GetAllPostsProvider
+    extends $FunctionalProvider<GetAllPosts, GetAllPosts, GetAllPosts>
+    with $Provider<GetAllPosts> {
+  const GetAllPostsProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'getAllPostsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$getAllPostsHash();
+
+  @$internal
+  @override
+  $ProviderElement<GetAllPosts> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  GetAllPosts create(Ref ref) {
+    return getAllPosts(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(GetAllPosts value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<GetAllPosts>(value),
+    );
+  }
+}
+
+String _$getAllPostsHash() => r'd5d2774d02fc3077d792ccdf7a7f59b56a5468f0';

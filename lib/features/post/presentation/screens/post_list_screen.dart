@@ -4,9 +4,9 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 
 // feature
-import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_providers.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list/post_list_tile.dart';
@@ -23,19 +23,42 @@ class PostListScreen extends ConsumerStatefulWidget {
 }
 
 class _PostListScreenState extends ConsumerState<PostListScreen> {
-  // 현재는 더미 데이터 사용중이어서 ViewModel 필요 없음
-  // 하지만 실제 API 연결 시 ViewModel 필수!
-  // TODO: 실제 API 연결 + ViewModel 구현 - loadPosts(), refreshPosts() 등
-  List<Post> _posts = dummyPosts;
+  List<Post> _posts = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPosts();
+  }
+
+  // 게시글 목록 로드
+  Future<void> _loadPosts() async {
+    try {
+      final getAllPosts = ref.read(getAllPostsProvider);
+      final posts = await getAllPosts();
+      if (mounted) {
+        setState(() {
+          _posts = posts;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load posts: $e')),
+        );
+        debugPrint('Failed to load posts: $e');
+      }
+    }
+  }
 
   // 새로고침
   Future<void> _onRefresh() async {
-    // TODO: 실제 API 호출 - 게시글 목록 조회
-    await Future.delayed(const Duration(seconds: 1));
-    setState(() {
-      _posts = List<Post>.from(dummyPosts)
-        ..shuffle(); // 예시로 더미 데이터를 셔플해서 마치 새로 불러온 것처럼 보이게 함
-    });
+    await _loadPosts();
   }
 
   // 게시글 상세 화면으로 이동
@@ -96,17 +119,28 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
     return Stack(
       children: [
         /// 게시글 리스트
-        RefreshIndicator(
-          onRefresh: _onRefresh, // 새로고침 함수 연결
-          child: ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(), // 리스트가 비어도 스크롤 가능
-            itemCount: _posts.length,
-            itemBuilder: (context, index) => PostListTile(
-              post: _posts[index],
-              onTap: _navigateToPostDetail, // 게시글 클릭 시 상세 페이지 이동
-            ),
-          ),
-        ),
+        _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: _onRefresh, // 새로고침 함수 연결
+                child: _posts.isEmpty
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: const [
+                          SizedBox(height: 200),
+                          Center(child: Text('No posts available')),
+                        ],
+                      )
+                    : ListView.builder(
+                        physics:
+                            const AlwaysScrollableScrollPhysics(), // 리스트가 비어도 스크롤 가능
+                        itemCount: _posts.length,
+                        itemBuilder: (context, index) => PostListTile(
+                          post: _posts[index],
+                          onTap: _navigateToPostDetail, // 게시글 클릭 시 상세 페이지 이동
+                        ),
+                      ),
+              ),
 
         /// 오른쪽 하단 Create 버튼
         Positioned(

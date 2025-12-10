@@ -296,7 +296,7 @@ class PostCreate extends _$PostCreate {
       'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.meetingLocation?.latitude},${state.meetingLocation?.longitude} | ${state.meetingLocation?.detailAddress} | ${state.selectedImages.length}',
     );
 
-    debugPrint(dummyPosts.length.toString());
+    // debugPrint(dummyPosts.length.toString());
 
     // 게시글 생성 완료 후 임시저장 삭제
     await deleteTemp();

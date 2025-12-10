@@ -5,9 +5,9 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/widgets/filter_bar.dart';
 
 // features
-import 'package:clozii/features/home/presentation/screens/tabs/chat_tab_screen.dart';
-import 'package:clozii/features/home/presentation/screens/tabs/map_tab_screen.dart';
-import 'package:clozii/features/home/presentation/screens/tabs/my_tab_screen.dart';
+import 'package:clozii/presentation/screens/tabs/chat_tab_screen.dart';
+import 'package:clozii/presentation/screens/tabs/map_tab_screen.dart';
+import 'package:clozii/presentation/screens/tabs/my_tab_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_list_screen.dart';
 import 'package:clozii/features/search/presentation/screens/search_screen.dart';
 

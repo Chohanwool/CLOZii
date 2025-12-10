@@ -26,7 +26,9 @@ mixin _$PostModel {
   double? get meetingLatitude;
   double? get meetingLongitude;
   String? get meetingDetailAddress;
+  @TimestampConverter()
   DateTime? get createdAt;
+  @TimestampConverter()
   DateTime? get updatedAt;
   int get favorites;
   int get views;
@@ -133,8 +135,8 @@ abstract mixin class $PostModelCopyWith<$Res> {
       double? meetingLatitude,
       double? meetingLongitude,
       String? meetingDetailAddress,
-      DateTime? createdAt,
-      DateTime? updatedAt,
+      @TimestampConverter() DateTime? createdAt,
+      @TimestampConverter() DateTime? updatedAt,
       int favorites,
       int views,
       String authorUid,
@@ -359,8 +361,8 @@ extension PostModelPatterns on PostModel {
             double? meetingLatitude,
             double? meetingLongitude,
             String? meetingDetailAddress,
-            DateTime? createdAt,
-            DateTime? updatedAt,
+            @TimestampConverter() DateTime? createdAt,
+            @TimestampConverter() DateTime? updatedAt,
             int favorites,
             int views,
             String authorUid,
@@ -425,8 +427,8 @@ extension PostModelPatterns on PostModel {
             double? meetingLatitude,
             double? meetingLongitude,
             String? meetingDetailAddress,
-            DateTime? createdAt,
-            DateTime? updatedAt,
+            @TimestampConverter() DateTime? createdAt,
+            @TimestampConverter() DateTime? updatedAt,
             int favorites,
             int views,
             String authorUid,
@@ -487,8 +489,8 @@ extension PostModelPatterns on PostModel {
             double? meetingLatitude,
             double? meetingLongitude,
             String? meetingDetailAddress,
-            DateTime? createdAt,
-            DateTime? updatedAt,
+            @TimestampConverter() DateTime? createdAt,
+            @TimestampConverter() DateTime? updatedAt,
             int favorites,
             int views,
             String authorUid,
@@ -541,8 +543,8 @@ class _PostModel extends PostModel {
       this.meetingLatitude,
       this.meetingLongitude,
       this.meetingDetailAddress,
-      this.createdAt,
-      this.updatedAt,
+      @TimestampConverter() this.createdAt,
+      @TimestampConverter() this.updatedAt,
       this.favorites = 0,
       this.views = 0,
       required this.authorUid,
@@ -598,8 +600,10 @@ class _PostModel extends PostModel {
   @override
   final String? meetingDetailAddress;
   @override
+  @TimestampConverter()
   final DateTime? createdAt;
   @override
+  @TimestampConverter()
   final DateTime? updatedAt;
   @override
   @JsonKey()
@@ -721,8 +725,8 @@ abstract mixin class _$PostModelCopyWith<$Res>
       double? meetingLatitude,
       double? meetingLongitude,
       String? meetingDetailAddress,
-      DateTime? createdAt,
-      DateTime? updatedAt,
+      @TimestampConverter() DateTime? createdAt,
+      @TimestampConverter() DateTime? updatedAt,
       int favorites,
       int views,
       String authorUid,
