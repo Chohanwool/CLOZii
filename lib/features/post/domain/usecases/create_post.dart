@@ -2,7 +2,6 @@ import 'package:clozii/features/auth/domain/repositories/auth_repository.dart';
 import 'package:clozii/features/post/application/dto/post_draft.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class CreatePost {
   final AuthRepository _authRepository;
