@@ -4,10 +4,14 @@ import 'package:clozii/features/post/application/dummies/dummy_posts.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
-import 'package:clozii/features/post/domain/value_objects/upload_result.dart';
 
 class MemoryPostRepository extends PostRepository {
   int id = 0;
+
+  @override
+  String generatePostId() {
+    return 'postId_${id++}';
+  }
 
   @override
   Future<Post> createPost(Post post) {
@@ -16,10 +20,11 @@ class MemoryPostRepository extends PostRepository {
   }
 
   @override
-  Future<UploadResult> uploadImages(
-    List<Uint8List?> originImages,
-    List<Uint8List?> thumbnailImages,
-  ) {
+  Future<List<ImageUrls>> uploadImages({
+    required String postId,
+    required List<Uint8List?> originImages,
+    required List<Uint8List?> thumbnailImages,
+  }) {
     List<ImageUrls> uploadedImageUrls = [];
 
     final originImageUrls = originImages
@@ -53,12 +58,7 @@ class MemoryPostRepository extends PostRepository {
       );
     }
 
-    return Future.value(
-      UploadResult(
-        id: 'postId_${id++}',
-        imageUrls: uploadedImageUrls,
-      ),
-    );
+    return Future.value(uploadedImageUrls);
   }
 
   @override
@@ -80,7 +80,7 @@ class MemoryPostRepository extends PostRepository {
   }
 
   @override
-  Future<Post> updatePost(Post post) {
+  Future<Post> updatePost(Post post, {bool updateTimestamp = true}) {
     // TODO: implement updatePost
     throw UnimplementedError();
   }

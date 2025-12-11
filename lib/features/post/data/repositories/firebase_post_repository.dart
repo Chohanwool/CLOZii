@@ -5,10 +5,16 @@ import 'package:clozii/features/post/data/models/post_model.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
-import 'package:clozii/features/post/domain/value_objects/upload_result.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebasePostRepository extends PostRepository {
+  @override
+  String generatePostId() {
+    final firestore = FirebaseFirestore.instance;
+    return firestore.collection('posts').doc().id;
+  }
+
   @override
   Future<Post> createPost(Post post) async {
     final postModel = PostModel.fromEntity(post);
@@ -40,14 +46,15 @@ class FirebasePostRepository extends PostRepository {
   }
 
   @override
-  Future<UploadResult> uploadImages(
-    List<Uint8List?> originImages,
-    List<Uint8List?> thumbnailImages,
-  ) async {
-    final firestore = FirebaseFirestore.instance;
-    final storage = FirebaseStorage.instance;
+  Future<List<ImageUrls>> uploadImages({
+    required String postId,
+    required List<Uint8List?> originImages,
+    required List<Uint8List?> thumbnailImages,
+  }) async {
+    // final firestore = FirebaseFirestore.instance;
+    // final postId = firestore.collection('posts').doc().id;
 
-    final postId = firestore.collection('posts').doc().id;
+    final storage = FirebaseStorage.instance;
     final List<ImageUrls> uploadedImageUrls = [];
 
     for (int i = 0; i < originImages.length; i++) {
@@ -88,7 +95,7 @@ class FirebasePostRepository extends PostRepository {
       }
     }
 
-    return UploadResult(id: postId, imageUrls: uploadedImageUrls);
+    return uploadedImageUrls;
   }
 
   @override
@@ -126,8 +133,33 @@ class FirebasePostRepository extends PostRepository {
   }
 
   @override
-  Future<Post> updatePost(Post post) {
-    // TODO: implement updatePost
-    throw UnimplementedError();
+  Future<Post> updatePost(Post post, {bool updateTimestamp = true}) async {
+    final postModel = PostModel.fromEntity(post);
+    final jsonPost = postModel.toJson();
+
+    // updateTimestamp가 true일 때만 updatedAt 갱신
+    if (updateTimestamp) {
+      jsonPost['updatedAt'] = FieldValue.serverTimestamp();
+    }
+
+    final firestore = FirebaseFirestore.instance;
+
+    try {
+      // 업데이트
+      await firestore.collection('posts').doc(post.id).update(jsonPost);
+
+      // 조회
+      final snapshot = await firestore.collection('posts').doc(post.id).get();
+
+      if (!snapshot.exists || snapshot.data() == null) {
+        throw Exception('문서 없음 after update (id: ${post.id})');
+      }
+
+      return PostModel.fromJson(snapshot.data()!).toEntity();
+    } on FirebaseException catch (e) {
+      throw Exception('게시글 수정 실패(Firebase): ${e.message}');
+    } catch (e) {
+      throw Exception('게시글 수정 실패: $e');
+    }
   }
 }

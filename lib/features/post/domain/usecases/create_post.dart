@@ -2,6 +2,7 @@ import 'package:clozii/features/auth/domain/repositories/auth_repository.dart';
 import 'package:clozii/features/post/application/dto/post_draft.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CreatePost {
   final AuthRepository _authRepository;
@@ -19,19 +20,29 @@ class CreatePost {
     // AuthRepository 에서 AuthResult.success() 반환 시 유저 정보는 null 일 수 없음
     final user = result.data!;
 
-    final uploadResult = await _postRepository.uploadImages(
-      postDraft.originImages,
-      postDraft.thumbnailImages,
+    // 1. 새 postId 생성
+    final postId = _postRepository.generatePostId();
+
+    // 2. Post 엔티티 생성 (images는 빈 배열)
+    final post = postDraft.toPost(
+      id: postId,
+      authorUid: user.uid,
+      authorNickname: user.name,
     );
 
-    final post = postDraft
-        .toPost(
-          id: uploadResult.id,
-          authorUid: user.uid,
-          authorNickname: user.name,
-        )
-        .copyWith(images: uploadResult.imageUrls);
+    // 3. Firestore에 Post 먼저 저장
+    await _postRepository.createPost(post);
 
-    return await _postRepository.createPost(post);
+    // 4. Storage에 이미지 업로드 (이제 isPostOwner() 통과)
+    final imageUrls = await _postRepository.uploadImages(
+      postId: postId,
+      originImages: postDraft.originImages,
+      thumbnailImages: postDraft.thumbnailImages,
+    );
+
+    // 5. Post의 images 필드 업데이트 (updateTimestamp: false로 createdAt == updatedAt 유지)
+    final updatedPost = post.copyWith(images: imageUrls);
+    return await _postRepository.updatePost(updatedPost,
+        updateTimestamp: false);
   }
 }
