@@ -47,7 +47,7 @@ class FirebasePostRepository extends PostRepository {
     final firestore = FirebaseFirestore.instance;
     final storage = FirebaseStorage.instance;
 
-    final docId = firestore.collection('posts').doc().id;
+    final postId = firestore.collection('posts').doc().id;
     final List<ImageUrls> uploadedImageUrls = [];
 
     for (int i = 0; i < originImages.length; i++) {
@@ -59,8 +59,11 @@ class FirebasePostRepository extends PostRepository {
         throw Exception('이미지 데이터가 없습니다');
       }
 
-      final originPath = 'posts/$docId/images/$i-origin.jpg';
-      final thumbnailPath = 'posts/$docId/images/$i-thumbnail.jpg';
+      // 원본 이미지 경로
+      final originPath = 'posts/$postId/original/$i.jpg';
+
+      // 썸네일 이미지 경로
+      final thumbnailPath = 'posts/$postId/thumbnail/$i.jpg';
 
       final originRef = storage.ref().child(originPath);
       final thumbnailRef = storage.ref().child(thumbnailPath);
@@ -85,7 +88,7 @@ class FirebasePostRepository extends PostRepository {
       }
     }
 
-    return UploadResult(id: docId, imageUrls: uploadedImageUrls);
+    return UploadResult(id: postId, imageUrls: uploadedImageUrls);
   }
 
   @override
