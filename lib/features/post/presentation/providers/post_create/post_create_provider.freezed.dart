@@ -22,7 +22,8 @@ mixin _$PostCreateState {
   PostCategory? get category;
   MeetingLocation? get meetingLocation;
   Map<String, ImageBytes> get selectedImages; // 모든 필드 입력에 대한 검증 성공 여부
-  bool get isAllValid; // 모달 상태
+  bool get isAllValid; // 게시글 생성 로딩 상태
+  bool get isLoading; // 모달 상태
   bool get showGoToPhrases;
   bool get showAddPhraseModal;
   bool get showMoreOptions;
@@ -55,6 +56,8 @@ mixin _$PostCreateState {
                 .equals(other.selectedImages, selectedImages) &&
             (identical(other.isAllValid, isAllValid) ||
                 other.isAllValid == isAllValid) &&
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading) &&
             (identical(other.showGoToPhrases, showGoToPhrases) ||
                 other.showGoToPhrases == showGoToPhrases) &&
             (identical(other.showAddPhraseModal, showAddPhraseModal) ||
@@ -78,6 +81,7 @@ mixin _$PostCreateState {
       meetingLocation,
       const DeepCollectionEquality().hash(selectedImages),
       isAllValid,
+      isLoading,
       showGoToPhrases,
       showAddPhraseModal,
       showMoreOptions,
@@ -86,7 +90,7 @@ mixin _$PostCreateState {
 
   @override
   String toString() {
-    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, category: $category, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
+    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, category: $category, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, isLoading: $isLoading, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
   }
 }
 
@@ -105,6 +109,7 @@ abstract mixin class $PostCreateStateCopyWith<$Res> {
       MeetingLocation? meetingLocation,
       Map<String, ImageBytes> selectedImages,
       bool isAllValid,
+      bool isLoading,
       bool showGoToPhrases,
       bool showAddPhraseModal,
       bool showMoreOptions,
@@ -135,6 +140,7 @@ class _$PostCreateStateCopyWithImpl<$Res>
     Object? meetingLocation = freezed,
     Object? selectedImages = null,
     Object? isAllValid = null,
+    Object? isLoading = null,
     Object? showGoToPhrases = null,
     Object? showAddPhraseModal = null,
     Object? showMoreOptions = null,
@@ -173,6 +179,10 @@ class _$PostCreateStateCopyWithImpl<$Res>
       isAllValid: null == isAllValid
           ? _self.isAllValid
           : isAllValid // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isLoading: null == isLoading
+          ? _self.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       showGoToPhrases: null == showGoToPhrases
           ? _self.showGoToPhrases
@@ -312,6 +322,7 @@ extension PostCreateStatePatterns on PostCreateState {
             MeetingLocation? meetingLocation,
             Map<String, ImageBytes> selectedImages,
             bool isAllValid,
+            bool isLoading,
             bool showGoToPhrases,
             bool showAddPhraseModal,
             bool showMoreOptions,
@@ -332,6 +343,7 @@ extension PostCreateStatePatterns on PostCreateState {
             _that.meetingLocation,
             _that.selectedImages,
             _that.isAllValid,
+            _that.isLoading,
             _that.showGoToPhrases,
             _that.showAddPhraseModal,
             _that.showMoreOptions,
@@ -366,6 +378,7 @@ extension PostCreateStatePatterns on PostCreateState {
             MeetingLocation? meetingLocation,
             Map<String, ImageBytes> selectedImages,
             bool isAllValid,
+            bool isLoading,
             bool showGoToPhrases,
             bool showAddPhraseModal,
             bool showMoreOptions,
@@ -385,6 +398,7 @@ extension PostCreateStatePatterns on PostCreateState {
             _that.meetingLocation,
             _that.selectedImages,
             _that.isAllValid,
+            _that.isLoading,
             _that.showGoToPhrases,
             _that.showAddPhraseModal,
             _that.showMoreOptions,
@@ -416,6 +430,7 @@ extension PostCreateStatePatterns on PostCreateState {
             MeetingLocation? meetingLocation,
             Map<String, ImageBytes> selectedImages,
             bool isAllValid,
+            bool isLoading,
             bool showGoToPhrases,
             bool showAddPhraseModal,
             bool showMoreOptions,
@@ -435,6 +450,7 @@ extension PostCreateStatePatterns on PostCreateState {
             _that.meetingLocation,
             _that.selectedImages,
             _that.isAllValid,
+            _that.isLoading,
             _that.showGoToPhrases,
             _that.showAddPhraseModal,
             _that.showMoreOptions,
@@ -458,6 +474,7 @@ class _PostCreateState extends PostCreateState {
       this.meetingLocation,
       final Map<String, ImageBytes> selectedImages = const {},
       this.isAllValid = false,
+      this.isLoading = false,
       this.showGoToPhrases = false,
       this.showAddPhraseModal = false,
       this.showMoreOptions = false,
@@ -496,6 +513,10 @@ class _PostCreateState extends PostCreateState {
   @override
   @JsonKey()
   final bool isAllValid;
+// 게시글 생성 로딩 상태
+  @override
+  @JsonKey()
+  final bool isLoading;
 // 모달 상태
   @override
   @JsonKey()
@@ -538,6 +559,8 @@ class _PostCreateState extends PostCreateState {
                 .equals(other._selectedImages, _selectedImages) &&
             (identical(other.isAllValid, isAllValid) ||
                 other.isAllValid == isAllValid) &&
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading) &&
             (identical(other.showGoToPhrases, showGoToPhrases) ||
                 other.showGoToPhrases == showGoToPhrases) &&
             (identical(other.showAddPhraseModal, showAddPhraseModal) ||
@@ -561,6 +584,7 @@ class _PostCreateState extends PostCreateState {
       meetingLocation,
       const DeepCollectionEquality().hash(_selectedImages),
       isAllValid,
+      isLoading,
       showGoToPhrases,
       showAddPhraseModal,
       showMoreOptions,
@@ -569,7 +593,7 @@ class _PostCreateState extends PostCreateState {
 
   @override
   String toString() {
-    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, category: $category, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
+    return 'PostCreateState(title: $title, content: $content, tradeType: $tradeType, price: $price, category: $category, meetingLocation: $meetingLocation, selectedImages: $selectedImages, isAllValid: $isAllValid, isLoading: $isLoading, showGoToPhrases: $showGoToPhrases, showAddPhraseModal: $showAddPhraseModal, showMoreOptions: $showMoreOptions, currentPhraseForEdit: $currentPhraseForEdit, draftState: $draftState)';
   }
 }
 
@@ -590,6 +614,7 @@ abstract mixin class _$PostCreateStateCopyWith<$Res>
       MeetingLocation? meetingLocation,
       Map<String, ImageBytes> selectedImages,
       bool isAllValid,
+      bool isLoading,
       bool showGoToPhrases,
       bool showAddPhraseModal,
       bool showMoreOptions,
@@ -621,6 +646,7 @@ class __$PostCreateStateCopyWithImpl<$Res>
     Object? meetingLocation = freezed,
     Object? selectedImages = null,
     Object? isAllValid = null,
+    Object? isLoading = null,
     Object? showGoToPhrases = null,
     Object? showAddPhraseModal = null,
     Object? showMoreOptions = null,
@@ -659,6 +685,10 @@ class __$PostCreateStateCopyWithImpl<$Res>
       isAllValid: null == isAllValid
           ? _self.isAllValid
           : isAllValid // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isLoading: null == isLoading
+          ? _self.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       showGoToPhrases: null == showGoToPhrases
           ? _self.showGoToPhrases

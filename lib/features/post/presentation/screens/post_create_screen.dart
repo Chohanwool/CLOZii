@@ -53,6 +53,28 @@ class _PostCreateScreenState extends ConsumerState<PostCreateScreen> {
       }
     });
 
+    // isLoading 감지 - 게시글 생성 로딩 상태 감지
+    ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
+      if (previous?.isLoading != next.isLoading) {
+        if (next.isLoading) {
+          // 로딩 시작 - CircularProgressIndicator 다이얼로그 표시
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => const PopScope(
+              canPop: false,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        } else {
+          // 로딩 종료 - 다이얼로그 닫기
+          Navigator.of(context).pop();
+        }
+      }
+    });
+
     // isAllValid 감지 - 모든 입력 값 검증 성공 감지
     ref.listen<PostCreateState>(postCreateProvider, (previous, next) {
       if (previous?.isAllValid != next.isAllValid && next.isAllValid) {

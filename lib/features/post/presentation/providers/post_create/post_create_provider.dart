@@ -42,6 +42,8 @@ sealed class PostCreateState with _$PostCreateState {
     @Default({}) Map<String, ImageBytes> selectedImages,
     // 모든 필드 입력에 대한 검증 성공 여부
     @Default(false) bool isAllValid,
+    // 게시글 생성 로딩 상태
+    @Default(false) bool isLoading,
     // 모달 상태
     @Default(false) bool showGoToPhrases,
     @Default(false) bool showAddPhraseModal,
@@ -285,29 +287,38 @@ class PostCreate extends _$PostCreate {
 
     if (!isFormValid) return;
 
-    // CreatePost 호출
-    final createPost = ref.read(createPostProvider);
-    createPost(
-      PostDraft(
-        title: state.title,
-        content: state.content,
-        originImages: getAllOrigins(),
-        thumbnailImages: getAllThumbnails(),
-        price: state.price,
-        tradeType: state.tradeType,
-        category: state.category,
-        meetingLocation: state.meetingLocation,
-      ),
-    );
+    // 로딩 시작
+    state = state.copyWith(isLoading: true);
 
-    debugPrint(
-      'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.meetingLocation?.latitude},${state.meetingLocation?.longitude} | ${state.meetingLocation?.detailAddress} | ${state.selectedImages.length}',
-    );
+    try {
+      // CreatePost 호출
+      final createPost = ref.read(createPostProvider);
+      await createPost(
+        PostDraft(
+          title: state.title,
+          content: state.content,
+          originImages: getAllOrigins(),
+          thumbnailImages: getAllThumbnails(),
+          price: state.price,
+          tradeType: state.tradeType,
+          category: state.category,
+          meetingLocation: state.meetingLocation,
+        ),
+      );
 
-    // 게시글 생성 완료 후 임시저장 삭제
-    await deleteTemp();
+      debugPrint(
+        'Complete: ${state.title} | ${state.content} | ${state.tradeType} | ${state.price} | ${state.meetingLocation?.latitude},${state.meetingLocation?.longitude} | ${state.meetingLocation?.detailAddress} | ${state.selectedImages.length}',
+      );
 
-    state = state.copyWith(isAllValid: true);
+      // 게시글 생성 완료 후 임시저장 삭제
+      await deleteTemp();
+
+      state = state.copyWith(isAllValid: true, isLoading: false);
+    } catch (e) {
+      // 에러 발생 시 로딩 종료
+      state = state.copyWith(isLoading: false);
+      rethrow;
+    }
   }
 
   void resetState() {
