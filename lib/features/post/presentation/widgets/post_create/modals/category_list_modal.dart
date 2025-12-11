@@ -19,9 +19,15 @@ class CategoryListModal extends ConsumerWidget {
         title: const Text('Category'),
         centerTitle: true,
         shape: const Border(bottom: BorderSide(color: AppColors.black12)),
+        surfaceTintColor: AppColors.background,
       ),
-      body: ListView.builder(
+      body: ListView.separated(
         itemCount: PostCategory.values.length,
+        separatorBuilder: (context, index) => const Divider(
+          height: 1,
+          thickness: 1,
+          color: AppColors.black12,
+        ),
         itemBuilder: (context, index) {
           final currentCategory = PostCategory.values[index];
 
