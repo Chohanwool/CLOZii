@@ -30,7 +30,7 @@ class CreatePost {
     );
 
     // 3. Firestore에 Post 먼저 저장
-    await _postRepository.createPost(post);
+    final createdPost = await _postRepository.createPost(post);
 
     // 4. Storage에 이미지 업로드 (이제 isPostOwner() 통과)
     final imageUrls = await _postRepository.uploadImages(
@@ -40,8 +40,13 @@ class CreatePost {
     );
 
     // 5. Post의 images 필드 업데이트 (updateTimestamp: false로 createdAt == updatedAt 유지)
-    final updatedPost = post.copyWith(images: imageUrls);
-    return await _postRepository.updatePost(updatedPost,
-        updateTimestamp: false);
+    final updatedPost = createdPost.copyWith(images: imageUrls);
+
+    final finalPost = await _postRepository.updatePost(
+      updatedPost,
+      updateTimestamp: false,
+    );
+
+    return finalPost;
   }
 }
