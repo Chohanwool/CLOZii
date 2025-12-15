@@ -57,6 +57,7 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_launcher_icons: ^0.14.4
   firebase_storage: ^13.0.4
+  cached_network_image: ^3.4.1
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,12 @@
 // core
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 
 // feature
 import 'package:clozii/features/post/domain/entities/post.dart';
 
 // package
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,8 +33,8 @@ class PostDetailAppBar extends StatelessWidget {
   Widget appBarWithImage(BuildContext context) {
     return SliverAppBar(
       // 상단 앱바 배경 색상
-      backgroundColor: Colors.black,
-      surfaceTintColor: Colors.transparent, // Material 3에서 생기는 표면 색상 제거
+      backgroundColor: AppColors.black,
+      surfaceTintColor: AppColors.transparent, // Material 3에서 생기는 표면 색상 제거
       stretch: true, // 스트레치 효과 활성화 (오버스크롤 시 앱바 부분도 확장될 수 있도록)
       pinned: true, // 앱바 고정 여부 (true: 고정, false: 스크롤 시 사라짐)
       // 상태바 아이콘 색상 설정
@@ -44,7 +46,7 @@ class PostDetailAppBar extends StatelessWidget {
       // 상단 앱바 아이콘(텍스트 등) 색상 설정
       // 앱바가 확장되어 있으면, 아이콘 색상을 밝게 설정
       // 앱바가 축소되면, 아이콘 색상을 어둡게 설정
-      foregroundColor: isExpanded ? context.colors.onPrimary : Colors.black,
+      foregroundColor: isExpanded ? context.colors.onPrimary : AppColors.black,
 
       // 상단 앱바 기본 높이 설정 (전체 화면 높이의 45%)
       // 하지만 실제 적용되는 높이는 상태바 높이만큼 더 높아짐
@@ -118,9 +120,23 @@ class PostDetailAppBar extends StatelessWidget {
                 child: PageView(
                   children: [
                     ...post.images.map(
-                      (imageData) => Image.network(
-                        imageData.originUrl,
+                      (imageData) => CachedNetworkImage(
+                        fadeInDuration: const Duration(milliseconds: 100),
+                        imageUrl: imageData.originUrl,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: AppColors.background,
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: AppColors.background,
+                          child: const Center(
+                            child: Icon(
+                              Icons.error,
+                              color: AppColors.gray300,
+                              size: 48,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ],
@@ -138,14 +154,14 @@ class PostDetailAppBar extends StatelessWidget {
                     // _isExpanded = true 인 경우, 화면 상단에 약간 어두운 그라데이션을 적용함
                     gradient: isExpanded
                         ? const LinearGradient(
-                            colors: [Colors.black38, Colors.transparent],
+                            colors: [AppColors.black38, AppColors.transparent],
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                           )
                         : null,
 
                     // _isExpanded = false 인 경우, 화면 상단에 흰색 배경을 적용함
-                    color: !isExpanded ? Colors.white : null,
+                    color: !isExpanded ? AppColors.white : null,
                   ),
                 ),
               ),
@@ -171,10 +187,10 @@ class PostDetailAppBar extends StatelessWidget {
     return SliverAppBar(
       // 상단 앱바 배경 색상
       backgroundColor: context.colors.surface,
-      surfaceTintColor: Colors.transparent, // Material 3에서 생기는 표면 색상 제거
+      surfaceTintColor: AppColors.transparent, // Material 3에서 생기는 표면 색상 제거
       pinned: true, // 앱바 고정 여부 (true: 고정, false: 스크롤 시 사라짐)
       // 상단 앱바 아이콘(텍스트 등) 색상 설정
-      foregroundColor: Colors.black,
+      foregroundColor: AppColors.black,
 
       // 상단 앱바 기본 높이 설정 (전체 화면 높이의 45%)
       // 하지만 실제 적용되는 높이는 상태바 높이만큼 더 높아짐

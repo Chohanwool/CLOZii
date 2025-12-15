@@ -1,4 +1,5 @@
 // core
+import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
@@ -7,6 +8,7 @@ import 'package:clozii/core/utils/show_uploaded_time.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 
 // package
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -43,11 +45,19 @@ class PostListTile extends StatelessWidget {
                 height: MediaQuery.of(context).size.width / 4,
                 decoration: const BoxDecoration(color: Colors.black26),
                 child: post.images.isNotEmpty
-                    ? Image.network(
-                        post.images[0].thumbnailUrl,
+                    ? CachedNetworkImage(
+                        fadeInDuration: const Duration(milliseconds: 100),
+                        imageUrl: post.images[0].thumbnailUrl,
                         fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: AppColors.background,
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: AppColors.gray300,
+                          child: const Icon(Icons.error, color: Colors.white),
+                        ),
                       )
-                    : Container(color: Colors.grey),
+                    : Container(color: AppColors.gray300),
               ),
             ),
             const SizedBox(width: 16.0),

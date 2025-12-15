@@ -22,6 +22,9 @@ class AppColors {
   static const Color splashGradientMiddle = Color(0xFFFFA07A);
   static const Color splashGradientEnd = Color(0xFFFF6B9D);
 
+  // 투명
+  static const Color transparent = Colors.transparent;
+
   // 블랙스케일
   static const Color black = Colors.black;
   static const Color black87 = Colors.black87;
