@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
             scrolledUnderElevation: 6.0, // 스크롤 시에도 동일한 elevation 유지
             shadowColor: Colors.black.withOpacity(0.2), // 앱바 그림자 색상
 
-            shape: RoundedRectangleBorder(
+            shape: const RoundedRectangleBorder(
               side: BorderSide(color: AppColors.borderLight),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(12.0),
@@ -126,8 +126,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
 
             bottom: _currentIndex == 0
-                ? PreferredSize(
-                    preferredSize: const Size.fromHeight(60.0),
+                ? const PreferredSize(
+                    preferredSize: Size.fromHeight(60.0),
                     child: FilterBar(),
                   )
                 : null,
