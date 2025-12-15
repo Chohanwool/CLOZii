@@ -46,7 +46,9 @@ class PostListTile extends StatelessWidget {
                 decoration: const BoxDecoration(color: Colors.black26),
                 child: post.images.isNotEmpty
                     ? CachedNetworkImage(
-                        fadeInDuration: const Duration(milliseconds: 100),
+                        fadeInDuration: Duration.zero,
+                        fadeOutDuration: Duration.zero,
+                        placeholderFadeInDuration: Duration.zero,
                         imageUrl: post.images[0].thumbnailUrl,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(

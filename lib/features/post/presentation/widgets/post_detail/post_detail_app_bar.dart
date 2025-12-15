@@ -121,7 +121,9 @@ class PostDetailAppBar extends StatelessWidget {
                   children: [
                     ...post.images.map(
                       (imageData) => CachedNetworkImage(
-                        fadeInDuration: const Duration(milliseconds: 100),
+                        fadeInDuration: Duration.zero,
+                        fadeOutDuration: Duration.zero,
+                        placeholderFadeInDuration: Duration.zero,
                         imageUrl: imageData.originUrl,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
