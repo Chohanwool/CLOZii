@@ -57,9 +57,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     // 검색 필드에 아무 것도 입력하지 않은 경우, 최근 검색어 목록을 표시
     // 검색 필드에 검색어를 입력한 경우, 검색 결과를 표시
-    Widget content = _searchQuery.isEmpty
-        ? _buildRecentSearches()
-        : _buildSearchResults();
+    Widget content =
+        _searchQuery.isEmpty ? _buildRecentSearches() : _buildSearchResults();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -82,7 +81,7 @@ class _SearchScreenState extends State<SearchScreen> {
         scrolledUnderElevation: 6.0, // 스크롤 시에도 동일한 elevation 유지
         shadowColor: Colors.black.withOpacity(0.2), // 앱바 그림자 색상
 
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           side: BorderSide(color: AppColors.borderLight),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(12.0),
@@ -90,10 +89,10 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
 
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(10.0),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(10.0),
           // child: FilterBar(),
-          child: const SizedBox.shrink(),
+          child: SizedBox.shrink(),
         ),
       ),
       body: content,
@@ -281,12 +280,12 @@ class _SearchScreenState extends State<SearchScreen> {
           delegate: SliverChildBuilderDelegate((context, index) {
             return ListTile(
               dense: true,
-              contentPadding: EdgeInsets.only(left: 16.0, right: 16.0),
+              contentPadding: const EdgeInsets.only(left: 16.0, right: 16.0),
               leading: index < recentSearches.length
-                  ? Icon(CupertinoIcons.clock, size: 18.0)
-                  : Icon(CupertinoIcons.search, size: 18.0),
+                  ? const Icon(CupertinoIcons.clock, size: 18.0)
+                  : const Icon(CupertinoIcons.search, size: 18.0),
               title: Text(items[index]),
-              trailing: Icon(CupertinoIcons.arrow_up_right, size: 18.0),
+              trailing: const Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
                 debugPrint('tapped ${items[index]}');
               },
