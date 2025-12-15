@@ -2,21 +2,21 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
+import 'package:clozii/features/search/presentation/providers/search_provider.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchScreen extends StatefulWidget {
+class SearchScreen extends ConsumerStatefulWidget {
   const SearchScreen({super.key});
 
   @override
-  State<SearchScreen> createState() => _SearchScreenState();
+  ConsumerState<SearchScreen> createState() => _SearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-
-  String _searchQuery = '';
 
   // 카테고리 아이콘 리스트
   final List<Map<String, String>> _categoryIcons = [
@@ -32,21 +32,6 @@ class _SearchScreenState extends State<SearchScreen> {
     {'icon': 'assets/images/icons/dog.png', 'label': 'Pet'},
   ];
 
-  final List<String> _recentSearches = [
-    'Iphone',
-    'Jordan',
-    'Laptop',
-    'Tablets',
-    'Nike',
-    'Adidas',
-    'PlayStation 5',
-    'Xbox Series X',
-    'Nintendo Switch',
-    'Starbucks Tumbler',
-    'Sneakers',
-    'Kimchi',
-  ];
-
   @override
   void dispose() {
     _searchController.dispose();
@@ -55,10 +40,18 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final searchState = ref.watch(searchProvider);
+
     // 검색 필드에 아무 것도 입력하지 않은 경우, 최근 검색어 목록을 표시
     // 검색 필드에 검색어를 입력한 경우, 검색 결과를 표시
-    Widget content =
-        _searchQuery.isEmpty ? _buildRecentSearches() : _buildSearchResults();
+    Widget content = searchState.searchQuery.isEmpty
+        ? _buildRecentSearches(
+            searchState.recentSearches,
+          )
+        : _buildSearchResults(
+            searchState.searchQuery,
+            searchState.recentSearches,
+          );
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -71,9 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
         title: SearchField(
           controller: _searchController,
           onChanged: (value) {
-            setState(() {
-              _searchQuery = value;
-            });
+            ref.read(searchProvider.notifier).updateSearchQuery(value);
           },
         ),
 
@@ -99,7 +90,7 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildRecentSearches() {
+  Widget _buildRecentSearches(List<String> recentSearches) {
     return CustomScrollView(
       slivers: [
         // 상단 여백
@@ -198,9 +189,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           );
 
                           if (result == true) {
-                            setState(() {
-                              _recentSearches.clear();
-                            });
+                            ref
+                                .read(searchProvider.notifier)
+                                .clearRecentSearches();
                           }
                         },
                         child: Text(
@@ -222,7 +213,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: EdgeInsets.zero, // ListView 기본 패딩 제거
-                  itemCount: _recentSearches.length,
+                  itemCount: recentSearches.length,
                   itemBuilder: (context, index) {
                     return ListTile(
                       dense: true,
@@ -231,18 +222,21 @@ class _SearchScreenState extends State<SearchScreen> {
                         right: 8.0,
                       ),
                       leading: const Icon(CupertinoIcons.clock, size: 18.0),
-                      title: Text(_recentSearches[index]),
+                      title: Text(recentSearches[index]),
                       trailing: IconButton(
                         onPressed: () {
                           debugPrint('delete this search record!');
-                          setState(() {
-                            _recentSearches.removeAt(index);
-                          });
+                          ref
+                              .read(searchProvider.notifier)
+                              .removeRecentSearch(index);
                         },
                         icon: const Icon(CupertinoIcons.xmark, size: 18.0),
                       ),
                       onTap: () {
-                        debugPrint('tapped ${_recentSearches[index]}');
+                        ref
+                            .read(searchProvider.notifier)
+                            .addRecentSearch(recentSearches[index]);
+                        debugPrint('tapped ${recentSearches[index]}');
                       },
                     );
                   },
@@ -255,23 +249,23 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildSearchResults() {
-    final recentSearches = _recentSearches
+  Widget _buildSearchResults(String searchQuery, List<String> recentSearches) {
+    final recents = recentSearches
         .where(
           (recentSearch) =>
-              recentSearch.toLowerCase().startsWith(_searchQuery.toLowerCase()),
+              recentSearch.toLowerCase().startsWith(searchQuery.toLowerCase()),
         )
         .toList();
 
     final suggestions = suggestedKeywords
         .where(
           (keyword) =>
-              keyword.toLowerCase().startsWith(_searchQuery.toLowerCase()) &&
+              keyword.toLowerCase().startsWith(searchQuery.toLowerCase()) &&
               !recentSearches.contains(keyword),
         )
         .toList();
 
-    final items = [...recentSearches, ...suggestions];
+    final items = [...recents, ...suggestions];
 
     return CustomScrollView(
       slivers: [
@@ -281,12 +275,13 @@ class _SearchScreenState extends State<SearchScreen> {
             return ListTile(
               dense: true,
               contentPadding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              leading: index < recentSearches.length
+              leading: index < recents.length
                   ? const Icon(CupertinoIcons.clock, size: 18.0)
                   : const Icon(CupertinoIcons.search, size: 18.0),
               title: Text(items[index]),
               trailing: const Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
+                ref.read(searchProvider.notifier).addRecentSearch(items[index]);
                 debugPrint('tapped ${items[index]}');
               },
             );
