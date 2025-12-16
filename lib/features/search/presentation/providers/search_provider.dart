@@ -16,6 +16,8 @@ sealed class SearchState with _$SearchState {
   const factory SearchState({
     @Default('') String searchQuery, // 휘발성: Provider만 관리
     @Default([]) List<String> recentSearches, // 영구: Provider + 로컬 저장소
+
+    @Default(false) bool hasSubmitted, // 검색 제출 여부
   }) = _SearchState;
 }
 
@@ -81,5 +83,9 @@ class Search extends _$Search {
   Future<void> clearRecentSearches() async {
     state = state.copyWith(recentSearches: []);
     await _saveRecentSearches(); // 로컬에서도 삭제
+  }
+
+  void setHasSubmitted(bool submitted) {
+    state = state.copyWith(hasSubmitted: submitted);
   }
 }

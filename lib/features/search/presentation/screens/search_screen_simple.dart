@@ -3,7 +3,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
 import 'package:clozii/features/search/presentation/providers/search_provider.dart';
-import 'package:clozii/features/search/presentation/screens/search_result_screen.dart';
+import 'package:clozii/features/search/presentation/widgets/search_result.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,14 +29,7 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
   Widget build(BuildContext context) {
     final searchState = ref.watch(searchProvider);
 
-    // 검색 필드에 아무 것도 입력하지 않은 경우, 최근 검색어 목록을 표시
-    // 검색 필드에 검색어를 입력한 경우, 검색 결과를 표시
-    Widget content = searchState.searchQuery.isEmpty
-        ? _buildRecentSearches(searchState.recentSearches)
-        : _buildSearchResults(
-            searchState.searchQuery,
-            searchState.recentSearches,
-          );
+    Widget content = buildContent(searchState);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -48,10 +41,18 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
 
         title: SearchField(
           controller: _searchController,
+          onTap: () {
+            ref.read(searchProvider.notifier).setHasSubmitted(false);
+          },
           onChanged: (value) {
             ref.read(searchProvider.notifier).updateSearchQuery(value);
+            ref.read(searchProvider.notifier).setHasSubmitted(false);
           },
-          onSubmitted: _navigateToSearchResults,
+          onSubmitted: (value) {
+            if (value.isEmpty) return;
+            ref.read(searchProvider.notifier).addRecentSearch(value);
+            ref.read(searchProvider.notifier).setHasSubmitted(true);
+          },
         ),
 
         elevation: 6.0, // 앱바 그림자 높이
@@ -76,16 +77,25 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
     );
   }
 
-  void _navigateToSearchResults(String query) {
-    if (query.isEmpty) return;
+  Widget buildContent(SearchState state) {
+    if (state.hasSubmitted) {
+      return _buildSearchResults(state.searchQuery);
+    }
 
-    // 최근 검색어에 추가
-    ref.read(searchProvider.notifier).addRecentSearch(query);
+    if (state.searchQuery.isEmpty) {
+      return _buildRecentSearches(state.recentSearches);
+    }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SearchResultScreen(query: query),
-      ),
+    return _buildSearchSuggestions(
+      state.searchQuery,
+      state.recentSearches,
+    );
+  }
+
+  Widget _buildSearchResults(String searchQuery) {
+    // 검색 결과 표시 위젯
+    return SearchResult(
+      query: searchQuery,
     );
   }
 
@@ -177,7 +187,10 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
     );
   }
 
-  Widget _buildSearchResults(String searchQuery, List<String> recentSearches) {
+  Widget _buildSearchSuggestions(
+    String searchQuery,
+    List<String> recentSearches,
+  ) {
     final recents = recentSearches
         .where(
           (recentSearch) =>

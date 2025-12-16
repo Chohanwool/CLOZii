@@ -8,9 +8,11 @@ class SearchField extends StatelessWidget {
     required this.controller,
     required this.onChanged,
     required this.onSubmitted,
+    required this.onTap,
   });
 
   final TextEditingController controller;
+  final VoidCallback onTap;
   final ValueChanged<String> onChanged;
   final ValueChanged<String> onSubmitted;
 
@@ -23,6 +25,7 @@ class SearchField extends StatelessWidget {
       textCapitalization: TextCapitalization.none,
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.search,
+      onTap: onTap,
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       decoration: InputDecoration(

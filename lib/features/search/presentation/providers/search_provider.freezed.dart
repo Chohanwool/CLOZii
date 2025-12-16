@@ -14,8 +14,9 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$SearchState {
-  String get searchQuery;
-  List<String> get recentSearches;
+  String get searchQuery; // 휘발성: Provider만 관리
+  List<String> get recentSearches; // 영구: Provider + 로컬 저장소
+  bool get hasSubmitted;
 
   /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
@@ -32,16 +33,18 @@ mixin _$SearchState {
             (identical(other.searchQuery, searchQuery) ||
                 other.searchQuery == searchQuery) &&
             const DeepCollectionEquality()
-                .equals(other.recentSearches, recentSearches));
+                .equals(other.recentSearches, recentSearches) &&
+            (identical(other.hasSubmitted, hasSubmitted) ||
+                other.hasSubmitted == hasSubmitted));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, searchQuery,
-      const DeepCollectionEquality().hash(recentSearches));
+      const DeepCollectionEquality().hash(recentSearches), hasSubmitted);
 
   @override
   String toString() {
-    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches)';
+    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted)';
   }
 }
 
@@ -51,7 +54,8 @@ abstract mixin class $SearchStateCopyWith<$Res> {
           SearchState value, $Res Function(SearchState) _then) =
       _$SearchStateCopyWithImpl;
   @useResult
-  $Res call({String searchQuery, List<String> recentSearches});
+  $Res call(
+      {String searchQuery, List<String> recentSearches, bool hasSubmitted});
 }
 
 /// @nodoc
@@ -68,6 +72,7 @@ class _$SearchStateCopyWithImpl<$Res> implements $SearchStateCopyWith<$Res> {
   $Res call({
     Object? searchQuery = null,
     Object? recentSearches = null,
+    Object? hasSubmitted = null,
   }) {
     return _then(_self.copyWith(
       searchQuery: null == searchQuery
@@ -78,6 +83,10 @@ class _$SearchStateCopyWithImpl<$Res> implements $SearchStateCopyWith<$Res> {
           ? _self.recentSearches
           : recentSearches // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      hasSubmitted: null == hasSubmitted
+          ? _self.hasSubmitted
+          : hasSubmitted // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -173,14 +182,16 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String searchQuery, List<String> recentSearches)?
+    TResult Function(
+            String searchQuery, List<String> recentSearches, bool hasSubmitted)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SearchState() when $default != null:
-        return $default(_that.searchQuery, _that.recentSearches);
+        return $default(
+            _that.searchQuery, _that.recentSearches, _that.hasSubmitted);
       case _:
         return orElse();
     }
@@ -201,12 +212,15 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String searchQuery, List<String> recentSearches) $default,
+    TResult Function(
+            String searchQuery, List<String> recentSearches, bool hasSubmitted)
+        $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SearchState():
-        return $default(_that.searchQuery, _that.recentSearches);
+        return $default(
+            _that.searchQuery, _that.recentSearches, _that.hasSubmitted);
     }
   }
 
@@ -224,13 +238,15 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String searchQuery, List<String> recentSearches)?
+    TResult? Function(
+            String searchQuery, List<String> recentSearches, bool hasSubmitted)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SearchState() when $default != null:
-        return $default(_that.searchQuery, _that.recentSearches);
+        return $default(
+            _that.searchQuery, _that.recentSearches, _that.hasSubmitted);
       case _:
         return null;
     }
@@ -241,14 +257,18 @@ extension SearchStatePatterns on SearchState {
 
 class _SearchState extends SearchState {
   const _SearchState(
-      {this.searchQuery = '', final List<String> recentSearches = const []})
+      {this.searchQuery = '',
+      final List<String> recentSearches = const [],
+      this.hasSubmitted = false})
       : _recentSearches = recentSearches,
         super._();
 
   @override
   @JsonKey()
   final String searchQuery;
+// 휘발성: Provider만 관리
   final List<String> _recentSearches;
+// 휘발성: Provider만 관리
   @override
   @JsonKey()
   List<String> get recentSearches {
@@ -256,6 +276,11 @@ class _SearchState extends SearchState {
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_recentSearches);
   }
+
+// 영구: Provider + 로컬 저장소
+  @override
+  @JsonKey()
+  final bool hasSubmitted;
 
   /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
@@ -273,16 +298,18 @@ class _SearchState extends SearchState {
             (identical(other.searchQuery, searchQuery) ||
                 other.searchQuery == searchQuery) &&
             const DeepCollectionEquality()
-                .equals(other._recentSearches, _recentSearches));
+                .equals(other._recentSearches, _recentSearches) &&
+            (identical(other.hasSubmitted, hasSubmitted) ||
+                other.hasSubmitted == hasSubmitted));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, searchQuery,
-      const DeepCollectionEquality().hash(_recentSearches));
+      const DeepCollectionEquality().hash(_recentSearches), hasSubmitted);
 
   @override
   String toString() {
-    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches)';
+    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted)';
   }
 }
 
@@ -294,7 +321,8 @@ abstract mixin class _$SearchStateCopyWith<$Res>
       __$SearchStateCopyWithImpl;
   @override
   @useResult
-  $Res call({String searchQuery, List<String> recentSearches});
+  $Res call(
+      {String searchQuery, List<String> recentSearches, bool hasSubmitted});
 }
 
 /// @nodoc
@@ -311,6 +339,7 @@ class __$SearchStateCopyWithImpl<$Res> implements _$SearchStateCopyWith<$Res> {
   $Res call({
     Object? searchQuery = null,
     Object? recentSearches = null,
+    Object? hasSubmitted = null,
   }) {
     return _then(_SearchState(
       searchQuery: null == searchQuery
@@ -321,6 +350,10 @@ class __$SearchStateCopyWithImpl<$Res> implements _$SearchStateCopyWith<$Res> {
           ? _self._recentSearches
           : recentSearches // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      hasSubmitted: null == hasSubmitted
+          ? _self.hasSubmitted
+          : hasSubmitted // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:clozii/features/search/presentation/screens/search_screen_simple.dart';
 import 'package:flutter/material.dart';
 
 // core
