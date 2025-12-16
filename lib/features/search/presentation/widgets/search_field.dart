@@ -9,10 +9,12 @@ class SearchField extends ConsumerWidget {
     super.key,
     required this.controller,
     required this.onChanged,
+    required this.onSubmitted,
   });
 
   final TextEditingController controller;
   final ValueChanged<String> onChanged;
+  final ValueChanged<String> onSubmitted;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

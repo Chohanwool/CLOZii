@@ -3,6 +3,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
 import 'package:clozii/features/search/presentation/providers/search_provider.dart';
+import 'package:clozii/features/search/presentation/screens/search_result_screen.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onChanged: (value) {
             ref.read(searchProvider.notifier).updateSearchQuery(value);
           },
+          onSubmitted: _navigateToSearchResults,
         ),
 
         elevation: 6.0, // 앱바 그림자 높이
@@ -87,6 +89,15 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         ),
       ),
       body: content,
+    );
+  }
+
+  void _navigateToSearchResults(String query) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SearchResultScreen(),
+      ),
     );
   }
 
