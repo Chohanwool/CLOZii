@@ -2,36 +2,21 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
+import 'package:clozii/features/search/presentation/providers/search_provider.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchScreenSimple extends StatefulWidget {
+class SearchScreenSimple extends ConsumerStatefulWidget {
   const SearchScreenSimple({super.key});
 
   @override
-  State<SearchScreenSimple> createState() => _SearchScreenSimpleState();
+  ConsumerState<SearchScreenSimple> createState() => _SearchScreenSimpleState();
 }
 
-class _SearchScreenSimpleState extends State<SearchScreenSimple> {
+class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
   final TextEditingController _searchController = TextEditingController();
-
-  String _searchQuery = '';
-
-  final List<String> _recentSearches = [
-    'Iphone',
-    'Jordan',
-    'Laptop',
-    'Tablets',
-    'Nike',
-    'Adidas',
-    'PlayStation 5',
-    'Xbox Series X',
-    'Nintendo Switch',
-    'Starbucks Tumbler',
-    'Sneakers',
-    'Kimchi',
-  ];
 
   @override
   void dispose() {
@@ -41,11 +26,16 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
 
   @override
   Widget build(BuildContext context) {
+    final searchState = ref.watch(searchProvider);
+
     // 검색 필드에 아무 것도 입력하지 않은 경우, 최근 검색어 목록을 표시
     // 검색 필드에 검색어를 입력한 경우, 검색 결과를 표시
-    Widget content = _searchQuery.isEmpty
-        ? _buildRecentSearches()
-        : _buildSearchResults();
+    Widget content = searchState.searchQuery.isEmpty
+        ? _buildRecentSearches(searchState.recentSearches)
+        : _buildSearchResults(
+            searchState.searchQuery,
+            searchState.recentSearches,
+          );
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -58,9 +48,7 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
         title: SearchField(
           controller: _searchController,
           onChanged: (value) {
-            setState(() {
-              _searchQuery = value;
-            });
+            ref.read(searchProvider.notifier).updateSearchQuery(value);
           },
         ),
 
@@ -68,7 +56,7 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
         scrolledUnderElevation: 6.0, // 스크롤 시에도 동일한 elevation 유지
         shadowColor: Colors.black.withOpacity(0.2), // 앱바 그림자 색상
 
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           side: BorderSide(color: AppColors.borderLight),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(12.0),
@@ -76,17 +64,17 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
           ),
         ),
 
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(10.0),
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(10.0),
           // child: FilterBar(),
-          child: const SizedBox.shrink(),
+          child: SizedBox.shrink(),
         ),
       ),
       body: content,
     );
   }
 
-  Widget _buildRecentSearches() {
+  Widget _buildRecentSearches(List<String> recentSearches) {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -117,9 +105,9 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
                         );
 
                         if (result == true) {
-                          setState(() {
-                            _recentSearches.clear();
-                          });
+                          ref
+                              .read(searchProvider.notifier)
+                              .clearRecentSearches();
                         }
                       },
                       child: Text(
@@ -139,7 +127,7 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero, // ListView 기본 패딩 제거
-                itemCount: _recentSearches.length,
+                itemCount: recentSearches.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     dense: true,
@@ -148,18 +136,21 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
                       right: 8.0,
                     ),
                     leading: const Icon(CupertinoIcons.clock, size: 18.0),
-                    title: Text(_recentSearches[index]),
+                    title: Text(recentSearches[index]),
                     trailing: IconButton(
                       onPressed: () {
                         debugPrint('delete this search record!');
-                        setState(() {
-                          _recentSearches.removeAt(index);
-                        });
+                        ref
+                            .read(searchProvider.notifier)
+                            .removeRecentSearch(index);
                       },
                       icon: const Icon(CupertinoIcons.xmark, size: 18.0),
                     ),
                     onTap: () {
-                      debugPrint('tapped ${_recentSearches[index]}');
+                      ref
+                          .read(searchProvider.notifier)
+                          .addRecentSearch(recentSearches[index]);
+                      debugPrint('tapped ${recentSearches[index]}');
                     },
                   );
                 },
@@ -171,23 +162,23 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
     );
   }
 
-  Widget _buildSearchResults() {
-    final recentSearches = _recentSearches
+  Widget _buildSearchResults(String searchQuery, List<String> recentSearches) {
+    final recents = recentSearches
         .where(
           (recentSearch) =>
-              recentSearch.toLowerCase().startsWith(_searchQuery.toLowerCase()),
+              recentSearch.toLowerCase().startsWith(searchQuery.toLowerCase()),
         )
         .toList();
 
     final suggestions = suggestedKeywords
         .where(
           (keyword) =>
-              keyword.toLowerCase().startsWith(_searchQuery.toLowerCase()) &&
+              keyword.toLowerCase().startsWith(searchQuery.toLowerCase()) &&
               !recentSearches.contains(keyword),
         )
         .toList();
 
-    final items = [...recentSearches, ...suggestions];
+    final items = [...recents, ...suggestions];
 
     return CustomScrollView(
       slivers: [
@@ -196,13 +187,14 @@ class _SearchScreenSimpleState extends State<SearchScreenSimple> {
           delegate: SliverChildBuilderDelegate((context, index) {
             return ListTile(
               dense: true,
-              contentPadding: EdgeInsets.only(left: 16.0, right: 16.0),
-              leading: index < recentSearches.length
-                  ? Icon(CupertinoIcons.clock, size: 18.0)
-                  : Icon(CupertinoIcons.search, size: 18.0),
+              contentPadding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              leading: index < recents.length
+                  ? const Icon(CupertinoIcons.clock, size: 18.0)
+                  : const Icon(CupertinoIcons.search, size: 18.0),
               title: Text(items[index]),
-              trailing: Icon(CupertinoIcons.arrow_up_right, size: 18.0),
+              trailing: const Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
+                ref.read(searchProvider.notifier).addRecentSearch(items[index]);
                 debugPrint('tapped ${items[index]}');
               },
             );
