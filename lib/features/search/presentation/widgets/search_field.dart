@@ -1,10 +1,8 @@
 import 'package:clozii/core/constants/app_constants.dart';
-import 'package:clozii/features/search/presentation/providers/search_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SearchField extends ConsumerWidget {
+class SearchField extends StatelessWidget {
   const SearchField({
     super.key,
     required this.controller,
@@ -17,7 +15,7 @@ class SearchField extends ConsumerWidget {
   final ValueChanged<String> onSubmitted;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return TextField(
       controller: controller,
       autocorrect: false,
@@ -26,10 +24,7 @@ class SearchField extends ConsumerWidget {
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.search,
       onChanged: onChanged,
-      onSubmitted: (value) {
-        debugPrint('Search query submitted: $value');
-        ref.read(searchProvider.notifier).addRecentSearch(value);
-      },
+      onSubmitted: onSubmitted,
       decoration: InputDecoration(
         isDense: true,
         filled: true,

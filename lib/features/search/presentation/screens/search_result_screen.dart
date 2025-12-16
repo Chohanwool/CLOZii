@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SearchResultScreen extends StatelessWidget {
-  const SearchResultScreen({super.key});
+  const SearchResultScreen({super.key, required this.query});
+
+  final String query;
 
   @override
   Widget build(BuildContext context) {

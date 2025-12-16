@@ -77,10 +77,14 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
   }
 
   void _navigateToSearchResults(String query) {
-    Navigator.push(
-      context,
+    if (query.isEmpty) return;
+
+    // 최근 검색어에 추가
+    ref.read(searchProvider.notifier).addRecentSearch(query);
+
+    Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const SearchResultScreen(),
+        builder: (context) => SearchResultScreen(query: query),
       ),
     );
   }
