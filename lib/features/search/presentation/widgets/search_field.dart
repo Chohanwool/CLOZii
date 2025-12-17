@@ -40,6 +40,19 @@ class SearchField extends StatelessWidget {
             size: 24.0,
           ),
         ),
+        suffixIcon: controller.text.isNotEmpty
+            ? IconButton(
+                onPressed: () {
+                  controller.clear();
+                  onChanged('');
+                },
+                icon: const Icon(
+                  CupertinoIcons.clear,
+                  color: AppColors.textSecondary,
+                  size: 20.0,
+                ),
+              )
+            : null,
         hintText: 'Search',
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(100.0),
