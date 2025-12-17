@@ -77,6 +77,7 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
     );
   }
 
+  // 화면 콘텐츠 빌드 메서드
   Widget buildContent(SearchState state) {
     if (state.hasSubmitted) {
       return _buildSearchResults(state.searchQuery);
@@ -92,6 +93,7 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
     );
   }
 
+  // 검색 결과 표시 위젯
   Widget _buildSearchResults(String searchQuery) {
     // 검색 결과 표시 위젯
     return SearchResult(
@@ -99,6 +101,7 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
     );
   }
 
+  // 최근 검색어 표시 위젯
   Widget _buildRecentSearches(List<String> recentSearches) {
     return CustomScrollView(
       slivers: [
@@ -187,6 +190,7 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
     );
   }
 
+  // 검색 제안 표시 위젯
   Widget _buildSearchSuggestions(
     String searchQuery,
     List<String> recentSearches,

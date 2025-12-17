@@ -1,6 +1,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
+import 'package:clozii/features/search/core/constants/category_icons.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
 import 'package:clozii/features/search/presentation/providers/search_provider.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
@@ -18,20 +19,6 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
-
-  // 카테고리 아이콘 리스트
-  final List<Map<String, String>> _categoryIcons = [
-    {'icon': 'assets/images/icons/desktop.png', 'label': 'Desktop'},
-    {'icon': 'assets/images/icons/smartphone.png', 'label': 'Phone'},
-    {'icon': 'assets/images/icons/sneakers.png', 'label': 'Shoes'},
-    {'icon': 'assets/images/icons/basketball.png', 'label': 'Sports'},
-    {'icon': 'assets/images/icons/weight.png', 'label': 'Fitness'},
-    {'icon': 'assets/images/icons/sweater.png', 'label': 'Clothing'},
-    {'icon': 'assets/images/icons/car.png', 'label': 'Vehicle'},
-    {'icon': 'assets/images/icons/sofa.png', 'label': 'Furniture'},
-    {'icon': 'assets/images/icons/guitar.png', 'label': 'Music'},
-    {'icon': 'assets/images/icons/dog.png', 'label': 'Pet'},
-  ];
 
   @override
   void dispose() {
@@ -91,6 +78,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
+  // 화면 콘텐츠 빌드 메서드
   Widget buildContent(SearchState state) {
     if (state.hasSubmitted) {
       return _buildSearchResults(state.searchQuery);
@@ -106,13 +94,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
+  // 검색 결과 표시 위젯
   Widget _buildSearchResults(String searchQuery) {
-    // 검색 결과 표시 위젯
     return SearchResult(
       query: searchQuery,
     );
   }
 
+  // 최근 검색어 및 카테고리 아이콘 표시 위젯
   Widget _buildRecentSearches(List<String> recentSearches) {
     return CustomScrollView(
       slivers: [
@@ -130,7 +119,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               crossAxisSpacing: 6.0,
             ),
             delegate: SliverChildBuilderDelegate((context, index) {
-              final category = _categoryIcons[index];
+              final category = categoryIcons[index];
               return GestureDetector(
                 onTap: () {
                   debugPrint('tapped ${category['label']}');
@@ -166,7 +155,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   ),
                 ),
               );
-            }, childCount: _categoryIcons.length),
+            }, childCount: categoryIcons.length),
           ),
         ),
 
@@ -272,6 +261,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 
+  // 검색 제안 표시 위젯
   Widget _buildSearchSuggestions(
       String searchQuery, List<String> recentSearches) {
     final recents = recentSearches
