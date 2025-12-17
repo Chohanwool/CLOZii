@@ -3,7 +3,7 @@ import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/core/widgets/filter_bar.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
-import 'package:clozii/features/search/presentation/providers/search_provider.dart';
+import 'package:clozii/features/search/presentation/providers/search/search_state_provider.dart';
 import 'package:clozii/features/search/presentation/widgets/search_result.dart';
 import 'package:clozii/features/search/presentation/widgets/search_field.dart';
 import 'package:flutter/cupertino.dart';

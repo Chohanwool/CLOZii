@@ -2,8 +2,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-part 'search_provider.freezed.dart';
-part 'search_provider.g.dart';
+part 'search_state_provider.freezed.dart';
+part 'search_state_provider.g.dart';
 
 // ============================================================================
 // State
