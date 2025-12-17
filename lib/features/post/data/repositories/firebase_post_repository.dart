@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/data/models/post_model.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
@@ -45,6 +46,46 @@ class FirebasePostRepository extends PostRepository {
       throw Exception('게시글 생성 실패(Firebase): ${e.message}');
     } catch (e) {
       throw Exception('게시글 생성 실패: $e');
+    }
+  }
+
+  @override
+  Future<Post> updatePost(Post post, {bool updateTimestamp = true}) async {
+    final postModel = PostModel.fromEntity(post);
+    final jsonPost = postModel.toJson();
+
+    // createdAt은 항상 제거 (생성 이후 수정되지 않아야 함)
+    jsonPost.remove('createdAt');
+
+    // updateTimestamp가 true일 때만 updatedAt 갱신
+    if (updateTimestamp) {
+      jsonPost['updatedAt'] = FieldValue.serverTimestamp();
+    } else {
+      // updateTimestamp가 false일 때는 updatedAt도 제거 (기존 값 유지)
+      jsonPost.remove('updatedAt');
+    }
+
+    final firestore = FirebaseFirestore.instance;
+
+    try {
+      // 업데이트 - update : 전달된 필드만 수정 (createdAt 이 포함되어 있으면 현재 값이 무엇이든 덮어씌워짐)
+      await firestore.collection('posts').doc(post.id).update(jsonPost);
+
+      // 조회 (서버에서 직접 가져와서 serverTimestamp가 적용된 데이터 확인)
+      final snapshot = await firestore
+          .collection('posts')
+          .doc(post.id)
+          .get(const GetOptions(source: Source.server));
+
+      if (!snapshot.exists || snapshot.data() == null) {
+        throw Exception('문서 없음 after update (id: ${post.id})');
+      }
+
+      return PostModel.fromJson(snapshot.data()!).toEntity();
+    } on FirebaseException catch (e) {
+      throw Exception('게시글 수정 실패(Firebase): ${e.message}');
+    } catch (e) {
+      throw Exception('게시글 수정 실패: $e');
     }
   }
 
@@ -108,6 +149,12 @@ class FirebasePostRepository extends PostRepository {
   }
 
   @override
+  Future<Post> findPostById(String postId) {
+    // TODO: implement findPostById
+    throw UnimplementedError();
+  }
+
+  @override
   Future<List<Post>> findAllPosts({int page = 1, int limit = 20}) async {
     final firestore = FirebaseFirestore.instance;
 
@@ -130,48 +177,22 @@ class FirebasePostRepository extends PostRepository {
   }
 
   @override
-  Future<Post> findPostById(String postId) {
-    // TODO: implement findPostById
+  Future<List<Post>> findPostsByTitle(
+    String title, {
+    int page = 1,
+    int limit = 20,
+  }) {
+    // TODO: implement findPostsByTitle
     throw UnimplementedError();
   }
 
   @override
-  Future<Post> updatePost(Post post, {bool updateTimestamp = true}) async {
-    final postModel = PostModel.fromEntity(post);
-    final jsonPost = postModel.toJson();
-
-    // createdAt은 항상 제거 (생성 이후 수정되지 않아야 함)
-    jsonPost.remove('createdAt');
-
-    // updateTimestamp가 true일 때만 updatedAt 갱신
-    if (updateTimestamp) {
-      jsonPost['updatedAt'] = FieldValue.serverTimestamp();
-    } else {
-      // updateTimestamp가 false일 때는 updatedAt도 제거 (기존 값 유지)
-      jsonPost.remove('updatedAt');
-    }
-
-    final firestore = FirebaseFirestore.instance;
-
-    try {
-      // 업데이트 - update : 전달된 필드만 수정 (createdAt 이 포함되어 있으면 현재 값이 무엇이든 덮어씌워짐)
-      await firestore.collection('posts').doc(post.id).update(jsonPost);
-
-      // 조회 (서버에서 직접 가져와서 serverTimestamp가 적용된 데이터 확인)
-      final snapshot = await firestore
-          .collection('posts')
-          .doc(post.id)
-          .get(const GetOptions(source: Source.server));
-
-      if (!snapshot.exists || snapshot.data() == null) {
-        throw Exception('문서 없음 after update (id: ${post.id})');
-      }
-
-      return PostModel.fromJson(snapshot.data()!).toEntity();
-    } on FirebaseException catch (e) {
-      throw Exception('게시글 수정 실패(Firebase): ${e.message}');
-    } catch (e) {
-      throw Exception('게시글 수정 실패: $e');
-    }
+  Future<List<Post>> findPostsByCategory(
+    PostCategory category, {
+    int page = 1,
+    int limit = 20,
+  }) {
+    // TODO: implement findPostsByCategory
+    throw UnimplementedError();
   }
 }
