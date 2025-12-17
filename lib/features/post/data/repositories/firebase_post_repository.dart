@@ -1,12 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/data/models/post_model.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FirebasePostRepository extends PostRepository {
@@ -174,25 +172,5 @@ class FirebasePostRepository extends PostRepository {
     } catch (e) {
       throw Exception('게시글 목록 조회 실패: $e');
     }
-  }
-
-  @override
-  Future<List<Post>> findByTitle(
-    String title, {
-    int page = 1,
-    int limit = 20,
-  }) {
-    // TODO: implement findByTitle
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<Post>> findByCategory(
-    PostCategory category, {
-    int page = 1,
-    int limit = 20,
-  }) {
-    // TODO: implement findByCategory
-    throw UnimplementedError();
   }
 }

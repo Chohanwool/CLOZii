@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/value_objects/image_urls.dart';
 
@@ -31,18 +30,4 @@ abstract class PostRepository {
 
   // 게시글 목록 조회 (페이징 처리 - 기본값: page=1, limit=20)
   Future<List<Post>> findAllPosts({int page = 1, int limit = 20});
-
-  // 게시글 조회 - 제목
-  Future<List<Post>> findByTitle(
-    String title, {
-    int page = 1,
-    int limit = 20,
-  });
-
-  // 게시글 조회 - 카테고리
-  Future<List<Post>> findByCategory(
-    PostCategory category, {
-    int page = 1,
-    int limit = 20,
-  });
 }
