@@ -1,6 +1,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
+import 'package:clozii/core/widgets/filter_bar.dart';
 import 'package:clozii/features/search/core/constants/category_icons.dart';
 import 'package:clozii/features/search/core/constants/suggested_keywords.dart';
 import 'package:clozii/features/search/presentation/providers/search_provider.dart';
@@ -68,10 +69,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           ),
         ),
 
-        bottom: const PreferredSize(
-          preferredSize: Size.fromHeight(10.0),
-          // child: FilterBar(),
-          child: SizedBox.shrink(),
+        bottom: PreferredSize(
+          preferredSize:
+              Size.fromHeight(searchState.hasSubmitted ? 60.0 : 10.0),
+          child: searchState.hasSubmitted
+              ? const FilterBar()
+              : const SizedBox.shrink(),
         ),
       ),
       body: content,
