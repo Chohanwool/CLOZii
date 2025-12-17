@@ -20,10 +20,12 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _searchController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void dispose() {
     _searchController.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -43,6 +45,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
         title: SearchField(
           controller: _searchController,
+          focusNode: _focusNode,
           onTap: () {
             ref.read(searchProvider.notifier).setHasSubmitted(false);
           },
@@ -258,9 +261,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                           icon: const Icon(CupertinoIcons.xmark, size: 18.0),
                         ),
                         onTap: () {
+                          _searchController.text = recentSearches[index];
+                          _focusNode.unfocus();
                           ref
                               .read(searchProvider.notifier)
-                              .addRecentSearch(recentSearches[index]);
+                              .selectRecentSearch(recentSearches[index]);
                         },
                       );
                     },
@@ -310,7 +315,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               title: Text(items[index]),
               trailing: const Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
-                ref.read(searchProvider.notifier).addRecentSearch(items[index]);
+                _searchController.text = items[index];
+                _focusNode.unfocus();
+                ref
+                    .read(searchProvider.notifier)
+                    .selectRecentSearch(items[index]);
               },
             );
           }, childCount: items.length),

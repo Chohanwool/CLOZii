@@ -6,12 +6,14 @@ class SearchField extends StatelessWidget {
   const SearchField({
     super.key,
     required this.controller,
+    required this.focusNode,
     required this.onChanged,
     required this.onSubmitted,
     required this.onTap,
   });
 
   final TextEditingController controller;
+  final FocusNode focusNode;
   final VoidCallback onTap;
   final ValueChanged<String> onChanged;
   final ValueChanged<String> onSubmitted;
@@ -19,6 +21,7 @@ class SearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      focusNode: focusNode,
       controller: controller,
       autocorrect: false,
       enableSuggestions: false,

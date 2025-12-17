@@ -77,6 +77,12 @@ class Search extends _$Search {
     await _saveRecentSearches(); // 로컬에 저장
   }
 
+  // 최근 검색어 선택
+  void selectRecentSearch(String query) {
+    state = state.copyWith(searchQuery: query, hasSubmitted: true);
+    addRecentSearch(query);
+  }
+
   // 최근 검색어 삭제 (영구 저장)
   Future<void> removeRecentSearch(int index) async {
     final searches = [...state.recentSearches];
