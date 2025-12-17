@@ -231,7 +231,11 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
               title: Text(items[index]),
               trailing: const Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
-                ref.read(searchProvider.notifier).addRecentSearch(items[index]);
+                _searchController.text = items[index];
+                _focusNode.unfocus();
+                ref
+                    .read(searchProvider.notifier)
+                    .selectRecentSearch(items[index]);
               },
             );
           }, childCount: items.length),
