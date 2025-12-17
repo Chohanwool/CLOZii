@@ -224,40 +224,49 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 const Divider(height: 1.0),
 
                 // 리스트
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: EdgeInsets.zero, // ListView 기본 패딩 제거
-                  itemCount: recentSearches.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      dense: true,
-                      contentPadding: const EdgeInsets.only(
-                        left: 16.0,
-                        right: 8.0,
-                      ),
-                      leading: const Icon(CupertinoIcons.clock, size: 18.0),
-                      title: Text(recentSearches[index]),
-                      trailing: IconButton(
-                        onPressed: () {
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    splashFactory: NoSplash.splashFactory,
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.zero, // ListView 기본 패딩 제거
+                    itemCount: recentSearches.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        dense: true,
+                        contentPadding: const EdgeInsets.only(
+                          left: 16.0,
+                          right: 8.0,
+                        ),
+                        leading: const Icon(CupertinoIcons.clock, size: 18.0),
+                        title: Text(recentSearches[index]),
+                        trailing: IconButton(
+                          onPressed: () {
+                            ref
+                                .read(searchProvider.notifier)
+                                .removeRecentSearch(index);
+                          },
+                          icon: const Icon(CupertinoIcons.xmark, size: 18.0),
+                        ),
+                        onTap: () {
                           ref
                               .read(searchProvider.notifier)
-                              .removeRecentSearch(index);
+                              .addRecentSearch(recentSearches[index]);
                         },
-                        icon: const Icon(CupertinoIcons.xmark, size: 18.0),
-                      ),
-                      onTap: () {
-                        ref
-                            .read(searchProvider.notifier)
-                            .addRecentSearch(recentSearches[index]);
-                      },
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ],
             ),
           ),
         ),
+
+        const SliverToBoxAdapter(child: SizedBox(height: 48.0)),
       ],
     );
   }
