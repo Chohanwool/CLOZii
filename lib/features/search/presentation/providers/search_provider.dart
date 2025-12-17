@@ -64,7 +64,13 @@ class Search extends _$Search {
     if (query.isEmpty) return;
 
     final searches = [...state.recentSearches];
+
     searches.remove(query); // 중복 제거
+
+    if (searches.length >= 15) {
+      searches.removeLast(); // 최대 개수 초과 시 마지막 항목 제거
+    }
+
     searches.insert(0, query); // 맨 앞에 추가
 
     state = state.copyWith(recentSearches: searches);

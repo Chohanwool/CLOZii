@@ -167,7 +167,6 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
                     title: Text(recentSearches[index]),
                     trailing: IconButton(
                       onPressed: () {
-                        debugPrint('delete this search record!');
                         ref
                             .read(searchProvider.notifier)
                             .removeRecentSearch(index);
@@ -178,7 +177,6 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
                       ref
                           .read(searchProvider.notifier)
                           .addRecentSearch(recentSearches[index]);
-                      debugPrint('tapped ${recentSearches[index]}');
                     },
                   );
                 },
@@ -227,7 +225,6 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
               trailing: const Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
                 ref.read(searchProvider.notifier).addRecentSearch(items[index]);
-                debugPrint('tapped ${items[index]}');
               },
             );
           }, childCount: items.length),

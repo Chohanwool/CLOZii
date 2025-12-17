@@ -135,7 +135,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       BoxShadow(
                         color: AppColors.black.withOpacity(0.1),
                         blurRadius: 10.0,
-                        offset: Offset(0, 5.0),
+                        offset: const Offset(0, 5.0),
                       ),
                     ],
                   ),
@@ -240,7 +240,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       title: Text(recentSearches[index]),
                       trailing: IconButton(
                         onPressed: () {
-                          debugPrint('delete this search record!');
                           ref
                               .read(searchProvider.notifier)
                               .removeRecentSearch(index);
@@ -251,7 +250,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                         ref
                             .read(searchProvider.notifier)
                             .addRecentSearch(recentSearches[index]);
-                        debugPrint('tapped ${recentSearches[index]}');
                       },
                     );
                   },
@@ -299,7 +297,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               trailing: const Icon(CupertinoIcons.arrow_up_right, size: 18.0),
               onTap: () {
                 ref.read(searchProvider.notifier).addRecentSearch(items[index]);
-                debugPrint('tapped ${items[index]}');
               },
             );
           }, childCount: items.length),
