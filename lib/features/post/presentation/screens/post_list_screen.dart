@@ -37,8 +37,8 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
     try {
       debugPrint('════════════════════════════════════════');
       debugPrint('📥 Loading posts from Firebase...');
-      final getAllPosts = ref.read(getAllPostsProvider);
-      final posts = await getAllPosts();
+      final findAllPosts = ref.read(findAllPostsProvider);
+      final posts = await findAllPosts();
       debugPrint('📦 Received ${posts.length} posts from Firebase');
       debugPrint('════════════════════════════════════════');
       if (mounted) {

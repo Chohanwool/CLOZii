@@ -13,7 +13,7 @@ import 'package:clozii/features/post/data/repositories/post_draft_repository_imp
 // usecases
 import 'package:clozii/features/post/domain/usecases/create_post.dart';
 import 'package:clozii/features/post/domain/usecases/manage_draft.dart';
-import 'package:clozii/features/post/domain/usecases/get_all_posts.dart';
+import 'package:clozii/features/post/domain/usecases/find_all_posts.dart';
 
 part 'post_providers.g.dart';
 
@@ -57,7 +57,7 @@ ManageDraft manageDraft(Ref ref) {
 }
 
 @riverpod
-GetAllPosts getAllPosts(Ref ref) {
+FindAllPosts findAllPosts(Ref ref) {
   final repository = ref.read(postRepositoryProvider);
-  return GetAllPosts(repository);
+  return FindAllPosts(repository);
 }

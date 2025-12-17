@@ -204,43 +204,43 @@ final class ManageDraftProvider
 
 String _$manageDraftHash() => r'905fd157236a680b5ed42e1b4c9e9eb9ad9770e7';
 
-@ProviderFor(getAllPosts)
-const getAllPostsProvider = GetAllPostsProvider._();
+@ProviderFor(findAllPosts)
+const findAllPostsProvider = FindAllPostsProvider._();
 
-final class GetAllPostsProvider
-    extends $FunctionalProvider<GetAllPosts, GetAllPosts, GetAllPosts>
-    with $Provider<GetAllPosts> {
-  const GetAllPostsProvider._()
+final class FindAllPostsProvider
+    extends $FunctionalProvider<FindAllPosts, FindAllPosts, FindAllPosts>
+    with $Provider<FindAllPosts> {
+  const FindAllPostsProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'getAllPostsProvider',
+          name: r'findAllPostsProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$getAllPostsHash();
+  String debugGetCreateSourceHash() => _$findAllPostsHash();
 
   @$internal
   @override
-  $ProviderElement<GetAllPosts> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<FindAllPosts> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  GetAllPosts create(Ref ref) {
-    return getAllPosts(ref);
+  FindAllPosts create(Ref ref) {
+    return findAllPosts(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(GetAllPosts value) {
+  Override overrideWithValue(FindAllPosts value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<GetAllPosts>(value),
+      providerOverride: $SyncValueProvider<FindAllPosts>(value),
     );
   }
 }
 
-String _$getAllPostsHash() => r'd5d2774d02fc3077d792ccdf7a7f59b56a5468f0';
+String _$findAllPostsHash() => r'39f1073f7468df1278b266b58429ee1381f4b883';
