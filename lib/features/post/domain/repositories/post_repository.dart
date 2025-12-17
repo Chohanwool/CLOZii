@@ -27,20 +27,20 @@ abstract class PostRepository {
   Future<void> deletePost(String postId);
 
   // 게시글 조회
-  Future<Post> findPostById(String postId);
+  Future<Post> findById(String postId);
 
   // 게시글 목록 조회 (페이징 처리 - 기본값: page=1, limit=20)
   Future<List<Post>> findAllPosts({int page = 1, int limit = 20});
 
   // 게시글 조회 - 제목
-  Future<List<Post>> findPostsByTitle(
+  Future<List<Post>> findByTitle(
     String title, {
     int page = 1,
     int limit = 20,
   });
 
   // 게시글 조회 - 카테고리
-  Future<List<Post>> findPostsByCategory(
+  Future<List<Post>> findByCategory(
     PostCategory category, {
     int page = 1,
     int limit = 20,

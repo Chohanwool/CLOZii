@@ -149,8 +149,8 @@ class FirebasePostRepository extends PostRepository {
   }
 
   @override
-  Future<Post> findPostById(String postId) {
-    // TODO: implement findPostById
+  Future<Post> findById(String postId) {
+    // TODO: implement find ById
     throw UnimplementedError();
   }
 
@@ -177,22 +177,22 @@ class FirebasePostRepository extends PostRepository {
   }
 
   @override
-  Future<List<Post>> findPostsByTitle(
+  Future<List<Post>> findByTitle(
     String title, {
     int page = 1,
     int limit = 20,
   }) {
-    // TODO: implement findPostsByTitle
+    // TODO: implement findByTitle
     throw UnimplementedError();
   }
 
   @override
-  Future<List<Post>> findPostsByCategory(
+  Future<List<Post>> findByCategory(
     PostCategory category, {
     int page = 1,
     int limit = 20,
   }) {
-    // TODO: implement findPostsByCategory
+    // TODO: implement findByCategory
     throw UnimplementedError();
   }
 }
