@@ -176,6 +176,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                   blurRadius: 20.0,
                   offset: const Offset(0, -5.0),
                 ),
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 20.0,
+                  offset: const Offset(0, 5.0),
+                ),
               ],
             ),
             child: Column(
