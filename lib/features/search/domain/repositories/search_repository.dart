@@ -18,6 +18,7 @@ abstract class SearchRepository {
 
   // 나눔 게시글 검색
   Future<List<Post>> searchSharePosts({
+    String? query,
     int page = 1,
     int limit = 20,
   });

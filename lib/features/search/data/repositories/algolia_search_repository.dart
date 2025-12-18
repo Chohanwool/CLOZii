@@ -74,12 +74,14 @@ class AlgoliaSearchRepository extends SearchRepository {
 
   @override
   Future<List<Post>> searchSharePosts({
+    String? query,
     int page = 1,
     int limit = 20,
   }) async {
     try {
       final request = SearchForHits(
         indexName: AppConstants.algoliaIndexName,
+        query: query ?? '',
         filters: 'tradeType:share',
         hitsPerPage: limit,
         page: page - 1,

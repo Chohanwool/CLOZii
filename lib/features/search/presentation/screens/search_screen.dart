@@ -76,7 +76,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           preferredSize:
               Size.fromHeight(searchState.hasSubmitted ? 60.0 : 10.0),
           child: searchState.hasSubmitted
-              ? const FilterBar()
+              ? FilterBar(
+                  selectedFilter: searchState.selectedFilter,
+                  onFilterSelected: (filter) {
+                    ref.read(searchProvider.notifier).setSelectedFilter(filter);
+                  },
+                )
               : const SizedBox.shrink(),
         ),
       ),
