@@ -7,6 +7,11 @@ class AppConstants {
   static const String appSplashLogo =
       'assets/images/logo/full_logo/vibrant_duo.png';
   static const String appVersion = '1.0.0';
+
+  // Algolia Search
+  static const String algoliaApplicationId = '2S2GJPIBHE';
+  static const String algoliaSearchApiKey = 'b5bd77ef76f962acba650a49e92ac76e';
+  static const String algoliaIndexName = 'posts';
 }
 
 class AppColors {

@@ -49,7 +49,7 @@ final class SearchRepositoryProvider extends $FunctionalProvider<
   }
 }
 
-String _$searchRepositoryHash() => r'a1f321b1161fa25135b5092c1ca0c888b8f43413';
+String _$searchRepositoryHash() => r'3c39bcb03c498707a420a3885d2a8592616730f4';
 
 @ProviderFor(searchPostsByQuery)
 const searchPostsByQueryProvider = SearchPostsByQueryProvider._();
