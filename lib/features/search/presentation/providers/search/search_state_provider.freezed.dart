@@ -16,7 +16,8 @@ T _$identity<T>(T value) => value;
 mixin _$SearchState {
   String get searchQuery; // 휘발성: Provider만 관리
   List<String> get recentSearches; // 영구: Provider + 로컬 저장소
-  bool get hasSubmitted;
+  bool get hasSubmitted; // 검색 제출 여부
+  PostFilter get selectedFilter;
 
   /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
@@ -35,16 +36,22 @@ mixin _$SearchState {
             const DeepCollectionEquality()
                 .equals(other.recentSearches, recentSearches) &&
             (identical(other.hasSubmitted, hasSubmitted) ||
-                other.hasSubmitted == hasSubmitted));
+                other.hasSubmitted == hasSubmitted) &&
+            (identical(other.selectedFilter, selectedFilter) ||
+                other.selectedFilter == selectedFilter));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, searchQuery,
-      const DeepCollectionEquality().hash(recentSearches), hasSubmitted);
+  int get hashCode => Object.hash(
+      runtimeType,
+      searchQuery,
+      const DeepCollectionEquality().hash(recentSearches),
+      hasSubmitted,
+      selectedFilter);
 
   @override
   String toString() {
-    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted)';
+    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted, selectedFilter: $selectedFilter)';
   }
 }
 
@@ -55,7 +62,10 @@ abstract mixin class $SearchStateCopyWith<$Res> {
       _$SearchStateCopyWithImpl;
   @useResult
   $Res call(
-      {String searchQuery, List<String> recentSearches, bool hasSubmitted});
+      {String searchQuery,
+      List<String> recentSearches,
+      bool hasSubmitted,
+      PostFilter selectedFilter});
 }
 
 /// @nodoc
@@ -73,6 +83,7 @@ class _$SearchStateCopyWithImpl<$Res> implements $SearchStateCopyWith<$Res> {
     Object? searchQuery = null,
     Object? recentSearches = null,
     Object? hasSubmitted = null,
+    Object? selectedFilter = null,
   }) {
     return _then(_self.copyWith(
       searchQuery: null == searchQuery
@@ -87,6 +98,10 @@ class _$SearchStateCopyWithImpl<$Res> implements $SearchStateCopyWith<$Res> {
           ? _self.hasSubmitted
           : hasSubmitted // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedFilter: null == selectedFilter
+          ? _self.selectedFilter
+          : selectedFilter // ignore: cast_nullable_to_non_nullable
+              as PostFilter,
     ));
   }
 }
@@ -182,16 +197,16 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            String searchQuery, List<String> recentSearches, bool hasSubmitted)?
+    TResult Function(String searchQuery, List<String> recentSearches,
+            bool hasSubmitted, PostFilter selectedFilter)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SearchState() when $default != null:
-        return $default(
-            _that.searchQuery, _that.recentSearches, _that.hasSubmitted);
+        return $default(_that.searchQuery, _that.recentSearches,
+            _that.hasSubmitted, _that.selectedFilter);
       case _:
         return orElse();
     }
@@ -212,15 +227,15 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            String searchQuery, List<String> recentSearches, bool hasSubmitted)
+    TResult Function(String searchQuery, List<String> recentSearches,
+            bool hasSubmitted, PostFilter selectedFilter)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SearchState():
-        return $default(
-            _that.searchQuery, _that.recentSearches, _that.hasSubmitted);
+        return $default(_that.searchQuery, _that.recentSearches,
+            _that.hasSubmitted, _that.selectedFilter);
     }
   }
 
@@ -238,15 +253,15 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            String searchQuery, List<String> recentSearches, bool hasSubmitted)?
+    TResult? Function(String searchQuery, List<String> recentSearches,
+            bool hasSubmitted, PostFilter selectedFilter)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SearchState() when $default != null:
-        return $default(
-            _that.searchQuery, _that.recentSearches, _that.hasSubmitted);
+        return $default(_that.searchQuery, _that.recentSearches,
+            _that.hasSubmitted, _that.selectedFilter);
       case _:
         return null;
     }
@@ -259,7 +274,8 @@ class _SearchState extends SearchState {
   const _SearchState(
       {this.searchQuery = '',
       final List<String> recentSearches = const [],
-      this.hasSubmitted = false})
+      this.hasSubmitted = false,
+      this.selectedFilter = PostFilter.all})
       : _recentSearches = recentSearches,
         super._();
 
@@ -281,6 +297,10 @@ class _SearchState extends SearchState {
   @override
   @JsonKey()
   final bool hasSubmitted;
+// 검색 제출 여부
+  @override
+  @JsonKey()
+  final PostFilter selectedFilter;
 
   /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
@@ -300,16 +320,22 @@ class _SearchState extends SearchState {
             const DeepCollectionEquality()
                 .equals(other._recentSearches, _recentSearches) &&
             (identical(other.hasSubmitted, hasSubmitted) ||
-                other.hasSubmitted == hasSubmitted));
+                other.hasSubmitted == hasSubmitted) &&
+            (identical(other.selectedFilter, selectedFilter) ||
+                other.selectedFilter == selectedFilter));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, searchQuery,
-      const DeepCollectionEquality().hash(_recentSearches), hasSubmitted);
+  int get hashCode => Object.hash(
+      runtimeType,
+      searchQuery,
+      const DeepCollectionEquality().hash(_recentSearches),
+      hasSubmitted,
+      selectedFilter);
 
   @override
   String toString() {
-    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted)';
+    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted, selectedFilter: $selectedFilter)';
   }
 }
 
@@ -322,7 +348,10 @@ abstract mixin class _$SearchStateCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String searchQuery, List<String> recentSearches, bool hasSubmitted});
+      {String searchQuery,
+      List<String> recentSearches,
+      bool hasSubmitted,
+      PostFilter selectedFilter});
 }
 
 /// @nodoc
@@ -340,6 +369,7 @@ class __$SearchStateCopyWithImpl<$Res> implements _$SearchStateCopyWith<$Res> {
     Object? searchQuery = null,
     Object? recentSearches = null,
     Object? hasSubmitted = null,
+    Object? selectedFilter = null,
   }) {
     return _then(_SearchState(
       searchQuery: null == searchQuery
@@ -354,6 +384,10 @@ class __$SearchStateCopyWithImpl<$Res> implements _$SearchStateCopyWith<$Res> {
           ? _self.hasSubmitted
           : hasSubmitted // ignore: cast_nullable_to_non_nullable
               as bool,
+      selectedFilter: null == selectedFilter
+          ? _self.selectedFilter
+          : selectedFilter // ignore: cast_nullable_to_non_nullable
+              as PostFilter,
     ));
   }
 }

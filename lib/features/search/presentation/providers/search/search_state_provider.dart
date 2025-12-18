@@ -1,3 +1,4 @@
+import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,8 +17,8 @@ sealed class SearchState with _$SearchState {
   const factory SearchState({
     @Default('') String searchQuery, // 휘발성: Provider만 관리
     @Default([]) List<String> recentSearches, // 영구: Provider + 로컬 저장소
-
     @Default(false) bool hasSubmitted, // 검색 제출 여부
+    @Default(PostFilter.all) PostFilter selectedFilter, // 선택된 필터
   }) = _SearchState;
 }
 
@@ -97,7 +98,13 @@ class Search extends _$Search {
     await _saveRecentSearches(); // 로컬에서도 삭제
   }
 
+  // 검색어 제출 여부
   void setHasSubmitted(bool submitted) {
     state = state.copyWith(hasSubmitted: submitted);
+  }
+
+  // 선택된 필터 설정
+  void setSelectedFilter(PostFilter filter) {
+    state = state.copyWith(selectedFilter: filter);
   }
 }

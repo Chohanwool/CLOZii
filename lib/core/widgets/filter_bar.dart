@@ -1,41 +1,21 @@
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
-class FilterBar extends StatefulWidget {
-  const FilterBar({super.key});
+class FilterBar extends StatelessWidget {
+  const FilterBar({
+    super.key,
+    this.selectedFilter,
+    this.onFilterSelected,
+  });
 
-  @override
-  State<FilterBar> createState() => _FilterBarState();
-}
-
-class _FilterBarState extends State<FilterBar> {
   // 상수 정의
   static const double _filterSpacing = 12.0;
   static const double _filterBarHeight = 60.0;
   static const double _filterBarVerticalPadding = 8.0;
 
-  int? _selectedIndex = 0;
-
-  // Map으로 필터 버튼 정의 (hasIcon 플래그 사용)
-  final List<Map<String, dynamic>> _filterButtons = [
-    {'label': 'All', 'hasIcon': false},
-    {
-      'label': 'Price',
-      'hasIcon': true,
-      'iconData': CupertinoIcons.chevron_down
-    },
-    {'label': 'Shares', 'hasIcon': false},
-    {'label': 'NearBy', 'hasIcon': false},
-    {
-      'label': 'Category',
-      'hasIcon': true,
-      'iconData': CupertinoIcons.arrow_up_right
-    },
-    {'label': 'Clothes', 'hasIcon': false},
-    {'label': 'Shoes', 'hasIcon': false},
-    {'label': 'Phone', 'hasIcon': false},
-  ];
+  final PostFilter? selectedFilter;
+  final ValueChanged<PostFilter>? onFilterSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -49,20 +29,19 @@ class _FilterBarState extends State<FilterBar> {
           horizontal: _filterSpacing,
           vertical: _filterBarVerticalPadding,
         ),
-        itemCount: _filterButtons.length,
+        itemCount: PostFilter.values.length,
         separatorBuilder: (context, index) =>
             const SizedBox(width: _filterSpacing),
         itemBuilder: (context, index) {
-          final filterData = _filterButtons[index];
+          final filterData = PostFilter.values[index];
           return _FilterButton(
-            label: filterData['label'],
-            isSelected: _selectedIndex == index,
-            hasIcon: filterData['hasIcon'],
+            label: filterData.displayName,
+            isSelected: selectedFilter == filterData,
+            hasIcon: filterData.hasIcon,
             onTap: () {
-              setState(() => _selectedIndex = index);
-              debugPrint('Selected filter: ${filterData['label']}');
+              onFilterSelected?.call(filterData);
             },
-            iconData: filterData['hasIcon'] ? filterData['iconData'] : null,
+            iconData: filterData.hasIcon ? filterData.iconData : null,
           );
         },
       ),
