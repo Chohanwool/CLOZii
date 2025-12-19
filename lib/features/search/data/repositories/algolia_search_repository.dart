@@ -133,7 +133,7 @@ class AlgoliaSearchRepository extends SearchRepository {
     String? query,
     required double latitude,
     required double longitude,
-    double radiusInKm = 5.0,
+    double radiusInKm = 1.0,
     int page = 1,
     int limit = 20,
   }) async {
