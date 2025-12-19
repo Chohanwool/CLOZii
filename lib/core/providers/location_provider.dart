@@ -23,7 +23,7 @@ sealed class LocationState with _$LocationState {
 // Provider (ViewModel)
 // ============================================================================
 
-@riverpod
+@Riverpod(keepAlive: true)
 class Location extends _$Location {
   final _locationService = LocationService();
 

@@ -46,4 +46,9 @@ class LocationService {
   Future<LocationPermission> requestPermission() {
     return Geolocator.requestPermission();
   }
+
+  // 앱 설정 열기
+  Future<bool> openAppSettings() {
+    return Geolocator.openAppSettings();
+  }
 }
