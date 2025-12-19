@@ -42,7 +42,8 @@ dependencies:
   photo_manager: ^3.7.1
   google_maps_flutter: ^2.13.1
   path_provider: ^2.1.1
-  
+  geolocator: ^14.0.2
+
   # Firebase
   firebase_core: ^4.1.0
   firebase_auth: ^6.0.2
