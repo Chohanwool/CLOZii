@@ -18,8 +18,8 @@ class AlgoliaSearchRepository extends SearchRepository {
   }
 
   @override
-  Future<List<Post>> searchPostsByQuery(
-    String query, {
+  Future<List<Post>> searchPostsByQuery({
+    required String query,
     int page = 1,
     int limit = 20,
   }) async {
@@ -47,8 +47,8 @@ class AlgoliaSearchRepository extends SearchRepository {
   }
 
   @override
-  Future<List<Post>> searchPostsByCategory(
-    PostCategory category, {
+  Future<List<Post>> searchPostsByCategory({
+    required PostCategory category,
     int page = 1,
     int limit = 20,
   }) async {
@@ -100,15 +100,17 @@ class AlgoliaSearchRepository extends SearchRepository {
   }
 
   @override
-  Future<List<Post>> searchPostsByPriceRange(
-    double minPrice,
-    double maxPrice, {
+  Future<List<Post>> searchPostsByPriceRange({
+    String? query,
+    required double minPrice,
+    required double maxPrice,
     int page = 1,
     int limit = 20,
   }) async {
     try {
       final request = SearchForHits(
         indexName: AppConstants.algoliaIndexName,
+        query: query ?? '',
         filters: 'price:$minPrice TO $maxPrice',
         hitsPerPage: limit,
         page: page - 1,
@@ -127,16 +129,18 @@ class AlgoliaSearchRepository extends SearchRepository {
   }
 
   @override
-  Future<List<Post>> searchNearByPosts(
-    double latitude,
-    double longitude, {
-    double radiusInKm = 1.0,
+  Future<List<Post>> searchNearByPosts({
+    String? query,
+    required double latitude,
+    required double longitude,
+    double radiusInKm = 5.0,
     int page = 1,
     int limit = 20,
   }) async {
     try {
       final request = SearchForHits(
         indexName: AppConstants.algoliaIndexName,
+        query: query ?? '',
         aroundLatLng: '$latitude,$longitude',
         aroundRadius: (radiusInKm * 1000).toInt(), // km를 m로 변환
         hitsPerPage: limit,
@@ -165,7 +169,8 @@ class AlgoliaSearchRepository extends SearchRepository {
       // Firestore에서 각 ID로 게시글 가져오기
       final posts = <Post>[];
       for (final postId in postIds) {
-        final docSnapshot = await _firestore.collection('posts').doc(postId).get();
+        final docSnapshot =
+            await _firestore.collection('posts').doc(postId).get();
 
         if (docSnapshot.exists && docSnapshot.data() != null) {
           final postModel = PostModel.fromJson(docSnapshot.data()!);

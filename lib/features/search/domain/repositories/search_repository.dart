@@ -3,15 +3,15 @@ import 'package:clozii/features/post/domain/entities/post.dart';
 
 abstract class SearchRepository {
   // 검색어로 게시글 검색
-  Future<List<Post>> searchPostsByQuery(
-    String query, {
+  Future<List<Post>> searchPostsByQuery({
+    required String query,
     int page = 1,
     int limit = 20,
   });
 
   // 카테고리로 게시글 검색
-  Future<List<Post>> searchPostsByCategory(
-    PostCategory category, {
+  Future<List<Post>> searchPostsByCategory({
+    required PostCategory category,
     int page = 1,
     int limit = 20,
   });
@@ -24,17 +24,19 @@ abstract class SearchRepository {
   });
 
   // 가격으로 게시글 검색
-  Future<List<Post>> searchPostsByPriceRange(
-    double minPrice,
-    double maxPrice, {
+  Future<List<Post>> searchPostsByPriceRange({
+    String? query,
+    required double minPrice,
+    required double maxPrice,
     int page = 1,
     int limit = 20,
   });
 
   // 내 위치에서 가까운 게시글 검색
-  Future<List<Post>> searchNearByPosts(
-    double latitude,
-    double longitude, {
+  Future<List<Post>> searchNearByPosts({
+    String? query,
+    required double latitude,
+    required double longitude,
     double radiusInKm = 1.0,
     int page = 1,
     int limit = 20,

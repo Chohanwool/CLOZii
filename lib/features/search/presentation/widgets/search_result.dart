@@ -1,3 +1,4 @@
+import 'package:clozii/core/providers/location_provider.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list/post_list_tile.dart';
@@ -69,10 +70,13 @@ class _SearchResultState extends ConsumerState<SearchResult> {
       debugPrint('📥 Loading posts from Firebase...');
 
       final filter = ref.read(searchProvider).selectedFilter;
+      final position = ref.read(locationProvider).position;
+
       final searchPostsByFilter = ref.read(searchPostsByFilterProvider);
       final posts = await searchPostsByFilter(
         query: widget.query,
         filter: filter,
+        userPosition: position,
       );
 
       debugPrint('📦 Received ${posts.length} posts from Firebase');
