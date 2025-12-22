@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 // core
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/widgets/filter_bar.dart';
+import 'package:clozii/features/post/core/constants/post_filter_sets.dart';
 
 // features
 import 'package:clozii/presentation/screens/tabs/chat_tab_screen.dart';
@@ -216,7 +217,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             bottom: _currentIndex == 0
                 ? const PreferredSize(
                     preferredSize: Size.fromHeight(60.0),
-                    child: FilterBar(),
+                    child: FilterBar(filters: homePostFilters),
                   )
                 : null,
           ),

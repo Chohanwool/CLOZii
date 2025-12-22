@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class FilterBar extends StatelessWidget {
   const FilterBar({
     super.key,
+    this.filters,
     this.selectedFilter,
     this.onFilterSelected,
   });
@@ -14,11 +15,14 @@ class FilterBar extends StatelessWidget {
   static const double _filterBarHeight = 60.0;
   static const double _filterBarVerticalPadding = 8.0;
 
+  final List<PostFilter>? filters;
   final PostFilter? selectedFilter;
   final ValueChanged<PostFilter>? onFilterSelected;
 
   @override
   Widget build(BuildContext context) {
+    final visibleFilters = filters ?? PostFilter.values;
+
     return SizedBox(
       width: double.infinity,
       height: _filterBarHeight,
@@ -29,11 +33,11 @@ class FilterBar extends StatelessWidget {
           horizontal: _filterSpacing,
           vertical: _filterBarVerticalPadding,
         ),
-        itemCount: PostFilter.values.length,
+        itemCount: visibleFilters.length,
         separatorBuilder: (context, index) =>
             const SizedBox(width: _filterSpacing),
         itemBuilder: (context, index) {
-          final filterData = PostFilter.values[index];
+          final filterData = visibleFilters[index];
           return _FilterButton(
             label: filterData.displayName,
             isSelected: selectedFilter == filterData,
