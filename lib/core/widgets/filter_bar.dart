@@ -1,6 +1,7 @@
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/utils/show_price_range_dialog.dart';
 import 'package:clozii/features/post/core/enums/post_filter.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class FilterBar extends StatelessWidget {
   const FilterBar({
@@ -39,6 +40,15 @@ class FilterBar extends StatelessWidget {
             isSelected: selectedFilter == filterData,
             hasIcon: filterData.hasIcon,
             onTap: () {
+              if (filterData == PostFilter.price) {
+                // 위치 권한 요청 로직 추가 가능
+                showPriceRangeDialog(
+                  context: context,
+                  minValue: 0,
+                  maxValue: 10000,
+                );
+              }
+
               onFilterSelected?.call(filterData);
             },
             iconData: filterData.hasIcon ? filterData.iconData : null,
