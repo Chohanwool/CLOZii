@@ -1,15 +1,17 @@
 // core
 import 'package:clozii/core/constants/app_constants.dart';
+import 'package:clozii/core/providers/location_provider.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 
 // feature
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
-import 'package:clozii/features/post/presentation/providers/post_providers.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list/post_list_tile.dart';
+import 'package:clozii/features/search/presentation/providers/home/home_state_provider.dart';
+import 'package:clozii/features/search/presentation/providers/search_providers.dart';
 
 //package
 import 'package:flutter/material.dart';
@@ -29,101 +31,23 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
   @override
   void initState() {
     super.initState();
-    _loadPosts();
-  }
-
-  // 게시글 목록 로드
-  Future<void> _loadPosts() async {
-    try {
-      debugPrint('════════════════════════════════════════');
-      debugPrint('📥 Loading posts from Firebase...');
-      final findAllPosts = ref.read(findAllPostsProvider);
-      final posts = await findAllPosts();
-      debugPrint('📦 Received ${posts.length} posts from Firebase');
-      debugPrint('════════════════════════════════════════');
-      if (mounted) {
-        setState(() {
-          _posts = posts;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load posts: $e')),
-        );
-        debugPrint('════════════════════════════════════════');
-        debugPrint('❌ Failed to load posts: $e');
-        debugPrint('════════════════════════════════════════');
-      }
-    }
-  }
-
-  // 새로고침
-  Future<void> _onRefresh() async {
-    debugPrint('\n🔄 Refreshing posts...');
-    await _loadPosts();
-    debugPrint('✅ Refresh complete. Loaded ${_posts.length} posts\n');
-  }
-
-  // 게시글 상세 화면으로 이동
-  void _navigateToPostDetail(Post post) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => PostDetailScreen(post: post),
-      ),
-    );
-  }
-
-  // Cross - feature 의존성있지만, 같은 feature 내이므로 허용 가능
-  // UX를 위해 게시글 생성 화면 진입 전 다이얼로그 표시 필요!
-  // 게시글 생성 모달 띄우기
-  void _showPostCreateModal() async {
-    final draft = await ref.read(postCreateProvider.notifier).loadTemp();
-
-    // 임시저장 데이터가 있을 경우, 안내메시지 표시
-    if (draft != null && mounted) {
-      final result = await showConfirmDialog(
-        context: context,
-        title: 'Alert',
-        messageBody:
-            'There is an existing draft. Do you want to continue creating a new post?',
-        confirmButtonText: 'Continue',
-        cancelButtonText: 'Create New Post',
-      );
-
-      if (result != null && !result) {
-        ref.read(postCreateProvider.notifier).deleteTemp();
-        ref.read(postCreateProvider.notifier).resetState();
-      }
-    }
-
-    if (!mounted) return;
-    final newPost = await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      isDismissible: false,
-      enableDrag: false,
-      builder: (context) => Container(
-        padding: const EdgeInsets.only(
-          top: kToolbarHeight,
-          bottom: kBottomNavigationBarHeight,
-        ),
-        color: AppColors.white,
-        child: const PostCreateScreen(),
-      ),
-    );
-
-    if (newPost == true) {
-      _onRefresh();
-    }
+    _searchPosts();
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(homeProvider, (previous, next) {
+      if (previous?.selectedFilter != next.selectedFilter) {
+        debugPrint(
+            '\n🔍 Search filter changed to: ${next.selectedFilter.displayName}. Reloading posts...');
+        setState(() {
+          _isLoading = true;
+        });
+
+        _searchPosts();
+      }
+    });
+
     return Stack(
       children: [
         /// 게시글 리스트
@@ -197,5 +121,104 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
         ),
       ],
     );
+  }
+
+  // 새로고침
+  Future<void> _onRefresh() async {
+    debugPrint('\n🔄 Refreshing posts...');
+    await _searchPosts();
+    debugPrint('✅ Refresh complete. Loaded ${_posts.length} posts\n');
+  }
+
+  // 게시글 상세 화면으로 이동
+  void _navigateToPostDetail(Post post) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => PostDetailScreen(post: post),
+      ),
+    );
+  }
+
+  // Cross - feature 의존성있지만, 같은 feature 내이므로 허용 가능
+  // UX를 위해 게시글 생성 화면 진입 전 다이얼로그 표시 필요!
+  // 게시글 생성 모달 띄우기
+  void _showPostCreateModal() async {
+    final draft = await ref.read(postCreateProvider.notifier).loadTemp();
+
+    // 임시저장 데이터가 있을 경우, 안내메시지 표시
+    if (draft != null && mounted) {
+      final result = await showConfirmDialog(
+        context: context,
+        title: 'Alert',
+        messageBody:
+            'There is an existing draft. Do you want to continue creating a new post?',
+        confirmButtonText: 'Continue',
+        cancelButtonText: 'Create New Post',
+      );
+
+      if (result != null && !result) {
+        ref.read(postCreateProvider.notifier).deleteTemp();
+        ref.read(postCreateProvider.notifier).resetState();
+      }
+    }
+
+    if (!mounted) return;
+    final newPost = await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      builder: (context) => Container(
+        padding: const EdgeInsets.only(
+          top: kToolbarHeight,
+          bottom: kBottomNavigationBarHeight,
+        ),
+        color: AppColors.white,
+        child: const PostCreateScreen(),
+      ),
+    );
+
+    if (newPost == true) {
+      _onRefresh();
+    }
+  }
+
+  // 게시글 검색 (필터 적용)
+  Future<void> _searchPosts() async {
+    try {
+      debugPrint('════════════════════════════════════════');
+      debugPrint('📥 Loading posts from Firebase...');
+
+      final filter = ref.read(homeProvider).selectedFilter;
+      final position = ref.read(locationProvider).position;
+
+      final loadPostsByFilter = ref.read(loadPostsByFilterProvider);
+      final posts = await loadPostsByFilter(
+        filter: filter,
+        userPosition: position,
+      );
+
+      debugPrint('📦 Received ${posts.length} posts from Firebase');
+      debugPrint('════════════════════════════════════════');
+
+      if (mounted) {
+        setState(() {
+          _posts = posts;
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load posts: $e')),
+        );
+        debugPrint('════════════════════════════════════════');
+        debugPrint('❌ Failed to load posts: $e');
+        debugPrint('════════════════════════════════════════');
+      }
+    }
   }
 }

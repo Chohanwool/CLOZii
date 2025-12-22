@@ -94,3 +94,46 @@ final class SearchPostsByFilterProvider extends $FunctionalProvider<
 
 String _$searchPostsByFilterHash() =>
     r'460e066e42629162b76471fd4f175a4635257a36';
+
+@ProviderFor(loadPostsByFilter)
+const loadPostsByFilterProvider = LoadPostsByFilterProvider._();
+
+final class LoadPostsByFilterProvider extends $FunctionalProvider<
+    LoadPostsWithFilter,
+    LoadPostsWithFilter,
+    LoadPostsWithFilter> with $Provider<LoadPostsWithFilter> {
+  const LoadPostsByFilterProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'loadPostsByFilterProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$loadPostsByFilterHash();
+
+  @$internal
+  @override
+  $ProviderElement<LoadPostsWithFilter> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  LoadPostsWithFilter create(Ref ref) {
+    return loadPostsByFilter(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LoadPostsWithFilter value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LoadPostsWithFilter>(value),
+    );
+  }
+}
+
+String _$loadPostsByFilterHash() => r'090b72cc22ab3aec585f4614abc1d161a84ce4df';

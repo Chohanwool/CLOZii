@@ -3,6 +3,7 @@ import 'package:clozii/core/providers/location_service_provider.dart';
 import 'package:clozii/core/utils/show_alert_dialog.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/search/presentation/screens/search_screen_simple.dart';
+import 'package:clozii/features/search/presentation/providers/home/home_state_provider.dart';
 import 'package:flutter/material.dart';
 
 // core
@@ -154,6 +155,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    final homeState = ref.watch(homeProvider);
+
     return Stack(
       children: [
         Scaffold(
@@ -215,9 +218,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen>
             ],
 
             bottom: _currentIndex == 0
-                ? const PreferredSize(
-                    preferredSize: Size.fromHeight(60.0),
-                    child: FilterBar(filters: homePostFilters),
+                ? PreferredSize(
+                    preferredSize: const Size.fromHeight(60.0),
+                    child: FilterBar(
+                      filters: homePostFilters,
+                      selectedFilter: homeState.selectedFilter,
+                      onFilterSelected: (filter) {
+                        ref
+                            .read(homeProvider.notifier)
+                            .updateSelectedFilter(filter);
+                      },
+                    ),
                   )
                 : null,
           ),
