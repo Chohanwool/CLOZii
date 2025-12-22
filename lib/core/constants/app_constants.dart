@@ -11,7 +11,9 @@ class AppConstants {
   // Algolia Search
   static const String algoliaApplicationId = '2S2GJPIBHE';
   static const String algoliaSearchApiKey = 'b5bd77ef76f962acba650a49e92ac76e';
-  static const String algoliaIndexName = 'posts';
+  static const String algoliaPostIndex = 'posts';
+  static const String algoliaPostAscIndex = 'posts_price_asc';
+  static const String algoliaPostDescIndex = 'posts_price_desc';
 }
 
 class AppColors {

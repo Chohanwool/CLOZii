@@ -28,8 +28,20 @@ class SearchPostsWithFilter {
           page: page,
           limit: limit,
         );
-      case PostFilter.price:
-        throw UnimplementedError('$filter is not implemented yet');
+      // case PostFilter.priceRange:
+      //   throw UnimplementedError('$filter is not implemented yet');
+      case PostFilter.priceAsc:
+        return repository.searchPostsByPriceAsc(
+          query: query,
+          page: page,
+          limit: limit,
+        );
+      case PostFilter.priceDesc:
+        return repository.searchPostsByPriceDesc(
+          query: query,
+          page: page,
+          limit: limit,
+        );
       case PostFilter.nearby:
         if (userPosition != null) {
           return repository.searchNearByPosts(

@@ -32,6 +32,18 @@ abstract class SearchRepository {
     int limit = 20,
   });
 
+  Future<List<Post>> searchPostsByPriceAsc({
+    String? query,
+    int page = 1,
+    int limit = 20,
+  });
+
+  Future<List<Post>> searchPostsByPriceDesc({
+    String? query,
+    int page = 1,
+    int limit = 20,
+  });
+
   // 내 위치에서 가까운 게시글 검색
   Future<List<Post>> searchNearByPosts({
     String? query,

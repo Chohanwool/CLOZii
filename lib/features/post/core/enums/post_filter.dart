@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 
 enum PostFilter {
   all('All', false, null),
-  price('Price', true, CupertinoIcons.chevron_down),
+  category('Category', true, CupertinoIcons.arrow_up_right),
   shares('Shares', false, null),
   nearby('Nearby', false, null),
-  category('Category', true, CupertinoIcons.arrow_up_right);
+  priceAsc('Price', true, CupertinoIcons.arrow_up),
+  priceDesc('Price', true, CupertinoIcons.arrow_down);
+  // priceRange('Price Range', false, null);
 
   final String displayName;
   final bool hasIcon;

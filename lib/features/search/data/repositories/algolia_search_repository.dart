@@ -26,7 +26,7 @@ class AlgoliaSearchRepository extends SearchRepository {
     try {
       // 1. Algolia에서 검색하여 objectID 리스트 가져오기
       final request = SearchForHits(
-        indexName: AppConstants.algoliaIndexName,
+        indexName: AppConstants.algoliaPostIndex,
         query: query,
         hitsPerPage: limit,
         page: page - 1, // Algolia는 0-based indexing
@@ -54,7 +54,7 @@ class AlgoliaSearchRepository extends SearchRepository {
   }) async {
     try {
       final request = SearchForHits(
-        indexName: AppConstants.algoliaIndexName,
+        indexName: AppConstants.algoliaPostIndex,
         filters: 'category:${category.name}',
         hitsPerPage: limit,
         page: page - 1,
@@ -80,7 +80,7 @@ class AlgoliaSearchRepository extends SearchRepository {
   }) async {
     try {
       final request = SearchForHits(
-        indexName: AppConstants.algoliaIndexName,
+        indexName: AppConstants.algoliaPostIndex,
         query: query ?? '',
         filters: 'tradeType:share',
         hitsPerPage: limit,
@@ -109,7 +109,7 @@ class AlgoliaSearchRepository extends SearchRepository {
   }) async {
     try {
       final request = SearchForHits(
-        indexName: AppConstants.algoliaIndexName,
+        indexName: AppConstants.algoliaPostIndex,
         query: query ?? '',
         filters: 'price:$minPrice TO $maxPrice',
         hitsPerPage: limit,
@@ -129,6 +129,58 @@ class AlgoliaSearchRepository extends SearchRepository {
   }
 
   @override
+  Future<List<Post>> searchPostsByPriceAsc({
+    String? query,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final request = SearchForHits(
+        indexName: AppConstants.algoliaPostAscIndex,
+        query: query ?? '',
+        hitsPerPage: limit,
+        page: page - 1,
+      );
+
+      final response = await _client.searchIndex(request: request);
+
+      final postIds = response.hits
+          .map((hit) => (hit as dynamic).objectID as String)
+          .toList();
+
+      return _fetchPostsByIds(postIds);
+    } catch (e) {
+      throw Exception('가격 오름차순 검색 실패: $e');
+    }
+  }
+
+  @override
+  Future<List<Post>> searchPostsByPriceDesc({
+    String? query,
+    int page = 1,
+    int limit = 20,
+  }) async {
+    try {
+      final request = SearchForHits(
+        indexName: AppConstants.algoliaPostDescIndex,
+        query: query ?? '',
+        hitsPerPage: limit,
+        page: page - 1,
+      );
+
+      final response = await _client.searchIndex(request: request);
+
+      final postIds = response.hits
+          .map((hit) => (hit as dynamic).objectID as String)
+          .toList();
+
+      return _fetchPostsByIds(postIds);
+    } catch (e) {
+      throw Exception('가격 내림차순 검색 실패: $e');
+    }
+  }
+
+  @override
   Future<List<Post>> searchNearByPosts({
     String? query,
     required double latitude,
@@ -139,7 +191,7 @@ class AlgoliaSearchRepository extends SearchRepository {
   }) async {
     try {
       final request = SearchForHits(
-        indexName: AppConstants.algoliaIndexName,
+        indexName: AppConstants.algoliaPostIndex,
         query: query ?? '',
         aroundLatLng: '$latitude,$longitude',
         aroundRadius: (radiusInKm * 1000).toInt(), // km를 m로 변환
