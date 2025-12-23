@@ -1,6 +1,6 @@
 import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_filter.dart';
-import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/application/dto/post_summary.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
 import 'package:clozii/features/search/domain/repositories/search_repository.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,7 +11,7 @@ class LoadPostsWithFilter {
 
   const LoadPostsWithFilter(this.searchRepository, this.postRepository);
 
-  Future<List<Post>> call({
+  Future<List<PostSummary>> call({
     required PostFilter filter,
     PostCategory? selectedCategory,
     Position? userPosition,
@@ -20,7 +20,8 @@ class LoadPostsWithFilter {
   }) async {
     switch (filter) {
       case PostFilter.all:
-        return postRepository.findAllPosts();
+        final posts = await postRepository.findAllPosts();
+        return posts.map(PostSummary.fromPost).toList();
       case PostFilter.category:
         if (selectedCategory == null) {
           throw Exception('Category is required to category post search');

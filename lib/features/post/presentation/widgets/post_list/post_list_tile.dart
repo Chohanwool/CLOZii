@@ -5,7 +5,7 @@ import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/utils/show_uploaded_time.dart';
 
 // feature
-import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/application/dto/post_summary.dart';
 
 // package
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,8 +15,8 @@ import 'package:flutter/material.dart';
 class PostListTile extends StatelessWidget {
   const PostListTile({super.key, required this.post, required this.onTap});
 
-  final Post post;
-  final ValueChanged<Post> onTap;
+  final PostSummary post;
+  final ValueChanged<PostSummary> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +44,12 @@ class PostListTile extends StatelessWidget {
                 width: MediaQuery.of(context).size.width / 4,
                 height: MediaQuery.of(context).size.width / 4,
                 decoration: const BoxDecoration(color: Colors.black26),
-                child: post.images.isNotEmpty
+                child: post.thumbnailUrl != null
                     ? CachedNetworkImage(
                         fadeInDuration: Duration.zero,
                         fadeOutDuration: Duration.zero,
                         placeholderFadeInDuration: Duration.zero,
-                        imageUrl: post.images[0].thumbnailUrl,
+                        imageUrl: post.thumbnailUrl!,
                         fit: BoxFit.cover,
                         placeholder: (context, url) => Container(
                           color: AppColors.background,

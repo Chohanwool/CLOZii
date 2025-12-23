@@ -1,5 +1,5 @@
 import 'package:clozii/core/providers/location_provider.dart';
-import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/application/dto/post_summary.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list/post_list_tile.dart';
 import 'package:clozii/features/search/presentation/providers/search/search_state_provider.dart';
@@ -17,7 +17,7 @@ class SearchResult extends ConsumerStatefulWidget {
 }
 
 class _SearchResultState extends ConsumerState<SearchResult> {
-  List<Post> _posts = [];
+  List<PostSummary> _posts = [];
   bool _isLoading = true;
 
   @override
@@ -111,10 +111,10 @@ class _SearchResultState extends ConsumerState<SearchResult> {
   }
 
   // 게시글 상세 화면으로 이동
-  void _navigateToPostDetail(Post post) {
+  void _navigateToPostDetail(PostSummary post) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PostDetailScreen(post: post),
+        builder: (context) => PostDetailScreen(postId: post.id),
       ),
     );
   }

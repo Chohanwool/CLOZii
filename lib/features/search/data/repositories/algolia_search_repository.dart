@@ -1,14 +1,11 @@
 import 'package:algoliasearch/algoliasearch.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/features/post/core/enums/post_category.dart';
-import 'package:clozii/features/post/data/models/post_model.dart';
-import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/application/dto/post_summary.dart';
 import 'package:clozii/features/search/domain/repositories/search_repository.dart';
 
 class AlgoliaSearchRepository extends SearchRepository {
   late final SearchClient _client;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   AlgoliaSearchRepository() {
     _client = SearchClient(
@@ -18,13 +15,12 @@ class AlgoliaSearchRepository extends SearchRepository {
   }
 
   @override
-  Future<List<Post>> searchPostsByQuery({
+  Future<List<PostSummary>> searchPostsByQuery({
     required String query,
     int page = 1,
     int limit = 20,
   }) async {
     try {
-      // 1. Algolia에서 검색하여 objectID 리스트 가져오기
       final request = SearchForHits(
         indexName: AppConstants.algoliaPostIndex,
         query: query,
@@ -34,20 +30,14 @@ class AlgoliaSearchRepository extends SearchRepository {
 
       final response = await _client.searchIndex(request: request);
 
-      // 2. objectID 추출 (Hit 객체의 objectID 프로퍼티 사용)
-      final postIds = response.hits
-          .map((hit) => (hit as dynamic).objectID as String)
-          .toList();
-
-      // 3. Firestore에서 실제 게시글 데이터 가져오기
-      return _fetchPostsByIds(postIds);
+      return response.hits.map(_mapHitToPostSummary).toList();
     } catch (e) {
       throw Exception('Algolia 검색 실패: $e');
     }
   }
 
   @override
-  Future<List<Post>> searchPostsByCategory({
+  Future<List<PostSummary>> searchPostsByCategory({
     required PostCategory category,
     int page = 1,
     int limit = 20,
@@ -62,18 +52,14 @@ class AlgoliaSearchRepository extends SearchRepository {
 
       final response = await _client.searchIndex(request: request);
 
-      final postIds = response.hits
-          .map((hit) => (hit as dynamic).objectID as String)
-          .toList();
-
-      return _fetchPostsByIds(postIds);
+      return response.hits.map(_mapHitToPostSummary).toList();
     } catch (e) {
       throw Exception('카테고리 검색 실패: $e');
     }
   }
 
   @override
-  Future<List<Post>> searchSharePosts({
+  Future<List<PostSummary>> searchSharePosts({
     String? query,
     int page = 1,
     int limit = 20,
@@ -89,18 +75,14 @@ class AlgoliaSearchRepository extends SearchRepository {
 
       final response = await _client.searchIndex(request: request);
 
-      final postIds = response.hits
-          .map((hit) => (hit as dynamic).objectID as String)
-          .toList();
-
-      return _fetchPostsByIds(postIds);
+      return response.hits.map(_mapHitToPostSummary).toList();
     } catch (e) {
       throw Exception('나눔 게시글 검색 실패: $e');
     }
   }
 
   @override
-  Future<List<Post>> searchPostsByPriceRange({
+  Future<List<PostSummary>> searchPostsByPriceRange({
     String? query,
     required double minPrice,
     required double maxPrice,
@@ -118,18 +100,14 @@ class AlgoliaSearchRepository extends SearchRepository {
 
       final response = await _client.searchIndex(request: request);
 
-      final postIds = response.hits
-          .map((hit) => (hit as dynamic).objectID as String)
-          .toList();
-
-      return _fetchPostsByIds(postIds);
+      return response.hits.map(_mapHitToPostSummary).toList();
     } catch (e) {
       throw Exception('가격 범위 검색 실패: $e');
     }
   }
 
   @override
-  Future<List<Post>> searchPostsByPriceAsc({
+  Future<List<PostSummary>> searchPostsByPriceAsc({
     String? query,
     int page = 1,
     int limit = 20,
@@ -144,18 +122,14 @@ class AlgoliaSearchRepository extends SearchRepository {
 
       final response = await _client.searchIndex(request: request);
 
-      final postIds = response.hits
-          .map((hit) => (hit as dynamic).objectID as String)
-          .toList();
-
-      return _fetchPostsByIds(postIds);
+      return response.hits.map(_mapHitToPostSummary).toList();
     } catch (e) {
       throw Exception('가격 오름차순 검색 실패: $e');
     }
   }
 
   @override
-  Future<List<Post>> searchPostsByPriceDesc({
+  Future<List<PostSummary>> searchPostsByPriceDesc({
     String? query,
     int page = 1,
     int limit = 20,
@@ -170,18 +144,14 @@ class AlgoliaSearchRepository extends SearchRepository {
 
       final response = await _client.searchIndex(request: request);
 
-      final postIds = response.hits
-          .map((hit) => (hit as dynamic).objectID as String)
-          .toList();
-
-      return _fetchPostsByIds(postIds);
+      return response.hits.map(_mapHitToPostSummary).toList();
     } catch (e) {
       throw Exception('가격 내림차순 검색 실패: $e');
     }
   }
 
   @override
-  Future<List<Post>> searchNearByPosts({
+  Future<List<PostSummary>> searchNearByPosts({
     String? query,
     required double latitude,
     required double longitude,
@@ -201,39 +171,116 @@ class AlgoliaSearchRepository extends SearchRepository {
 
       final response = await _client.searchIndex(request: request);
 
-      final postIds = response.hits
-          .map((hit) => (hit as dynamic).objectID as String)
-          .toList();
-
-      return _fetchPostsByIds(postIds);
+      return response.hits.map(_mapHitToPostSummary).toList();
     } catch (e) {
       throw Exception('내 근처 검색 실패: $e');
     }
   }
 
-  /// Firestore에서 ID 리스트로 게시글 가져오기
-  Future<List<Post>> _fetchPostsByIds(List<String> postIds) async {
-    if (postIds.isEmpty) {
-      return [];
+  PostSummary _mapHitToPostSummary(dynamic hit) {
+    final hitMap = _hitToMap(hit);
+    final objectId = _readObjectId(hit, hitMap);
+    final title = hitMap['title'] as String? ?? '';
+    final price = _readInt(hitMap['price']);
+    final createdAt = _parseDateTime(hitMap['createdAt']);
+    final thumbnailUrl = _readThumbnailUrl(hitMap['thumbnailImageUrls']);
+
+    return PostSummary(
+      id: objectId,
+      title: title,
+      price: price,
+      createdAt: createdAt,
+      thumbnailUrl: thumbnailUrl,
+    );
+  }
+
+  Map<String, dynamic> _hitToMap(dynamic hit) {
+    if (hit is Map<String, dynamic>) {
+      return hit;
     }
-
+    if (hit is Map) {
+      return Map<String, dynamic>.from(hit);
+    }
     try {
-      // Firestore에서 각 ID로 게시글 가져오기
-      final posts = <Post>[];
-      for (final postId in postIds) {
-        final docSnapshot =
-            await _firestore.collection('posts').doc(postId).get();
+      final json = (hit as dynamic).toJson();
+      if (json is Map) {
+        return Map<String, dynamic>.from(json);
+      }
+    } catch (_) {}
+    return <String, dynamic>{};
+  }
 
-        if (docSnapshot.exists && docSnapshot.data() != null) {
-          final postModel = PostModel.fromJson(docSnapshot.data()!);
-          posts.add(postModel.toEntity());
-        }
+  String _readObjectId(dynamic hit, Map<String, dynamic> hitMap) {
+    final objectId = hitMap['objectID'];
+    if (objectId is String && objectId.isNotEmpty) {
+      return objectId;
+    }
+    final fallbackId = hitMap['id'];
+    if (fallbackId is String && fallbackId.isNotEmpty) {
+      return fallbackId;
+    }
+    try {
+      final value = (hit as dynamic).objectID;
+      if (value is String && value.isNotEmpty) {
+        return value;
+      }
+    } catch (_) {}
+    return '';
+  }
+
+  int _readInt(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+    if (value is double) {
+      return value.round();
+    }
+    if (value is String) {
+      return int.tryParse(value) ?? 0;
+    }
+    return 0;
+  }
+
+  String? _readThumbnailUrl(dynamic thumbnails) {
+    if (thumbnails is List && thumbnails.isNotEmpty) {
+      final first = thumbnails.first;
+      if (first is String && first.isNotEmpty) {
+        return first;
       }
 
-      return posts;
-    } catch (e) {
-      throw Exception('Firestore에서 게시글 가져오기 실패: $e');
+      for (int i = 1; i < thumbnails.length; i++) {
+        final url = thumbnails[i];
+        if (url is String && url.isNotEmpty) {
+          return url;
+        }
+      }
     }
+    return null;
+  }
+
+  DateTime? _parseDateTime(dynamic value) {
+    if (value is DateTime) {
+      return value;
+    }
+    if (value is int) {
+      return DateTime.fromMillisecondsSinceEpoch(value);
+    }
+    if (value is double) {
+      return DateTime.fromMillisecondsSinceEpoch(value.round());
+    }
+    if (value is String) {
+      return DateTime.tryParse(value);
+    }
+    if (value is Map) {
+      final seconds = value['_seconds'] ?? value['seconds'];
+      if (seconds is int) {
+        return DateTime.fromMillisecondsSinceEpoch(seconds * 1000);
+      }
+      if (seconds is double) {
+        return DateTime.fromMillisecondsSinceEpoch(seconds.round() * 1000);
+      }
+    }
+    return null;
   }
 
   /// 리소스 정리

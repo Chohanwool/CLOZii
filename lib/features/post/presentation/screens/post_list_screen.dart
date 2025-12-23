@@ -6,7 +6,7 @@ import 'package:clozii/core/utils/show_confirm_dialog.dart';
 import 'package:clozii/features/post/core/enums/post_filter.dart';
 
 // feature
-import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/application/dto/post_summary.dart';
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
@@ -26,7 +26,7 @@ class PostListScreen extends ConsumerStatefulWidget {
 }
 
 class _PostListScreenState extends ConsumerState<PostListScreen> {
-  List<Post> _posts = [];
+  List<PostSummary> _posts = [];
   bool _isLoading = true;
   // region/dropdown moved to postList provider
 
@@ -142,10 +142,10 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
   }
 
   // 게시글 상세 화면으로 이동
-  void _navigateToPostDetail(Post post) {
+  void _navigateToPostDetail(PostSummary post) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => PostDetailScreen(post: post),
+        builder: (context) => PostDetailScreen(postId: post.id),
       ),
     );
   }

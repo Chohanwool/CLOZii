@@ -148,8 +148,19 @@ class FirebasePostRepository extends PostRepository {
 
   @override
   Future<Post> findById(String postId) {
-    // TODO: implement find ById
-    throw UnimplementedError();
+    final firestore = FirebaseFirestore.instance;
+
+    return firestore.collection('posts').doc(postId).get().then((snapshot) {
+      if (!snapshot.exists || snapshot.data() == null) {
+        throw Exception('게시글을 찾을 수 없습니다. (id: $postId)');
+      }
+      return PostModel.fromJson(snapshot.data()!).toEntity();
+    }).catchError((e) {
+      if (e is FirebaseException) {
+        throw Exception('게시글 조회 실패(Firebase): ${e.message}');
+      }
+      throw Exception('게시글 조회 실패: $e');
+    });
   }
 
   @override

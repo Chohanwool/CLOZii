@@ -1,5 +1,5 @@
 import 'package:clozii/features/post/core/enums/post_filter.dart';
-import 'package:clozii/features/post/domain/entities/post.dart';
+import 'package:clozii/features/post/application/dto/post_summary.dart';
 import 'package:clozii/features/search/domain/repositories/search_repository.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -8,7 +8,7 @@ class SearchPostsWithFilter {
 
   const SearchPostsWithFilter(this.repository);
 
-  Future<List<Post>> call({
+  Future<List<PostSummary>> call({
     required String query,
     required PostFilter filter,
     Position? userPosition,

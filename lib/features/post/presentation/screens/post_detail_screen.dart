@@ -5,6 +5,7 @@ import 'package:clozii/core/utils/number_format.dart';
 import 'package:clozii/core/widgets/custom_button.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/presentation/providers/post_detail/post_detail_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_providers.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_app_bar.dart';
 import 'package:clozii/features/post/presentation/widgets/post_detail/post_detail_body.dart';
 
@@ -13,9 +14,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class PostDetailScreen extends ConsumerStatefulWidget {
-  const PostDetailScreen({super.key, required this.post});
+  const PostDetailScreen({super.key, required this.postId});
 
-  final Post post;
+  final String postId;
 
   @override
   ConsumerState<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -25,14 +26,14 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   // 아래의 스크롤 컨트롤러는 UI 조작용이므로, Screen 에 둔다.
   // 비즈니스 로직과 관련된 컨트롤러의 경우 viewModel 에 둬야 한다. (예: 스크롤 끝에서 다음 데이터 로드, 특정 위치에서 ViewModel 호출 등)
   late final ScrollController _controller; // 스크롤 컨트롤러
-  late Post _currentPost; // 현재 게시글
+  late Future<Post> _postFuture;
 
   @override
   void initState() {
     super.initState();
     _controller = ScrollController();
     _controller.addListener(_onScroll);
-    _currentPost = widget.post; // navigation parameter로 받은 post 저장
+    _postFuture = ref.read(postRepositoryProvider).findById(widget.postId);
   }
 
   @override
@@ -48,78 +49,99 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final postDetailState = ref.watch(postDetailProvider);
-
-    return Scaffold(
-      backgroundColor: AppColors.backgroundSecondary,
-      // CustomScrollView: 스크롤 가능한 위젯
-      body: CustomScrollView(
-        controller: _controller,
-
-        // slivers: 스크롤 가능한 위젯의 일부분
-        slivers: [
-          // SliverAppBar: 상단 앱바
-          PostDetailAppBar(
-            post: _currentPost,
-            isExpanded: postDetailState.isExpanded,
-            stretchOffset: postDetailState.stretchOffset,
-          ),
-
-          // SliverToBoxAdapter: 앱바 하단 고정 영역
-          PostDetailBody(post: _currentPost),
-        ],
-      ),
-
-      // 네비게이션 바 - 좋아요 버튼, 가격 표시, 채팅 버튼
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border(top: BorderSide(color: context.colors.shadow)),
-        ),
-        child: IntrinsicHeight(
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.favorite_border_outlined,
-                  size: 28.0,
-                  color: AppColors.primary,
-                ),
+    return FutureBuilder<Post>(
+      future: _postFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        if (snapshot.hasError || !snapshot.hasData) {
+          return Scaffold(
+            body: Center(
+              child: Text(
+                'Failed to load post: ${snapshot.error ?? 'unknown error'}',
               ),
-              const SizedBox(width: 12.0),
-              const VerticalDivider(
-                indent: 8.0,
-                endIndent: 8.0,
-                color: AppColors.borderDark,
-                thickness: 1,
-                width: 1,
+            ),
+          );
+        }
+
+        final post = snapshot.data!;
+        return Scaffold(
+          backgroundColor: AppColors.backgroundSecondary,
+          // CustomScrollView: 스크롤 가능한 위젯
+          body: CustomScrollView(
+            controller: _controller,
+
+            // slivers: 스크롤 가능한 위젯의 일부분
+            slivers: [
+              // SliverAppBar: 상단 앱바
+              PostDetailAppBar(
+                post: post,
+                isExpanded: postDetailState.isExpanded,
+                stretchOffset: postDetailState.stretchOffset,
               ),
-              const SizedBox(width: 12.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    _currentPost.price != 0
-                        ? '\u20B1 ${formatPrice(_currentPost.price)}'
-                        : 'Sharing',
-                    style: context.textTheme.titleLarge,
-                  ),
-                  const Text(
-                    'Price negotiable',
-                  ), // "Price negotiable" / "Price fixed"
-                ],
-              ),
-              Spacer(),
-              Expanded(
-                child: CustomButton(text: 'Chat', onTap: () {}),
-              ),
-              const SizedBox(width: 12.0),
+
+              // SliverToBoxAdapter: 앱바 하단 고정 영역
+              PostDetailBody(post: post),
             ],
           ),
-        ),
-      ),
+
+          // 네비게이션 바 - 좋아요 버튼, 가격 표시, 채팅 버튼
+          bottomNavigationBar: Container(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+            decoration: BoxDecoration(
+              color: AppColors.surface,
+              border: Border(top: BorderSide(color: context.colors.shadow)),
+            ),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.favorite_border_outlined,
+                      size: 28.0,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12.0),
+                  const VerticalDivider(
+                    indent: 8.0,
+                    endIndent: 8.0,
+                    color: AppColors.borderDark,
+                    thickness: 1,
+                    width: 1,
+                  ),
+                  const SizedBox(width: 12.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        post.price != 0
+                            ? '\u20B1 ${formatPrice(post.price)}'
+                            : 'Sharing',
+                        style: context.textTheme.titleLarge,
+                      ),
+                      const Text(
+                        'Price negotiable',
+                      ), // "Price negotiable" / "Price fixed"
+                    ],
+                  ),
+                  Spacer(),
+                  Expanded(
+                    child: CustomButton(text: 'Chat', onTap: () {}),
+                  ),
+                  const SizedBox(width: 12.0),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
