@@ -127,7 +127,7 @@ class PostDetailBody extends StatelessWidget {
 
                     // 카테고리 링크
                     CustomTextLink(
-                      linkText: 'Phones',
+                      linkText: post.category.displayName,
                       linkTextStyle: context.textTheme.bodyLarge!.copyWith(
                         color: AppColors.textSecondary,
                         decoration: TextDecoration.underline,
