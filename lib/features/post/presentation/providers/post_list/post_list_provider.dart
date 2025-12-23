@@ -1,3 +1,4 @@
+import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,6 +12,7 @@ sealed class PostListState with _$PostListState {
 
   const factory PostListState({
     @Default(PostFilter.all) PostFilter selectedFilter,
+    PostCategory? selectedCategory,
     @Default('Sta.Rosa') String selectedRegion,
     @Default(false) bool isDropdownOpen,
   }) = _PostListState;
@@ -26,6 +28,11 @@ class PostList extends _$PostList {
   // 필터 업데이트
   void updateSelectedFilter(PostFilter filter) {
     state = state.copyWith(selectedFilter: filter);
+  }
+
+  // category
+  void setCategory(PostCategory category) {
+    state = state.copyWith(selectedCategory: category);
   }
 
   // region / dropdown state helpers

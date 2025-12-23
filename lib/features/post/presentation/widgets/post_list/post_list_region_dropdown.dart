@@ -17,12 +17,12 @@ class PostListRegionDropdown extends ConsumerWidget {
 
     return Stack(
       children: [
-        IgnorePointer(
-          ignoring: !isOpen,
-          child: AnimatedOpacity(
-            opacity: isOpen ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 180),
-            child: Positioned.fill(
+        Positioned.fill(
+          child: IgnorePointer(
+            ignoring: !isOpen,
+            child: AnimatedOpacity(
+              opacity: isOpen ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 180),
               child: GestureDetector(
                 onTap: () =>
                     ref.read(postListProvider.notifier).setDropdown(false),

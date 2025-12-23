@@ -15,6 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PostListState {
   PostFilter get selectedFilter;
+  PostCategory? get selectedCategory;
   String get selectedRegion;
   bool get isDropdownOpen;
 
@@ -33,6 +34,8 @@ mixin _$PostListState {
             other is PostListState &&
             (identical(other.selectedFilter, selectedFilter) ||
                 other.selectedFilter == selectedFilter) &&
+            (identical(other.selectedCategory, selectedCategory) ||
+                other.selectedCategory == selectedCategory) &&
             (identical(other.selectedRegion, selectedRegion) ||
                 other.selectedRegion == selectedRegion) &&
             (identical(other.isDropdownOpen, isDropdownOpen) ||
@@ -40,12 +43,12 @@ mixin _$PostListState {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, selectedFilter, selectedRegion, isDropdownOpen);
+  int get hashCode => Object.hash(runtimeType, selectedFilter, selectedCategory,
+      selectedRegion, isDropdownOpen);
 
   @override
   String toString() {
-    return 'PostListState(selectedFilter: $selectedFilter, selectedRegion: $selectedRegion, isDropdownOpen: $isDropdownOpen)';
+    return 'PostListState(selectedFilter: $selectedFilter, selectedCategory: $selectedCategory, selectedRegion: $selectedRegion, isDropdownOpen: $isDropdownOpen)';
   }
 }
 
@@ -56,7 +59,10 @@ abstract mixin class $PostListStateCopyWith<$Res> {
       _$PostListStateCopyWithImpl;
   @useResult
   $Res call(
-      {PostFilter selectedFilter, String selectedRegion, bool isDropdownOpen});
+      {PostFilter selectedFilter,
+      PostCategory? selectedCategory,
+      String selectedRegion,
+      bool isDropdownOpen});
 }
 
 /// @nodoc
@@ -73,6 +79,7 @@ class _$PostListStateCopyWithImpl<$Res>
   @override
   $Res call({
     Object? selectedFilter = null,
+    Object? selectedCategory = freezed,
     Object? selectedRegion = null,
     Object? isDropdownOpen = null,
   }) {
@@ -81,6 +88,10 @@ class _$PostListStateCopyWithImpl<$Res>
           ? _self.selectedFilter
           : selectedFilter // ignore: cast_nullable_to_non_nullable
               as PostFilter,
+      selectedCategory: freezed == selectedCategory
+          ? _self.selectedCategory
+          : selectedCategory // ignore: cast_nullable_to_non_nullable
+              as PostCategory?,
       selectedRegion: null == selectedRegion
           ? _self.selectedRegion
           : selectedRegion // ignore: cast_nullable_to_non_nullable
@@ -184,16 +195,16 @@ extension PostListStatePatterns on PostListState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(PostFilter selectedFilter, String selectedRegion,
-            bool isDropdownOpen)?
+    TResult Function(PostFilter selectedFilter, PostCategory? selectedCategory,
+            String selectedRegion, bool isDropdownOpen)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _PostListState() when $default != null:
-        return $default(
-            _that.selectedFilter, _that.selectedRegion, _that.isDropdownOpen);
+        return $default(_that.selectedFilter, _that.selectedCategory,
+            _that.selectedRegion, _that.isDropdownOpen);
       case _:
         return orElse();
     }
@@ -214,15 +225,15 @@ extension PostListStatePatterns on PostListState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(PostFilter selectedFilter, String selectedRegion,
-            bool isDropdownOpen)
+    TResult Function(PostFilter selectedFilter, PostCategory? selectedCategory,
+            String selectedRegion, bool isDropdownOpen)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PostListState():
-        return $default(
-            _that.selectedFilter, _that.selectedRegion, _that.isDropdownOpen);
+        return $default(_that.selectedFilter, _that.selectedCategory,
+            _that.selectedRegion, _that.isDropdownOpen);
     }
   }
 
@@ -240,15 +251,15 @@ extension PostListStatePatterns on PostListState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(PostFilter selectedFilter, String selectedRegion,
-            bool isDropdownOpen)?
+    TResult? Function(PostFilter selectedFilter, PostCategory? selectedCategory,
+            String selectedRegion, bool isDropdownOpen)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _PostListState() when $default != null:
-        return $default(
-            _that.selectedFilter, _that.selectedRegion, _that.isDropdownOpen);
+        return $default(_that.selectedFilter, _that.selectedCategory,
+            _that.selectedRegion, _that.isDropdownOpen);
       case _:
         return null;
     }
@@ -260,6 +271,7 @@ extension PostListStatePatterns on PostListState {
 class _PostListState extends PostListState {
   const _PostListState(
       {this.selectedFilter = PostFilter.all,
+      this.selectedCategory,
       this.selectedRegion = 'Sta.Rosa',
       this.isDropdownOpen = false})
       : super._();
@@ -267,6 +279,8 @@ class _PostListState extends PostListState {
   @override
   @JsonKey()
   final PostFilter selectedFilter;
+  @override
+  final PostCategory? selectedCategory;
   @override
   @JsonKey()
   final String selectedRegion;
@@ -289,6 +303,8 @@ class _PostListState extends PostListState {
             other is _PostListState &&
             (identical(other.selectedFilter, selectedFilter) ||
                 other.selectedFilter == selectedFilter) &&
+            (identical(other.selectedCategory, selectedCategory) ||
+                other.selectedCategory == selectedCategory) &&
             (identical(other.selectedRegion, selectedRegion) ||
                 other.selectedRegion == selectedRegion) &&
             (identical(other.isDropdownOpen, isDropdownOpen) ||
@@ -296,12 +312,12 @@ class _PostListState extends PostListState {
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, selectedFilter, selectedRegion, isDropdownOpen);
+  int get hashCode => Object.hash(runtimeType, selectedFilter, selectedCategory,
+      selectedRegion, isDropdownOpen);
 
   @override
   String toString() {
-    return 'PostListState(selectedFilter: $selectedFilter, selectedRegion: $selectedRegion, isDropdownOpen: $isDropdownOpen)';
+    return 'PostListState(selectedFilter: $selectedFilter, selectedCategory: $selectedCategory, selectedRegion: $selectedRegion, isDropdownOpen: $isDropdownOpen)';
   }
 }
 
@@ -314,7 +330,10 @@ abstract mixin class _$PostListStateCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {PostFilter selectedFilter, String selectedRegion, bool isDropdownOpen});
+      {PostFilter selectedFilter,
+      PostCategory? selectedCategory,
+      String selectedRegion,
+      bool isDropdownOpen});
 }
 
 /// @nodoc
@@ -331,6 +350,7 @@ class __$PostListStateCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? selectedFilter = null,
+    Object? selectedCategory = freezed,
     Object? selectedRegion = null,
     Object? isDropdownOpen = null,
   }) {
@@ -339,6 +359,10 @@ class __$PostListStateCopyWithImpl<$Res>
           ? _self.selectedFilter
           : selectedFilter // ignore: cast_nullable_to_non_nullable
               as PostFilter,
+      selectedCategory: freezed == selectedCategory
+          ? _self.selectedCategory
+          : selectedCategory // ignore: cast_nullable_to_non_nullable
+              as PostCategory?,
       selectedRegion: null == selectedRegion
           ? _self.selectedRegion
           : selectedRegion // ignore: cast_nullable_to_non_nullable

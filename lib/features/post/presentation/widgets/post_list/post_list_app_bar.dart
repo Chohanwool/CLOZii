@@ -2,7 +2,9 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/widgets/filter_bar.dart';
 import 'package:clozii/features/post/core/constants/post_filter_sets.dart';
 import 'package:clozii/features/post/core/constants/regions.dart';
+import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:clozii/features/post/presentation/providers/post_list/post_list_provider.dart';
+import 'package:clozii/features/post/presentation/widgets/post_create/modals/category_list_modal.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -82,8 +84,35 @@ class PostListAppBar extends ConsumerWidget implements PreferredSizeWidget {
         child: FilterBar(
           filters: homePostFilters,
           selectedFilter: state.selectedFilter,
-          onFilterSelected: (filter) {
+          onFilterSelected: (filter) async {
+            final currentFilter = ref.read(postListProvider).selectedFilter;
             ref.read(postListProvider.notifier).updateSelectedFilter(filter);
+
+            // 카테고리 리스트 모달
+            if (filter == PostFilter.category) {
+              final result = await showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                isDismissible: false,
+                enableDrag: false,
+                backgroundColor: AppColors.white,
+                builder: (BuildContext context) => Container(
+                  padding: const EdgeInsets.only(top: kToolbarHeight),
+                  child: CategoryListModal(
+                    onSelected: (value) {
+                      ref.read(postListProvider.notifier).setCategory(value);
+                    },
+                  ),
+                ),
+              );
+
+              // 카테고리 선택 하지 않으면 이전 필터 유지 (예: Shares -> Category 선택 후 상단 X 버튼으로 pop 하면 다시 필터는 Shares)
+              if (result == null || !result) {
+                ref
+                    .read(postListProvider.notifier)
+                    .updateSelectedFilter(currentFilter);
+              }
+            }
           },
         ),
       ),

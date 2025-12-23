@@ -1,19 +1,20 @@
 import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/features/post/core/enums/post_category.dart';
-import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CategoryListModal extends ConsumerWidget {
-  const CategoryListModal({super.key});
+  const CategoryListModal({super.key, required this.onSelected});
+
+  final ValueChanged<PostCategory> onSelected;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(false),
           icon: const Icon(Icons.close),
         ),
         title: const Text('Category'),
@@ -38,11 +39,8 @@ class CategoryListModal extends ConsumerWidget {
                   .copyWith(fontSize: 18.0, fontWeight: FontWeight.w400),
             ),
             onTap: () {
-              ref
-                  .read(postCreateProvider.notifier)
-                  .setCategory(currentCategory);
-
-              Navigator.of(context).pop();
+              onSelected(currentCategory);
+              Navigator.of(context).pop(true);
             },
           );
         },

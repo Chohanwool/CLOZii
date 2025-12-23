@@ -1,3 +1,4 @@
+import 'package:clozii/features/post/core/enums/post_category.dart';
 import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:clozii/features/post/domain/entities/post.dart';
 import 'package:clozii/features/post/domain/repositories/post_repository.dart';
@@ -12,6 +13,7 @@ class LoadPostsWithFilter {
 
   Future<List<Post>> call({
     required PostFilter filter,
+    PostCategory? selectedCategory,
     Position? userPosition,
     int page = 1,
     int limit = 20,
@@ -20,7 +22,13 @@ class LoadPostsWithFilter {
       case PostFilter.all:
         return postRepository.findAllPosts();
       case PostFilter.category:
-        throw UnimplementedError();
+        if (selectedCategory == null) {
+          throw Exception('Category is required to category post search');
+        }
+
+        return searchRepository.searchPostsByCategory(
+          category: selectedCategory,
+        );
       case PostFilter.shares:
         return searchRepository.searchSharePosts(
           page: page,

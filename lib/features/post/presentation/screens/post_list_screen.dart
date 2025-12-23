@@ -3,6 +3,7 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/providers/location_provider.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
+import 'package:clozii/features/post/core/enums/post_filter.dart';
 
 // feature
 import 'package:clozii/features/post/domain/entities/post.dart';
@@ -38,13 +39,25 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
   @override
   Widget build(BuildContext context) {
     ref.listen(postListProvider, (previous, next) {
-      if (previous?.selectedFilter != next.selectedFilter) {
+      if (previous?.selectedFilter != next.selectedFilter &&
+          next.selectedFilter != PostFilter.category) {
         debugPrint(
             '\n🔍 Search filter changed to: ${next.selectedFilter.displayName}. Reloading posts...');
         setState(() {
           _isLoading = true;
         });
+        _searchPosts();
+      }
+    });
 
+    ref.listen(postListProvider, (previous, next) {
+      if (previous?.selectedCategory != next.selectedCategory &&
+          next.selectedCategory != null) {
+        debugPrint(
+            '\n🔍 Category set to: ${next.selectedCategory!.displayName}. Reloading posts...');
+        setState(() {
+          _isLoading = true;
+        });
         _searchPosts();
       }
     });
@@ -117,7 +130,6 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
             ),
           ),
         ),
-
       ],
     );
   }
@@ -188,13 +200,15 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
       debugPrint('════════════════════════════════════════');
       debugPrint('📥 Loading posts from Firebase...');
 
-      final filter = ref.read(postListProvider).selectedFilter;
       final position = ref.read(locationProvider).position;
+      final filter = ref.read(postListProvider).selectedFilter;
+      final category = ref.read(postListProvider).selectedCategory;
 
       final loadPostsByFilter = ref.read(loadPostsByFilterProvider);
       final posts = await loadPostsByFilter(
         filter: filter,
         userPosition: position,
+        selectedCategory: category,
       );
 
       debugPrint('📦 Received ${posts.length} posts from Firebase');

@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CategorySelector extends ConsumerWidget {
   const CategorySelector({super.key});
 
-  void _showCategoryList(BuildContext context) {
+  void _showCategoryList(BuildContext context, WidgetRef ref) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -16,7 +16,11 @@ class CategorySelector extends ConsumerWidget {
       backgroundColor: AppColors.white,
       builder: (BuildContext context) => Container(
         padding: const EdgeInsets.only(top: kToolbarHeight),
-        child: const CategoryListModal(),
+        child: CategoryListModal(
+          onSelected: (value) {
+            ref.read(postCreateProvider.notifier).setCategory(value);
+          },
+        ),
       ),
     );
   }
@@ -27,7 +31,7 @@ class CategorySelector extends ConsumerWidget {
 
     return TextFormField(
       readOnly: true,
-      onTap: () => _showCategoryList(context),
+      onTap: () => _showCategoryList(context, ref),
       validator: (value) {
         if (selectedCategory == null) {
           return 'Please select a category.';
