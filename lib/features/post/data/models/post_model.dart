@@ -45,21 +45,6 @@ sealed class PostModel with _$PostModel {
   factory PostModel.fromJson(Map<String, dynamic> json) =>
       _$PostModelFromJson(json);
 
-  // Algolia용 JSON 변환 (_geoloc 포함)
-  Map<String, dynamic> toJsonWithGeoloc() {
-    final json = toJson(); // freezed가 생성한 toJson() 호출
-
-    // Algolia 지오 검색을 위한 _geoloc 필드 추가
-    if (meetingLatitude != null && meetingLongitude != null) {
-      json['_geoloc'] = {
-        'lat': meetingLatitude,
-        'lng': meetingLongitude,
-      };
-    }
-
-    return json;
-  }
-
   // Domain Entity → Data Model 변환 (수동 작성)
   factory PostModel.fromEntity(
     Post entity, {

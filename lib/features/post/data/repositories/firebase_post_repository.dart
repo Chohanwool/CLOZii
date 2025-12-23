@@ -17,7 +17,7 @@ class FirebasePostRepository extends PostRepository {
   @override
   Future<Post> createPost(Post post) async {
     final postModel = PostModel.fromEntity(post);
-    final jsonPost = postModel.toJsonWithGeoloc();
+    final jsonPost = postModel.toJson();
 
     // 서버 타임스탬프 설정 - Firestore 서버가 저장 시점에 직접 시간을 채우게 하는 예약 값
     jsonPost['createdAt'] = FieldValue.serverTimestamp();
@@ -50,7 +50,7 @@ class FirebasePostRepository extends PostRepository {
   @override
   Future<Post> updatePost(Post post, {bool updateTimestamp = true}) async {
     final postModel = PostModel.fromEntity(post);
-    final jsonPost = postModel.toJsonWithGeoloc();
+    final jsonPost = postModel.toJson();
 
     // createdAt은 항상 제거 (생성 이후 수정되지 않아야 함)
     jsonPost.remove('createdAt');

@@ -41,7 +41,7 @@ final class PostListProvider
   }
 }
 
-String _$postListHash() => r'204db7cd08028f6436cae5d051838986556695cd';
+String _$postListHash() => r'd480adb273737b72416d708631553f67a06a5f19';
 
 abstract class _$PostList extends $Notifier<PostListState> {
   PostListState build();
