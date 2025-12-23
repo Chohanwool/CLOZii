@@ -1,0 +1,17 @@
+const List<String> postRegions = [
+  'Sta.Rosa',
+  'Calamba',
+  'Cabuyao',
+  'Tagaytay',
+  'Makati',
+  'Alabang',
+  'Binan',
+  'Quezon City',
+  'Mandaluyong',
+  'Parañaque',
+  'Pasay',
+  'Pasig',
+  'San Juan',
+  'Taguig',
+  'Valenzuela',
+];

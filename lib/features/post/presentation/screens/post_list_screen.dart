@@ -10,7 +10,7 @@ import 'package:clozii/features/post/presentation/providers/post_create/post_cre
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list/post_list_tile.dart';
-import 'package:clozii/features/search/presentation/providers/home/home_state_provider.dart';
+import 'package:clozii/features/post/presentation/providers/post_list/post_list_provider.dart';
 import 'package:clozii/features/search/presentation/providers/search_providers.dart';
 
 //package
@@ -27,6 +27,7 @@ class PostListScreen extends ConsumerStatefulWidget {
 class _PostListScreenState extends ConsumerState<PostListScreen> {
   List<Post> _posts = [];
   bool _isLoading = true;
+  // region/dropdown moved to postList provider
 
   @override
   void initState() {
@@ -36,7 +37,7 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(homeProvider, (previous, next) {
+    ref.listen(postListProvider, (previous, next) {
       if (previous?.selectedFilter != next.selectedFilter) {
         debugPrint(
             '\n🔍 Search filter changed to: ${next.selectedFilter.displayName}. Reloading posts...');
@@ -50,11 +51,10 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
 
     return Stack(
       children: [
-        /// 게시글 리스트
         _isLoading
             ? const Center(child: CircularProgressIndicator())
             : RefreshIndicator(
-                onRefresh: _onRefresh, // 새로고침 함수 연결
+                onRefresh: _onRefresh,
                 child: _posts.isEmpty
                     ? ListView(
                         physics: const AlwaysScrollableScrollPhysics(),
@@ -64,17 +64,16 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
                         ],
                       )
                     : ListView.builder(
-                        physics:
-                            const AlwaysScrollableScrollPhysics(), // 리스트가 비어도 스크롤 가능
+                        physics: const AlwaysScrollableScrollPhysics(),
                         itemCount: _posts.length,
                         itemBuilder: (context, index) => PostListTile(
                           post: _posts[index],
-                          onTap: _navigateToPostDetail, // 게시글 클릭 시 상세 페이지 이동
+                          onTap: _navigateToPostDetail,
                         ),
                       ),
               ),
 
-        /// 오른쪽 하단 Create 버튼
+        // 오른쪽 하단 Create 버튼
         Positioned(
           bottom: 0,
           right: 0,
@@ -85,14 +84,13 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
               borderRadius: BorderRadius.circular(100),
               clipBehavior: Clip.hardEdge,
               child: InkWell(
-                // 게시글 생성 모달 띄우기
                 onTap: _showPostCreateModal,
-                splashFactory: NoSplash.splashFactory, // 버튼 클릭 시 잉크 효과 제거
+                splashFactory: NoSplash.splashFactory,
                 overlayColor: WidgetStateProperty.resolveWith((states) {
                   if (states.contains(WidgetState.pressed)) {
-                    return Colors.white24; // 눌렀을 때 살짝 투명 오버레이
+                    return Colors.white24;
                   }
-                  return null; // 기본
+                  return null;
                 }),
                 child: SizedBox(
                   width: 110,
@@ -102,10 +100,10 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
                       const Spacer(flex: 2),
                       Icon(
                         Icons.add,
-                        color: context.colors.onPrimary, // + 아이콘
+                        color: context.colors.onPrimary,
                       ),
                       Text(
-                        'Create', // Create 버튼 텍스트
+                        'Create',
                         style: context.textTheme.bodyMedium!.copyWith(
                           color: context.colors.onPrimary,
                           fontWeight: FontWeight.w700,
@@ -119,6 +117,7 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
             ),
           ),
         ),
+
       ],
     );
   }
@@ -189,7 +188,7 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
       debugPrint('════════════════════════════════════════');
       debugPrint('📥 Loading posts from Firebase...');
 
-      final filter = ref.read(homeProvider).selectedFilter;
+      final filter = ref.read(postListProvider).selectedFilter;
       final position = ref.read(locationProvider).position;
 
       final loadPostsByFilter = ref.read(loadPostsByFilterProvider);

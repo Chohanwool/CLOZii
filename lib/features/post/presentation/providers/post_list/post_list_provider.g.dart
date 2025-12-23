@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_state_provider.dart';
+part of 'post_list_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
@@ -9,48 +9,52 @@ part of 'home_state_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(Home)
-const homeProvider = HomeProvider._();
+@ProviderFor(PostList)
+const postListProvider = PostListProvider._();
 
-final class HomeProvider extends $NotifierProvider<Home, HomeState> {
-  const HomeProvider._()
+final class PostListProvider
+    extends $NotifierProvider<PostList, PostListState> {
+  const PostListProvider._()
       : super(
           from: null,
           argument: null,
           retry: null,
-          name: r'homeProvider',
+          name: r'postListProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
         );
 
   @override
-  String debugGetCreateSourceHash() => _$homeHash();
+  String debugGetCreateSourceHash() => _$postListHash();
 
   @$internal
   @override
-  Home create() => Home();
+  PostList create() => PostList();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(HomeState value) {
+  Override overrideWithValue(PostListState value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<HomeState>(value),
+      providerOverride: $SyncValueProvider<PostListState>(value),
     );
   }
 }
 
-String _$homeHash() => r'e6be43f2a0fb6241dcf440a3f51e0e8daa088f99';
+String _$postListHash() => r'204db7cd08028f6436cae5d051838986556695cd';
 
-abstract class _$Home extends $Notifier<HomeState> {
-  HomeState build();
+abstract class _$PostList extends $Notifier<PostListState> {
+  PostListState build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<HomeState, HomeState>;
+    final ref = this.ref as $Ref<PostListState, PostListState>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<HomeState, HomeState>, HomeState, Object?, Object?>;
+        AnyNotifier<PostListState, PostListState>,
+        PostListState,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
