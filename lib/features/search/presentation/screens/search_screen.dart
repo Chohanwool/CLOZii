@@ -24,6 +24,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    _focusNode.requestFocus();
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     _focusNode.dispose();

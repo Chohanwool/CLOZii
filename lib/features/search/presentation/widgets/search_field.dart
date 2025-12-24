@@ -29,6 +29,7 @@ class SearchField extends StatelessWidget {
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.search,
       onTap: onTap,
+      onTapOutside: (event) => focusNode.unfocus(),
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       decoration: InputDecoration(
@@ -47,6 +48,7 @@ class SearchField extends StatelessWidget {
             ? IconButton(
                 onPressed: () {
                   controller.clear();
+                  focusNode.requestFocus();
                   onChanged('');
                 },
                 icon: const Icon(
