@@ -85,10 +85,7 @@ class PostListAppBar extends ConsumerWidget implements PreferredSizeWidget {
           filters: homePostFilters,
           selectedFilter: state.selectedFilter,
           onFilterSelected: (filter) async {
-            final currentFilter = ref.read(postListProvider).selectedFilter;
-            ref.read(postListProvider.notifier).updateSelectedFilter(filter);
-
-            // 카테고리 리스트 모달
+            // 선택된 필터가 '카테고리'이면 카테고리 선택 모달 팝업
             if (filter == PostFilter.category) {
               final result = await showModalBottomSheet(
                 context: context,
@@ -106,13 +103,15 @@ class PostListAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 ),
               );
 
-              // 카테고리 선택 하지 않으면 이전 필터 유지 (예: Shares -> Category 선택 후 상단 X 버튼으로 pop 하면 다시 필터는 Shares)
+              // 선택한 카테고리가 없으면 return
               if (result == null || !result) {
-                ref
-                    .read(postListProvider.notifier)
-                    .updateSelectedFilter(currentFilter);
+                return;
               }
             }
+
+            // 선택한 카테고리가 있거나
+            // 카테고리 필터 외의 다른 필터를 선택한 경우
+            ref.read(postListProvider.notifier).updateSelectedFilter(filter);
           },
         ),
       ),

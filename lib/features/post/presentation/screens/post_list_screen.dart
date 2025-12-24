@@ -3,10 +3,10 @@ import 'package:clozii/core/constants/app_constants.dart';
 import 'package:clozii/core/providers/location_provider.dart';
 import 'package:clozii/core/theme/context_extension.dart';
 import 'package:clozii/core/utils/show_confirm_dialog.dart';
-import 'package:clozii/features/post/core/enums/post_filter.dart';
 
 // feature
 import 'package:clozii/features/post/application/dto/post_summary.dart';
+import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:clozii/features/post/presentation/providers/post_create/post_create_provider.dart';
 import 'package:clozii/features/post/presentation/screens/post_create_screen.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
@@ -38,9 +38,9 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // 필터 변경 감지 (예: All -> Category)
     ref.listen(postListProvider, (previous, next) {
-      if (previous?.selectedFilter != next.selectedFilter &&
-          next.selectedFilter != PostFilter.category) {
+      if (previous?.selectedFilter != next.selectedFilter) {
         debugPrint(
             '\n🔍 Search filter changed to: ${next.selectedFilter.displayName}. Reloading posts...');
         setState(() {
@@ -50,9 +50,10 @@ class _PostListScreenState extends ConsumerState<PostListScreen> {
       }
     });
 
+    // 카테고리 필터가 선택되어 있는 상태에서 다시 카테고리 필터 탭 감지
     ref.listen(postListProvider, (previous, next) {
-      if (previous?.selectedCategory != next.selectedCategory &&
-          next.selectedCategory != null) {
+      if (previous?.selectedFilter == PostFilter.category &&
+          previous?.selectedCategory != next.selectedCategory) {
         debugPrint(
             '\n🔍 Category set to: ${next.selectedCategory!.displayName}. Reloading posts...');
         setState(() {
