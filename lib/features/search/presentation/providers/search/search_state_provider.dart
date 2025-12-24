@@ -1,3 +1,4 @@
+import 'package:clozii/features/post/application/dto/post_summary.dart';
 import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -19,6 +20,12 @@ sealed class SearchState with _$SearchState {
     @Default([]) List<String> recentSearches, // 영구: Provider + 로컬 저장소
     @Default(false) bool hasSubmitted, // 검색 제출 여부
     @Default(PostFilter.all) PostFilter selectedFilter, // 선택된 필터
+
+    @Default([]) List<PostSummary> results, // 최근 검색 결과
+    @Default('') String resultsQuery, // 마지막 결과의 검색어
+    @Default(PostFilter.all) PostFilter resultsFilter, // 마지막 결과의 필터
+
+    @Default(false) bool isLoading, // 검색 로딩 상태
   }) = _SearchState;
 }
 
@@ -106,5 +113,24 @@ class Search extends _$Search {
   // 선택된 필터 설정
   void setSelectedFilter(PostFilter filter) {
     state = state.copyWith(selectedFilter: filter);
+  }
+
+  // 검색 결과 저장
+  void setResults({
+    required List<PostSummary> results,
+    required String query,
+    required PostFilter filter,
+  }) {
+    state = state.copyWith(
+      results: results,
+      resultsQuery: query,
+      resultsFilter: filter,
+      isLoading: false,
+    );
+  }
+
+  // 검색 로딩 상태
+  void setLoading(bool isLoading) {
+    state = state.copyWith(isLoading: isLoading);
   }
 }

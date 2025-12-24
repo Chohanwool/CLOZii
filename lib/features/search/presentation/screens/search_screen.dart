@@ -56,6 +56,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onTap: () {
             ref.read(searchProvider.notifier).setHasSubmitted(false);
           },
+          onBackTap: () {
+            if (!searchState.hasSubmitted && searchState.results.isNotEmpty) {
+              final resultQuery = ref.read(searchProvider).resultsQuery;
+              _searchController.text = resultQuery;
+              _focusNode.unfocus();
+
+              ref.read(searchProvider.notifier).selectRecentSearch(resultQuery);
+              return;
+            }
+            Navigator.of(context).pop();
+          },
           onChanged: (value) {
             ref.read(searchProvider.notifier).updateSearchQuery(value);
             ref.read(searchProvider.notifier).setHasSubmitted(false);
@@ -100,7 +111,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   // 화면 콘텐츠 빌드 메서드
   Widget buildContent(SearchState state) {
     if (state.hasSubmitted) {
-      return _buildSearchResults(state.searchQuery);
+      return _buildSearchResults();
     }
 
     if (state.searchQuery.isEmpty) {
@@ -114,10 +125,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   }
 
   // 검색 결과 표시 위젯
-  Widget _buildSearchResults(String searchQuery) {
-    return SearchResult(
-      query: searchQuery,
-    );
+  Widget _buildSearchResults() {
+    return const SearchResult();
   }
 
   // 최근 검색어 및 카테고리 아이콘 표시 위젯

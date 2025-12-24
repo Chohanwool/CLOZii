@@ -10,6 +10,7 @@ class SearchField extends StatelessWidget {
     required this.onChanged,
     required this.onSubmitted,
     required this.onTap,
+    this.onBackTap,
   });
 
   final TextEditingController controller;
@@ -17,6 +18,7 @@ class SearchField extends StatelessWidget {
   final VoidCallback onTap;
   final ValueChanged<String> onChanged;
   final ValueChanged<String> onSubmitted;
+  final VoidCallback? onBackTap;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class SearchField extends StatelessWidget {
         filled: true,
         fillColor: AppColors.backgroundSecondary,
         prefixIcon: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: onBackTap ?? () => Navigator.of(context).pop(),
           icon: const Icon(
             CupertinoIcons.back,
             color: AppColors.textSecondary,

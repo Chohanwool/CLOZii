@@ -17,7 +17,11 @@ mixin _$SearchState {
   String get searchQuery; // 휘발성: Provider만 관리
   List<String> get recentSearches; // 영구: Provider + 로컬 저장소
   bool get hasSubmitted; // 검색 제출 여부
-  PostFilter get selectedFilter;
+  PostFilter get selectedFilter; // 선택된 필터
+  List<PostSummary> get results; // 최근 검색 결과
+  String get resultsQuery; // 마지막 결과의 검색어
+  PostFilter get resultsFilter; // 마지막 결과의 필터
+  bool get isLoading;
 
   /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
@@ -38,7 +42,14 @@ mixin _$SearchState {
             (identical(other.hasSubmitted, hasSubmitted) ||
                 other.hasSubmitted == hasSubmitted) &&
             (identical(other.selectedFilter, selectedFilter) ||
-                other.selectedFilter == selectedFilter));
+                other.selectedFilter == selectedFilter) &&
+            const DeepCollectionEquality().equals(other.results, results) &&
+            (identical(other.resultsQuery, resultsQuery) ||
+                other.resultsQuery == resultsQuery) &&
+            (identical(other.resultsFilter, resultsFilter) ||
+                other.resultsFilter == resultsFilter) &&
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading));
   }
 
   @override
@@ -47,11 +58,15 @@ mixin _$SearchState {
       searchQuery,
       const DeepCollectionEquality().hash(recentSearches),
       hasSubmitted,
-      selectedFilter);
+      selectedFilter,
+      const DeepCollectionEquality().hash(results),
+      resultsQuery,
+      resultsFilter,
+      isLoading);
 
   @override
   String toString() {
-    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted, selectedFilter: $selectedFilter)';
+    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted, selectedFilter: $selectedFilter, results: $results, resultsQuery: $resultsQuery, resultsFilter: $resultsFilter, isLoading: $isLoading)';
   }
 }
 
@@ -65,7 +80,11 @@ abstract mixin class $SearchStateCopyWith<$Res> {
       {String searchQuery,
       List<String> recentSearches,
       bool hasSubmitted,
-      PostFilter selectedFilter});
+      PostFilter selectedFilter,
+      List<PostSummary> results,
+      String resultsQuery,
+      PostFilter resultsFilter,
+      bool isLoading});
 }
 
 /// @nodoc
@@ -84,6 +103,10 @@ class _$SearchStateCopyWithImpl<$Res> implements $SearchStateCopyWith<$Res> {
     Object? recentSearches = null,
     Object? hasSubmitted = null,
     Object? selectedFilter = null,
+    Object? results = null,
+    Object? resultsQuery = null,
+    Object? resultsFilter = null,
+    Object? isLoading = null,
   }) {
     return _then(_self.copyWith(
       searchQuery: null == searchQuery
@@ -102,6 +125,22 @@ class _$SearchStateCopyWithImpl<$Res> implements $SearchStateCopyWith<$Res> {
           ? _self.selectedFilter
           : selectedFilter // ignore: cast_nullable_to_non_nullable
               as PostFilter,
+      results: null == results
+          ? _self.results
+          : results // ignore: cast_nullable_to_non_nullable
+              as List<PostSummary>,
+      resultsQuery: null == resultsQuery
+          ? _self.resultsQuery
+          : resultsQuery // ignore: cast_nullable_to_non_nullable
+              as String,
+      resultsFilter: null == resultsFilter
+          ? _self.resultsFilter
+          : resultsFilter // ignore: cast_nullable_to_non_nullable
+              as PostFilter,
+      isLoading: null == isLoading
+          ? _self.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -197,16 +236,30 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String searchQuery, List<String> recentSearches,
-            bool hasSubmitted, PostFilter selectedFilter)?
+    TResult Function(
+            String searchQuery,
+            List<String> recentSearches,
+            bool hasSubmitted,
+            PostFilter selectedFilter,
+            List<PostSummary> results,
+            String resultsQuery,
+            PostFilter resultsFilter,
+            bool isLoading)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _SearchState() when $default != null:
-        return $default(_that.searchQuery, _that.recentSearches,
-            _that.hasSubmitted, _that.selectedFilter);
+        return $default(
+            _that.searchQuery,
+            _that.recentSearches,
+            _that.hasSubmitted,
+            _that.selectedFilter,
+            _that.results,
+            _that.resultsQuery,
+            _that.resultsFilter,
+            _that.isLoading);
       case _:
         return orElse();
     }
@@ -227,15 +280,29 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String searchQuery, List<String> recentSearches,
-            bool hasSubmitted, PostFilter selectedFilter)
+    TResult Function(
+            String searchQuery,
+            List<String> recentSearches,
+            bool hasSubmitted,
+            PostFilter selectedFilter,
+            List<PostSummary> results,
+            String resultsQuery,
+            PostFilter resultsFilter,
+            bool isLoading)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SearchState():
-        return $default(_that.searchQuery, _that.recentSearches,
-            _that.hasSubmitted, _that.selectedFilter);
+        return $default(
+            _that.searchQuery,
+            _that.recentSearches,
+            _that.hasSubmitted,
+            _that.selectedFilter,
+            _that.results,
+            _that.resultsQuery,
+            _that.resultsFilter,
+            _that.isLoading);
     }
   }
 
@@ -253,15 +320,29 @@ extension SearchStatePatterns on SearchState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String searchQuery, List<String> recentSearches,
-            bool hasSubmitted, PostFilter selectedFilter)?
+    TResult? Function(
+            String searchQuery,
+            List<String> recentSearches,
+            bool hasSubmitted,
+            PostFilter selectedFilter,
+            List<PostSummary> results,
+            String resultsQuery,
+            PostFilter resultsFilter,
+            bool isLoading)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _SearchState() when $default != null:
-        return $default(_that.searchQuery, _that.recentSearches,
-            _that.hasSubmitted, _that.selectedFilter);
+        return $default(
+            _that.searchQuery,
+            _that.recentSearches,
+            _that.hasSubmitted,
+            _that.selectedFilter,
+            _that.results,
+            _that.resultsQuery,
+            _that.resultsFilter,
+            _that.isLoading);
       case _:
         return null;
     }
@@ -275,8 +356,13 @@ class _SearchState extends SearchState {
       {this.searchQuery = '',
       final List<String> recentSearches = const [],
       this.hasSubmitted = false,
-      this.selectedFilter = PostFilter.all})
+      this.selectedFilter = PostFilter.all,
+      final List<PostSummary> results = const [],
+      this.resultsQuery = '',
+      this.resultsFilter = PostFilter.all,
+      this.isLoading = false})
       : _recentSearches = recentSearches,
+        _results = results,
         super._();
 
   @override
@@ -301,6 +387,29 @@ class _SearchState extends SearchState {
   @override
   @JsonKey()
   final PostFilter selectedFilter;
+// 선택된 필터
+  final List<PostSummary> _results;
+// 선택된 필터
+  @override
+  @JsonKey()
+  List<PostSummary> get results {
+    if (_results is EqualUnmodifiableListView) return _results;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_results);
+  }
+
+// 최근 검색 결과
+  @override
+  @JsonKey()
+  final String resultsQuery;
+// 마지막 결과의 검색어
+  @override
+  @JsonKey()
+  final PostFilter resultsFilter;
+// 마지막 결과의 필터
+  @override
+  @JsonKey()
+  final bool isLoading;
 
   /// Create a copy of SearchState
   /// with the given fields replaced by the non-null parameter values.
@@ -322,7 +431,14 @@ class _SearchState extends SearchState {
             (identical(other.hasSubmitted, hasSubmitted) ||
                 other.hasSubmitted == hasSubmitted) &&
             (identical(other.selectedFilter, selectedFilter) ||
-                other.selectedFilter == selectedFilter));
+                other.selectedFilter == selectedFilter) &&
+            const DeepCollectionEquality().equals(other._results, _results) &&
+            (identical(other.resultsQuery, resultsQuery) ||
+                other.resultsQuery == resultsQuery) &&
+            (identical(other.resultsFilter, resultsFilter) ||
+                other.resultsFilter == resultsFilter) &&
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading));
   }
 
   @override
@@ -331,11 +447,15 @@ class _SearchState extends SearchState {
       searchQuery,
       const DeepCollectionEquality().hash(_recentSearches),
       hasSubmitted,
-      selectedFilter);
+      selectedFilter,
+      const DeepCollectionEquality().hash(_results),
+      resultsQuery,
+      resultsFilter,
+      isLoading);
 
   @override
   String toString() {
-    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted, selectedFilter: $selectedFilter)';
+    return 'SearchState(searchQuery: $searchQuery, recentSearches: $recentSearches, hasSubmitted: $hasSubmitted, selectedFilter: $selectedFilter, results: $results, resultsQuery: $resultsQuery, resultsFilter: $resultsFilter, isLoading: $isLoading)';
   }
 }
 
@@ -351,7 +471,11 @@ abstract mixin class _$SearchStateCopyWith<$Res>
       {String searchQuery,
       List<String> recentSearches,
       bool hasSubmitted,
-      PostFilter selectedFilter});
+      PostFilter selectedFilter,
+      List<PostSummary> results,
+      String resultsQuery,
+      PostFilter resultsFilter,
+      bool isLoading});
 }
 
 /// @nodoc
@@ -370,6 +494,10 @@ class __$SearchStateCopyWithImpl<$Res> implements _$SearchStateCopyWith<$Res> {
     Object? recentSearches = null,
     Object? hasSubmitted = null,
     Object? selectedFilter = null,
+    Object? results = null,
+    Object? resultsQuery = null,
+    Object? resultsFilter = null,
+    Object? isLoading = null,
   }) {
     return _then(_SearchState(
       searchQuery: null == searchQuery
@@ -388,6 +516,22 @@ class __$SearchStateCopyWithImpl<$Res> implements _$SearchStateCopyWith<$Res> {
           ? _self.selectedFilter
           : selectedFilter // ignore: cast_nullable_to_non_nullable
               as PostFilter,
+      results: null == results
+          ? _self._results
+          : results // ignore: cast_nullable_to_non_nullable
+              as List<PostSummary>,
+      resultsQuery: null == resultsQuery
+          ? _self.resultsQuery
+          : resultsQuery // ignore: cast_nullable_to_non_nullable
+              as String,
+      resultsFilter: null == resultsFilter
+          ? _self.resultsFilter
+          : resultsFilter // ignore: cast_nullable_to_non_nullable
+              as PostFilter,
+      isLoading: null == isLoading
+          ? _self.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }

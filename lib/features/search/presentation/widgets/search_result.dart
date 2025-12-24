@@ -9,97 +9,115 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SearchResult extends ConsumerStatefulWidget {
-  const SearchResult({super.key, required this.query});
-
-  final String query;
+  const SearchResult({super.key});
 
   @override
   ConsumerState<SearchResult> createState() => _SearchResultState();
 }
 
 class _SearchResultState extends ConsumerState<SearchResult> {
-  List<PostSummary> _posts = [];
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    _searchPosts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _maybeSearch(ref.read(searchProvider));
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(searchProvider, (previous, next) {
-      if (previous?.selectedFilter != next.selectedFilter) {
-        debugPrint(
-            '\n🔍 Search filter changed to: ${next.selectedFilter.displayName}. Reloading posts...');
-        setState(() {
-          _isLoading = true;
-        });
-        _searchPosts();
-      }
-    });
+    final searchState = ref.watch(searchProvider);
+    final results = searchState.results;
 
-    ref.listen(searchProvider, (previous, next) {
+    if (searchState.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    ref.listen<SearchState>(searchProvider, (previous, next) {
       if (previous?.searchQuery != next.searchQuery) {
         ref.read(searchProvider.notifier).setSelectedFilter(PostFilter.all);
       }
+
+      final filterChanged = previous?.selectedFilter != next.selectedFilter;
+      final queryChanged = previous?.searchQuery != next.searchQuery;
+      final submitChanged = previous?.hasSubmitted != next.hasSubmitted;
+
+      if (next.hasSubmitted &&
+          (filterChanged || queryChanged || submitChanged)) {
+        _maybeSearch(next);
+      }
     });
 
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : RefreshIndicator(
-            onRefresh: _onRefresh, // 새로고침 함수 연결
-            child: _posts.isEmpty
-                ? ListView(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    children: const [
-                      SizedBox(height: 200),
-                      Center(child: Text('No posts available')),
-                    ],
-                  )
-                : ListView.builder(
-                    physics:
-                        const AlwaysScrollableScrollPhysics(), // 리스트가 비어도 스크롤 가능
-                    itemCount: _posts.length,
-                    itemBuilder: (context, index) => PostListTile(
-                      post: _posts[index],
-                      onTap: _navigateToPostDetail, // 게시글 클릭 시 상세 페이지 이동
-                    ),
-                  ),
-          );
+    return RefreshIndicator(
+      onRefresh: () => _maybeSearch(searchState, force: true),
+      child: results.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                SizedBox(height: 200),
+                Center(child: Text('No posts available')),
+              ],
+            )
+          : ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              itemCount: results.length,
+              itemBuilder: (context, index) => PostListTile(
+                post: results[index],
+                onTap: _navigateToPostDetail,
+              ),
+            ),
+    );
   }
 
-  // 게시글 검색 (필터 적용)
-  Future<void> _searchPosts() async {
+  Future<void> _maybeSearch(
+    SearchState state, {
+    bool force = false,
+  }) async {
+    // 방어: 검색 제출 전이거나 검색어가 비어 있으면 요청하지 않음.
+    if (!state.hasSubmitted || state.searchQuery.isEmpty) {
+      return;
+    }
+    // 방어: 이미 검색 중이면 중복 요청 방지.
+    if (state.isLoading) {
+      return;
+    }
+
+    final isSameQuery = state.resultsQuery == state.searchQuery;
+    final isSameFilter = state.resultsFilter == state.selectedFilter;
+    // 방어: 동일한 검색어/필터 결과가 있으면 재요청하지 않음.
+    if (!force && isSameQuery && isSameFilter && state.results.isNotEmpty) {
+      return;
+    }
+
+    // 새로고침(force:true) 시 로딩 오버레이 중복 표시 방지.
+    if (!force) {
+      ref.read(searchProvider.notifier).setLoading(true);
+    }
+
     try {
       debugPrint('════════════════════════════════════════');
-      debugPrint('📥 Loading posts from Firebase...');
+      debugPrint('📥 Loading posts from Algolia...');
 
-      final filter = ref.read(searchProvider).selectedFilter;
+      final filter = state.selectedFilter;
       final position = ref.read(locationProvider).position;
-
       final searchPostsByFilter = ref.read(searchPostsByFilterProvider);
       final posts = await searchPostsByFilter(
-        query: widget.query,
+        query: state.searchQuery,
         filter: filter,
         userPosition: position,
       );
 
-      debugPrint('📦 Received ${posts.length} posts from Firebase');
+      debugPrint('📦 Received ${posts.length} posts from Algolia');
       debugPrint('════════════════════════════════════════');
 
-      if (mounted) {
-        setState(() {
-          _posts = posts;
-          _isLoading = false;
-        });
-      }
+      ref.read(searchProvider.notifier).setResults(
+            results: posts,
+            query: state.searchQuery,
+            filter: filter,
+          );
     } catch (e) {
+      ref.read(searchProvider.notifier).setLoading(false);
       if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to load posts: $e')),
         );
@@ -108,13 +126,6 @@ class _SearchResultState extends ConsumerState<SearchResult> {
         debugPrint('════════════════════════════════════════');
       }
     }
-  }
-
-  // 새로고침
-  Future<void> _onRefresh() async {
-    debugPrint('\n🔄 Refreshing posts...');
-    await _searchPosts();
-    debugPrint('✅ Refresh complete. Loaded ${_posts.length} posts\n');
   }
 
   // 게시글 상세 화면으로 이동

@@ -48,6 +48,14 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
           onTap: () {
             ref.read(searchProvider.notifier).setHasSubmitted(false);
           },
+          onBackTap: () {
+            final searchState = ref.read(searchProvider);
+            if (!searchState.hasSubmitted && searchState.results.isNotEmpty) {
+              ref.read(searchProvider.notifier).setHasSubmitted(true);
+              return;
+            }
+            Navigator.of(context).pop();
+          },
           onChanged: (value) {
             ref.read(searchProvider.notifier).updateSearchQuery(value);
             ref.read(searchProvider.notifier).setHasSubmitted(false);
@@ -102,9 +110,7 @@ class _SearchScreenSimpleState extends ConsumerState<SearchScreenSimple> {
   // 검색 결과 표시 위젯
   Widget _buildSearchResults(String searchQuery) {
     // 검색 결과 표시 위젯
-    return SearchResult(
-      query: searchQuery,
-    );
+    return const SearchResult();
   }
 
   // 최근 검색어 표시 위젯
