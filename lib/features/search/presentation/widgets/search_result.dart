@@ -1,5 +1,6 @@
 import 'package:clozii/core/providers/location_provider.dart';
 import 'package:clozii/features/post/application/dto/post_summary.dart';
+import 'package:clozii/features/post/core/enums/post_filter.dart';
 import 'package:clozii/features/post/presentation/screens/post_detail_screen.dart';
 import 'package:clozii/features/post/presentation/widgets/post_list/post_list_tile.dart';
 import 'package:clozii/features/search/presentation/providers/search/search_state_provider.dart';
@@ -36,6 +37,12 @@ class _SearchResultState extends ConsumerState<SearchResult> {
           _isLoading = true;
         });
         _searchPosts();
+      }
+    });
+
+    ref.listen(searchProvider, (previous, next) {
+      if (previous?.searchQuery != next.searchQuery) {
+        ref.read(searchProvider.notifier).setSelectedFilter(PostFilter.all);
       }
     });
 

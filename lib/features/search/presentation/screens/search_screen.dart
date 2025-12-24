@@ -76,7 +76,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         bottom: PreferredSize(
           preferredSize:
               Size.fromHeight(searchState.hasSubmitted ? 60.0 : 10.0),
-              child: searchState.hasSubmitted
+          child: searchState.hasSubmitted
               ? FilterBar(
                   filters: searchPostFilters,
                   selectedFilter: searchState.selectedFilter,
